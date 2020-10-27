@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30517.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butik-User", "Butik-User\Butik-User.csproj", "{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butik-Admin", "Butik-Admin\Butik-Admin.csproj", "{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB669ECE-79DC-4CB0-A184-F9D76443B53A}
+	EndGlobalSection
+EndGlobal
