@@ -1,21 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Butik_User
 {
@@ -42,6 +32,8 @@ namespace Butik_User
 
         private void Start()
         {
+            Data.Init();
+
             // Window options
             Title = "Dollar Brad Store";
             MinWidth = 600;
@@ -55,7 +47,7 @@ namespace Butik_User
             //DrawProductListbox();
 
             //SizeChanged += MainWindow_OnSizeChanged;
-            KeyUp += OnKeyUp;
+            KeyUp += MainWindow_KeyUp;
         }
 
         //private TabItem CreateMockupTabItem(HeaderedContentControl header, ContentControl content)
@@ -83,7 +75,7 @@ namespace Butik_User
             {
                 try
                 {
-                    Background = new SolidColorBrush(GetChromeColor().Value);
+                    Background = new SolidColorBrush(TEMPORARY_AND_PLACEHOLDER_STUFF.GetChromeColor().Value);
                 }
                 catch (Exception e)
                 {
@@ -98,33 +90,75 @@ namespace Butik_User
             Tabs = new TabControl();
             Tabs.Padding = new Thickness(-1, 5, -1, -1);
 
-            // Mockup 1
+            // Mockup 0 ///////////////////////////////////////////////////////////////////
             {
                 // Mockup content
                 var tabs = new TabControl();
-                var tabItem1 = new TabItem
+                var tabItem0 = new TabItem
                 {
                     Header = "Browse Products"
                 };
-                var tabItem2 = new TabItem
+                var tabItem1 = new TabItem
                 {
                     Header = "My Shopping Cart"
                 };
+
+                var tabItem0_rootGrid = new Grid { ShowGridLines = true };
+                tabItem0_rootGrid.RowDefinitions.Add(new RowDefinition());
+                tabItem0_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                tabItem0_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
                 var tabItem1_rootGrid = new Grid { ShowGridLines = true };
                 tabItem1_rootGrid.RowDefinitions.Add(new RowDefinition());
                 tabItem1_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 tabItem1_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+                // Column 0: grid items
+                {
+                    //var productsGrid = new Grid { ShowGridLines = true };
+                    var productsPanel = new WrapPanel();
+
+                    foreach (Product product in Data.Products)
+                    {
+                        var gridItem = Mockup0.CreateProductGridItem(product);
+
+                        if (gridItem != null)
+                        {
+                            productsPanel.Children.Add(gridItem);
+                        }
+                    }
+
+                    Grid.SetColumn(productsPanel, 0);
+                    Grid.SetRow(productsPanel, 0);
+                    tabItem0_rootGrid.Children.Add(productsPanel);
+                }
+
+                // Column 1: right column width product image (large), name, description, price and buttons for adding (and removing?) the product to the shopping cart
+                {
+                    //var productsGrid = new Grid { ShowGridLines = true };
+                    Mockup0.RightColumn = new StackPanel { Orientation = Orientation.Vertical };
+
+                    // TODO(johancz): change to image and split Helpers.CreateNewImage into smaller parts:
+                    Mockup0.RightColumn.Children.Add(Helpers.CreateNewImage());
+                    var detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
+                    Mockup0.RightColumn.Children.Add(detailsPanel);
+
+
+                    Grid.SetColumn(Mockup0.RightColumn, 1);
+                    Grid.SetRow(Mockup0.RightColumn, 0);
+                    tabItem0_rootGrid.Children.Add(Mockup0.RightColumn);
+                }
+
+                tabItem0.Content = tabItem0_rootGrid;
                 tabItem1.Content = tabItem1_rootGrid;
 
+                tabs.Items.Add(tabItem0);
                 tabs.Items.Add(tabItem1);
-                tabs.Items.Add(tabItem2);
-
                 // Mockup tabitem
-                Tabs.Items.Add(CreateMockupTabItem("Mockup 1", tabs));
+                Tabs.Items.Add(CreateMockupTabItem("Mockup 0", tabs));
             }
 
-            // Mockup 2
+            // Mockup 1 ///////////////////////////////////////////////////////////////////
             {
                 var tabItem_mockup2 = new TabItem();
                 tabItem_mockup2.Header = "Mockup 2";
@@ -139,7 +173,7 @@ namespace Butik_User
                 grid.ColumnDefinitions.Add(new ColumnDefinition());
 
                 // Mockup tabitem
-                Tabs.Items.Add(CreateMockupTabItem("Mockup 2", grid));
+                Tabs.Items.Add(CreateMockupTabItem("Mockup 1", grid));
             }
 
             var tabItem_products = new TabItem();
@@ -209,54 +243,54 @@ namespace Butik_User
 
             /////////////////////////// START OF PLACEHOLDER CONTENT //////////////////////////////////
             {
-                var listbox = new ListBox();
-                var stackPanel0 = new StackPanel();
-                stackPanel0.Orientation = Orientation.Horizontal;
-                var uri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative);
-                var bmi = new BitmapImage(uri);
-                var image = new Image
-                {
-                    Source = bmi,
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(5),
-                    Stretch = Stretch.Uniform,
-                    Height = 50,
-                    ToolTip = new ToolTip
-                    {
-                        Content = new Image
-                        {
-                            Source = bmi,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Margin = new Thickness(5),
-                            Stretch = Stretch.Uniform,
-                        }
-                    }
-                };
+                //var listbox = new ListBox();
+                //var stackPanel0 = new StackPanel();
+                //stackPanel0.Orientation = Orientation.Horizontal;
+                //var uri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative);
+                //var bmi = new BitmapImage(uri);
+                //var image = new Image
+                //{
+                //    Source = bmi,
+                //    HorizontalAlignment = HorizontalAlignment.Center,
+                //    VerticalAlignment = VerticalAlignment.Center,
+                //    Margin = new Thickness(5),
+                //    Stretch = Stretch.Uniform,
+                //    Height = 50,
+                //    ToolTip = new ToolTip
+                //    {
+                //        Content = new Image
+                //        {
+                //            Source = bmi,
+                //            HorizontalAlignment = HorizontalAlignment.Center,
+                //            VerticalAlignment = VerticalAlignment.Center,
+                //            Margin = new Thickness(5),
+                //            Stretch = Stretch.Uniform,
+                //        }
+                //    }
+                //};
 
-                stackPanel0.Children.Add(image);
-                //AddImageToGrid(grid_products, image, 1, 1);
-                ///////////// REPLACE WITH DATAGRID? //////////////////////////////////////////////////////////////////////////////////
-                var stackPanelItem = new StackPanel { Orientation = Orientation.Vertical };
-                stackPanelItem.Children.Add(new Label() { Content = "Product name blabla" });
-                stackPanelItem.Children.Add(new Label() { Content = "Product description blablabblalbla bla blabla" });
-                stackPanel0.Children.Add(stackPanelItem);
-                stackPanel0.Children.Add(new Label() { Content = "2,50 kr", FontSize = 30 });
-                stackPanel0.Children.Add(new Label() { Content = "+", FontSize = 30 });
+                //stackPanel0.Children.Add(image);
+                ////AddImageToGrid(grid_products, image, 1, 1);
+                /////////////// REPLACE WITH DATAGRID? //////////////////////////////////////////////////////////////////////////////////
+                //var stackPanelItem = new StackPanel { Orientation = Orientation.Vertical };
+                //stackPanelItem.Children.Add(new Label() { Content = "Product name blabla" });
+                //stackPanelItem.Children.Add(new Label() { Content = "Product description blablabblalbla bla blabla" });
+                //stackPanel0.Children.Add(stackPanelItem);
+                //stackPanel0.Children.Add(new Label() { Content = "2,50 kr", FontSize = 30 });
+                //stackPanel0.Children.Add(new Label() { Content = "+", FontSize = 30 });
 
-                listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
-                listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
-                listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
-                listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
-                AddControlToGrid(ProductsGrid, listbox, 1, 0);
+                //listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
+                //listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
+                //listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
+                //listbox.Items.Add(new ListBoxItem() { Content = stackPanel0 });
+                //AddControlToGrid(ProductsGrid, listbox, 1, 0);
 
-                // "Shopping Cart"-tabItem grid
-                Grid grid_shoppingCart = new Grid();
-                grid_shoppingCart.Margin = new Thickness(5);
-                grid_shoppingCart.RowDefinitions.Add(new RowDefinition());
-                grid_shoppingCart.ColumnDefinitions.Add(new ColumnDefinition());
-                tabItem_shoppingCart.Content = grid_shoppingCart;
+                //// "Shopping Cart"-tabItem grid
+                //Grid grid_shoppingCart = new Grid();
+                //grid_shoppingCart.Margin = new Thickness(5);
+                //grid_shoppingCart.RowDefinitions.Add(new RowDefinition());
+                //grid_shoppingCart.ColumnDefinitions.Add(new ColumnDefinition());
+                //tabItem_shoppingCart.Content = grid_shoppingCart;
             }
             /////////////////////////// END OF PLACEHOLDER CONTENT //////////////////////////////////
 
@@ -295,64 +329,6 @@ namespace Butik_User
             grid.Children.Add(control);
         }
 
-        private StackPanel Mockup1_CreateProductGridItem(Product product)
-        {
-            var stackPanel = new StackPanel
-            {
-                Orientation = Orientation.Vertical,
-
-            };
-
-            return stackPanel;
-        }
-
-        private Image CreateNewImage(string uriString, int height, string tooltipText = null, bool largerImageInTooltip = false)
-        {
-            Image image = new Image();
-            try
-            {
-                var uri = new Uri(uriString, UriKind.Relative);
-                image.Source = new BitmapImage(uri);
-                image.HorizontalAlignment = HorizontalAlignment.Center;
-                image.VerticalAlignment = VerticalAlignment.Center;
-                image.Margin = new Thickness(5);
-                image.Stretch = Stretch.Uniform;
-                image.Height = 50;
-
-                if (tooltipText != null || largerImageInTooltip != false)
-                {
-                    var tooltipStackpanel = new StackPanel { Orientation = Orientation.Vertical };
-                    image.ToolTip = tooltipStackpanel;
-
-                    if (tooltipText != null)
-                    {
-                        tooltipStackpanel.Children.Add(new Label
-                        {
-                            Content = tooltipText
-                        });
-                    }
-
-                    if (largerImageInTooltip != false)
-                    {
-                        tooltipStackpanel.Children.Add(new Image
-                        {
-                            Source = new BitmapImage(uri),
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Margin = new Thickness(5),
-                            Stretch = Stretch.Uniform,
-                        });
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                // TODO(johancz): exception-handling
-            }
-
-            return image;
-        }
-
         private ListBoxItem? CreateListboxItem(Product product)
         {
             ///////////// REPLACE WITH DATAGRID? //////////////////////////////////////////////////////////////////////////////////
@@ -361,35 +337,7 @@ namespace Butik_User
                 Orientation = Orientation.Horizontal
             };
 
-            Image image = CreateNewImage("/Images/broccoli-1238250_640.jpg", 50, null, true);
-            //Image image = new Image();
-            //try
-            //{
-            //    var uri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative);
-            //    var bmi = new BitmapImage(uri);
-
-            //    image.Source = new BitmapImage(uri);
-            //    image.HorizontalAlignment = HorizontalAlignment.Center;
-            //    image.VerticalAlignment = VerticalAlignment.Center;
-            //    image.Margin = new Thickness(5);
-            //    image.Stretch = Stretch.Uniform;
-            //    image.Height = 50;
-            //    image.ToolTip = new ToolTip
-            //    {
-            //        Content = new Image
-            //        {
-            //            Source = bmi,
-            //            HorizontalAlignment = HorizontalAlignment.Center,
-            //            VerticalAlignment = VerticalAlignment.Center,
-            //            Margin = new Thickness(5),
-            //            Stretch = Stretch.Uniform,
-            //        }
-            //    };
-            //}
-            //catch (Exception e)
-            //{
-            //    // TODO(johancz): exception-handling
-            //}
+            Image image = Helpers.CreateNewImage("/Images/broccoli-1238250_640.jpg", 50, null, true);
 
             stackPanel.Children.Add(image);
             ///////////// REPLACE WITH DATAGRID? //////////////////////////////////////////////////////////////////////////////////
@@ -412,82 +360,169 @@ namespace Butik_User
             grid.Children.Add(image);
         }
 
-        private void OnKeyUp(object sender, KeyEventArgs e)
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
                 Application.Current.Shutdown();
             }
         }
+    }
 
-        ////////////////////////// [START] REMOVE BEFORE "RELEASE"
-        public static Color? GetChromeColor()
+    public static class Data
+    {
+        public static List<Product> Products { get; set; } = new List<Product>();
+
+        public static void Init()
         {
-            bool isEnabled;
-            var hr1 = DwmIsCompositionEnabled(out isEnabled);
-            if ((hr1 != 0) || !isEnabled) // 0 means S_OK.
-                return null;
+            Data.Products = TEMPORARY_AND_PLACEHOLDER_STUFF.CreatePlaceHolderProducts();
+        }
+    }
 
-            DWMCOLORIZATIONPARAMS parameters;
+    public static class Helpers
+    {
+        public static BitmapImage? CreateBitmapImageFromUriString(string uriString)
+        {
             try
             {
-                // This API is undocumented and so may become unusable in future versions of OSes.
-                var hr2 = DwmGetColorizationParameters(out parameters);
-                if (hr2 != 0) // 0 means S_OK.
-                    return null;
+                var uri = new Uri(uriString, UriKind.Relative);
+                var bitMapImage = new BitmapImage(uri);
+
+                return bitMapImage;
             }
-            catch
+            catch (Exception e)
             {
+                // TODO(johancz): exception-handling
                 return null;
             }
-
-            // Convert colorization color parameter to Color ignoring alpha channel.
-            var targetColor = Color.FromRgb(
-                (byte)(parameters.colorizationColor >> 16),
-                (byte)(parameters.colorizationColor >> 8),
-                (byte)parameters.colorizationColor);
-
-            // Prepare base gray color.
-            var baseColor = Color.FromRgb(217, 217, 217);
-
-            // Blend the two colors using colorization color balance parameter.
-            return BlendColor(targetColor, baseColor, (double)(100 - parameters.colorizationColorBalance));
         }
-
-        private static Color BlendColor(Color color1, Color color2, double color2Perc)
+        public static Image CreateNewImage(string uriString = null,
+                                           int? height = null,
+                                           string tooltipText = null,
+                                           bool imageInTooltip = false)
         {
-            if ((color2Perc < 0) || (100 < color2Perc))
-                throw new ArgumentOutOfRangeException("color2Perc");
+            Image image = new Image();
 
-            return Color.FromRgb(
-                BlendColorChannel(color1.R, color2.R, color2Perc),
-                BlendColorChannel(color1.G, color2.G, color2Perc),
-                BlendColorChannel(color1.B, color2.B, color2Perc));
+            try
+            {
+                if (uriString != null)
+                {
+                    image.Source = CreateBitmapImageFromUriString(uriString);
+                }
+                image.HorizontalAlignment = HorizontalAlignment.Center;
+                image.VerticalAlignment = VerticalAlignment.Center;
+                image.Margin = new Thickness(5);
+                image.Stretch = Stretch.Uniform;
+
+                if (height != null)
+                {
+                    image.Height = height.Value;
+                }
+
+                if (tooltipText != null || imageInTooltip != false)
+                {
+                    var tooltipStackpanel = new StackPanel { Orientation = Orientation.Vertical };
+                    image.ToolTip = tooltipStackpanel;
+
+                    if (tooltipText != null)
+                    {
+                        tooltipStackpanel.Children.Add(new Label
+                        {
+                            Content = tooltipText
+                        });
+                    }
+
+                    if (imageInTooltip != false)
+                    {
+                        tooltipStackpanel.Children.Add(new Image
+                        {
+                            Source = CreateBitmapImageFromUriString(uriString),
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Margin = new Thickness(5),
+                            Stretch = Stretch.Uniform,
+                        });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // TODO(johancz): exception-handling
+            }
+
+            return image;
         }
+    }
 
-        private static byte BlendColorChannel(double channel1, double channel2, double channel2Perc)
+    public static class Mockup0
+    {
+        public static UIElement RootElement { get; private set; }
+        private static WrapPanel LeftColumn;
+        public static StackPanel RightColumn;
+        private static Image RightColumn_DetailsImage;
+        private static Label RightColumn_DetailsName;
+        private static Label RightColumn_DetailsDescription;
+        private static Button RightColumn_DetailsAddToCartButton;
+
+        public static void Create()
         {
-            var buff = channel1 + (channel2 - channel1) * channel2Perc / 100D;
-            return Math.Min((byte)Math.Round(buff), (byte)255);
+            // Right/Details Column
+            //RightColumn = new WrapPanel();
+            //LeftColumn_ = new Image();
+            //LeftColumn_ = new Label();
+            //LeftColumn_ = new Label();
+            //LeftColumn_ = new Button();
+
+            // Right/Details Column
+            //RightColumn = new StackPanel();
+            RightColumn_DetailsImage = new Image();
+            var rightColumn_DetailsPanel = new StackPanel();
+            RightColumn_DetailsName = new Label();
+            RightColumn_DetailsDescription = new Label();
+            RightColumn_DetailsAddToCartButton = new Button { FontSize = 14, Content = "(+) Add to shopping cart" };
+
+            // TODO(johancz): replace mockup 0 code in MainWindow.CreateUIElements with this class.
+
+            rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsName);
+            rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsDescription);
+            rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsAddToCartButton);
+
+            RightColumn.Children.Add(RightColumn_DetailsImage);
+            RightColumn.Children.Add(rightColumn_DetailsPanel);
         }
 
-        [DllImport("Dwmapi.dll")]
-        private static extern int DwmIsCompositionEnabled([MarshalAs(UnmanagedType.Bool)] out bool pfEnabled);
-
-        [DllImport("Dwmapi.dll", EntryPoint = "#127")] // Undocumented API
-        private static extern int DwmGetColorizationParameters(out DWMCOLORIZATIONPARAMS parameters);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct DWMCOLORIZATIONPARAMS
+        public static StackPanel CreateProductGridItem(Product product)
         {
-            public uint colorizationColor;
-            public uint colorizationAfterglow;
-            public uint colorizationColorBalance; // Ranging from 0 to 100
-            public uint colorizationAfterglowBalance;
-            public uint colorizationBlurBalance;
-            public uint colorizationGlassReflectionIntensity;
-            public uint colorizationOpaqueBlend;
+            var stackPanel = new StackPanel
+            {
+                Orientation = Orientation.Vertical,
+                Tag = product
+            };
+            stackPanel.Children.Add(Helpers.CreateNewImage(product.ImageUri.ToString(), 25));
+            stackPanel.Children.Add(new StackPanel() { Orientation = Orientation.Horizontal });
+            ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = product.Name });
+            ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = $"{product.Price} kr" });
+            //var stackPanel2 = new StackPanel() { Orientation = Orientation.Horizontal };
+            //stackPanel2.Children.Add(new Label { Content = product.Name });
+            //stackPanel2.Children.Add(new Label { Content = product.Price });
+            //stackPanel.Children.Add(stackPanel2);
+
+            stackPanel.MouseUp += Mockup0.ProductItem_MouseUp;
+
+            return stackPanel;
         }
-        ////////////////////////// [END] REMOVE BEFORE "RELEASE"
+
+        public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            UpdateDetailsColumn((Product)((StackPanel)sender).Tag);
+        }
+
+        private static void UpdateDetailsColumn(Product product)
+        {
+            ((Image)RightColumn.Children[0]).Source = Helpers.CreateBitmapImageFromUriString(product.ImageUri.ToString());
+            ((StackPanel)RightColumn.Children[1]).Children.Add(new Label { Content = $"{product.Price} kr" });
+            ((StackPanel)RightColumn.Children[1]).Children.Add(new Label { Content = product.Name });
+            ((StackPanel)RightColumn.Children[1]).Children.Add(new Label { Content = product.Description });
+        }
     }
 }

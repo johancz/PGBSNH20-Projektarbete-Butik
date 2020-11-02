@@ -5,12 +5,12 @@ using System.Windows.Controls;
 
 namespace Butik_User
 {
-    class Product
+    public class Product
     {
         public string Name { get; set; }
         public string Description;
         public double Price { get; set; }
-        public Uri ImageUri;
+        public Uri ImageUri; // TODO(johancz): change to "string ImageUriString"?
 
         public Product() { }
     }
