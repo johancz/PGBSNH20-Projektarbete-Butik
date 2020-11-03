@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Butik_User
 {
-
     public class ShoppingCart
     {
         /// <summary>
@@ -17,12 +16,12 @@ namespace Butik_User
 
         public void AddProduct(Product product)
         {
-
+            throw new NotImplementedException();
         }
 
         public void RemoveProduct(Product product)
         {
-
+            throw new NotImplementedException();
         }
 
         public void AddDiscountCode(DiscountCode discountCode)
@@ -35,16 +34,16 @@ namespace Butik_User
 
         public void RemoveDiscountCode()
         {
-
+            throw new NotImplementedException();
         }
 
         public void SaveToFile()
         {
-
+            throw new NotImplementedException();
         }
         public void LoadFromFile()
         {
-
+            throw new NotImplementedException();
         }
 
         public ShoppingCart()
