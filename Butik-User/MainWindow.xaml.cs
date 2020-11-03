@@ -1,10 +1,10 @@
 ﻿/*
  TODO(johancz):
-  * Add Canvas-control as the Window's root control.
+  * --- DONE --- Add Canvas-control as the Window's root control.
   * Clean up the code for merging into master.
-  * Fix Shopping Cart tab crash.
-  * Finish layout (of name, description, price, buttons) in the details column.
-  * 
+  * --- DONE --- Fix Shopping Cart tab crash.
+  * --- DONE --- Finish layout (of name, description, price, buttons) in the details column.
+  * Fix: The "root"-Grid does not stretch to fill its parent (the "root"-Canvas control). Set height and width manually in a MainWindow.SizeChanged listener.
  */
 
 using System;
