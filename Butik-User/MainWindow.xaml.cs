@@ -1,20 +1,7 @@
 ﻿/*
- TODO(johancz):
-  * --- DONE --- Add Canvas-control as the Window's root control.
-  * --- DONE --- Clean up the code for merging into master.
-  * --- DONE --- Fix Shopping Cart tab crash.
-  * --- DONE --- Finish layout (of name, description, price, buttons) in the details column.
-  * --- DONE --- Fix: The "root"-Grid does not stretch to fill its parent (the "root"-Canvas control). Set height and width manually in a MainWindow.SizeChanged listener.
-  * --- DONE --- Get the Products' WrapPanel to work again.
-  * --- DONE --- Get the details column to work again.
-  * 
  TODO:
   * Right Column does not have a ScrollViewer
   * The Image in the right column should scale better, e.g. it should not take up more than X% of the available height.
-  * 
-  * Rows of Code:
-  * 2020-11-03 20:47: 673 (-12) rows
-  * 2020-11-03 20:47: 406 (-18) rows
  */
 
 // Disable this debugging symbol by commenting the line out.
