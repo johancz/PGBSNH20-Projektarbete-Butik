@@ -1,17 +1,29 @@
 ﻿/*
  TODO(johancz):
   * --- DONE --- Add Canvas-control as the Window's root control.
-  * Clean up the code for merging into master.
+  * --- DONE --- Clean up the code for merging into master.
   * --- DONE --- Fix Shopping Cart tab crash.
   * --- DONE --- Finish layout (of name, description, price, buttons) in the details column.
-  * Fix: The "root"-Grid does not stretch to fill its parent (the "root"-Canvas control). Set height and width manually in a MainWindow.SizeChanged listener.
+  * --- DONE --- Fix: The "root"-Grid does not stretch to fill its parent (the "root"-Canvas control). Set height and width manually in a MainWindow.SizeChanged listener.
+  * --- DONE --- Get the Products' WrapPanel to work again.
+  * --- DONE --- Get the details column to work again.
+  * 
+ TODO:
+  * Right Column does not have a ScrollViewer
+  * The Image in the right column should scale better, e.g. it should not take up more than X% of the available height.
+  * 
+  * Rows of Code:
+  * 2020-11-03 20:47: 673 (-12) rows
+  * 2020-11-03 20:47: 406 (-18) rows
  */
+
+// Disable this debugging symbol by commenting the line out.
+#define DEBUG_SET_BACKGROUND_COLOR
 
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -20,9 +32,6 @@ namespace Butik_User
 {
     public partial class MainWindow : Window
     {
-        // UI-elements
-        TabControl Tabs;
-
         public MainWindow()
         {
             InitializeComponent();
@@ -31,75 +40,35 @@ namespace Butik_User
 
         private void Start()
         {
-            Data.Init();
+            // Load all data; products, saved shopping carts, discount codes.
+            Data.Init(); // Move into UserMode?
 
             // Window options
-            Title = "Dollar Brad Store"; // TODO(johancz): Change before FINAL
-            MinWidth = 600;
-            MinHeight = 600;
-            Width = System.Windows.SystemParameters.WorkArea.Width - 200;
-            Height = System.Windows.SystemParameters.WorkArea.Height - 200;
+            Title = ".... Store (user mode)"; // TODO(johancz): Change before RELEASE
+            Width = System.Windows.SystemParameters.WorkArea.Width >= 1000 ? System.Windows.SystemParameters.WorkArea.Width - 200 : 800;
+            Height = System.Windows.SystemParameters.WorkArea.Height >= 800 ? System.Windows.SystemParameters.WorkArea.Height - 200 : 600;
+            MinWidth = 400;
+            MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            CreateUIElements();
-            //ProductsListbox = new ListBox();
-            //DrawProductListbox();
+            Content = UserMode.Create();
 
             //SizeChanged += MainWindow_OnSizeChanged;
             KeyUp += MainWindow_KeyUp;
         }
 
-        //private TabItem CreateMockupTabItem(HeaderedContentControl header, ContentControl content)
-        private TabItem CreateMockupTabItem(string header, UIElement content)
-        {
-            var border = new Border
-            {
-                BorderThickness = new Thickness(0, 1, 0, 0),
-                BorderBrush = Brushes.Black,
-            };
+        ////////////////////////////////////////////////////////
+        //////////////////// Event Handling ////////////////////
+        ////////////////////////////////////////////////////////
 
-            var tabItem = new TabItem
-            {
-                Header = header,
-                Content = border
-            };
-            border.Child = content;
-
-            return tabItem;
-        }
-
-        private void CreateUIElements()
-        {
-
-            //// Root element
-            //// Tabs
-            //Tabs = new TabControl();
-            //Tabs.Padding = new Thickness(-1, -1, -1, -1);
-
-            //// Mockup 0 ///////////////////////////////////////////////////////////////////
-            //{
-            //    var mockup0_root_UIelement = UserMode.Create();
-            //    Tabs.Items.Add(CreateMockupTabItem("Mockup 0", mockup0_root_UIelement));
-            //}
-
-            //// Mockup 1 ///////////////////////////////////////////////////////////////////
-            //{
-            //    //var mockupTEMPLATE_root_UIelement = Mockup0.Create();
-
-            //    //// Mockup tabitem
-            //    //Tabs.Items.Add(CreateMockupTabItem("Mockup 1", mockupTEMPLATE_root_UIelement));
-            //}
-
-            Content = UserMode.Create();
-        }
-
-        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            Mockup1.MainWindow_OnSizeChanged(sender, e);
-        }
+        //private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        //{
+        //    Mockup1.MainWindow_OnSizeChanged(sender, e);
+        //}
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
+            // Close Window with ESC-key.
             if (e.Key == Key.Escape)
             {
                 Application.Current.Shutdown();
@@ -111,10 +80,23 @@ namespace Butik_User
     {
         public static List<Product> Products { get; set; } = new List<Product>();
         public static ShoppingCart ActiveShoppingCart { get; set; } = new ShoppingCart();
+        public static List<DiscountCode> DiscountCodes { get; set; }
 
         public static void Init()
         {
             Data.Products = TEMPORARY_AND_PLACEHOLDER_STUFF.CreatePlaceHolderProducts();
+            LoadShoppingCart();
+            LoadDiscountCodes();
+        }
+
+        private static void LoadShoppingCart()
+        {
+            //ActiveShoppingCart = ...
+        }
+
+        private static void LoadDiscountCodes()
+        {
+            //DiscountCodes = ...
         }
     }
 
@@ -170,6 +152,7 @@ namespace Butik_User
 
                     if (imageInTooltip != false)
                     {
+                        // TODO(johancz): Use the available Helper for creating images.
                         tooltipStackpanel.Children.Add(new Image
                         {
                             Source = CreateBitmapImageFromUriString(uriString),
@@ -196,11 +179,11 @@ namespace Butik_User
     public static class UserMode
     {
         public static Canvas RootElement { get; private set; }
+        private static Grid RootGrid;
         private static TabControl TabControl;
         private static TabItem TabItem_BrowseStore;
         private static TabItem TabItem_ShoppingCart;
-        private static WrapPanel LeftColumn;
-        public static StackPanel RightColumn;
+        private static StackPanel RightColumnContentRoot;
         private static Image RightColumn_DetailsImage;
         private static Label RightColumn_DetailsName;
         private static Label RightColumn_DetailsPrice;
@@ -212,14 +195,20 @@ namespace Butik_User
         {
             // Root Canvas element
             RootElement = new Canvas();
-            RootElement.Background = Brushes.LightBlue;
-            // Grid with two columns, first column (left) for a tabcontrol with "Browse Store" and "ShoppingCart" tabs.
-            // Second column contains details about the selected product and a small ScrollViewer containing the users "bookmarked" products.
-            //var RootStackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-            var rootGrid = new Grid { ShowGridLines = true };
-            rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            RootElement.SizeChanged += RootElement_SizeChanged;
+#if DEBUG_SET_BACKGROUND_COLOR
+            RootElement.Background = Brushes.LightBlue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            // Grid with two columns;
+            // the first column (left) for a tabcontrol with "Browse Store" and "ShoppingCart" tabs,
+            // the Second column contains details about the selected product.
+            RootGrid = new Grid { ShowGridLines = true };
+#if DEBUG_SET_BACKGROUND_COLOR
+            RootGrid.Background = Brushes.LightGoldenrodYellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            RootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            RootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            RootGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
             // Left Column
             {
@@ -229,6 +218,9 @@ namespace Butik_User
                 // "Browse Store" Tab
                 {
                     var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+#if DEBUG_SET_BACKGROUND_COLOR
+                    tabContent_browseStore.Background = Brushes.LightCyan; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
                     var productsPanel = new WrapPanel();
 
                     foreach (Product product in Data.Products)
@@ -241,6 +233,10 @@ namespace Butik_User
                         }
                     }
 
+                    // Add the Products-WrapPanel to the ScrollViewer
+                    tabContent_browseStore.Content = productsPanel;
+
+                    // Create the TabItem and add it to the TabControl
                     TabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore };
                     TabControl.Items.Add(TabItem_BrowseStore);
                 }
@@ -256,26 +252,34 @@ namespace Butik_User
                         //shoppingCartPanel.Children.Add(...);
                     }
 
+                    // Add the Products-WrapPanel to the ScrollViewer
+                    tabContent_shoppingCart.Content = shoppingCartPanel;
+
+                    // Create the TabItem and add it to the TabControl
                     TabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = tabContent_shoppingCart };
                     TabControl.Items.Add(TabItem_ShoppingCart);
                 }
 
                 // Add the left-column to the "root"-Grid.
                 Grid.SetColumn(TabControl, 0);
-                rootGrid.Children.Add(TabControl);
+                RootGrid.Children.Add(TabControl);
             }
 
+            // TODO(johancz): The contents of the right column probably needs a ScrollViewer, and maybe the Image should scale better (e.g. not take up more than X% of the available height).
             // Right Column
             {
                 //  Right Column Content Root: StackPanel
-                var rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
+                RightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
 
                 // Create and add a Product.Image to the right column's root (StackPanel)
-                rightColumnContentRoot.Children.Add(RightColumn_DetailsImage = new Image());
+                RightColumnContentRoot.Children.Add(RightColumn_DetailsImage = new Image());
 
                 // Details Column: name, price, description and shopping cart buttons.
                 {
                     var rightColumn_detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
+#if DEBUG_SET_BACKGROUND_COLOR
+                    rightColumn_detailsPanel.Background = Brushes.LightSalmon; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
 
                     // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.
                     {
@@ -317,103 +321,25 @@ namespace Butik_User
                         rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
                     }
 
-                    rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
+                    RightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
                 }
 
                 // Add the right-column to the "root"-Grid.
-                Grid.SetColumn(rightColumnContentRoot, 1);
-                rootGrid.Children.Add(rightColumnContentRoot);
+                Grid.SetColumn(RightColumnContentRoot, 1);
+                RootGrid.Children.Add(RightColumnContentRoot);
             }
 
             // Add "root" Grid to "root" Canvas
-            RootElement.Children.Add(rootGrid);
-
-            //var tabItem0_rootGrid = new Grid { ShowGridLines = true };
-            //tabItem0_rootGrid.RowDefinitions.Add(new RowDefinition());
-            //tabItem0_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //tabItem0_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            //var tabItem1_rootGrid = new Grid { ShowGridLines = true };
-            //tabItem1_rootGrid.RowDefinitions.Add(new RowDefinition());
-            //tabItem1_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //tabItem1_rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
-            // Column 0: "grid" of products
-            //{
-            //    //var productsGrid = new Grid { ShowGridLines = true };
-            //    var productsPanel = new WrapPanel();
-
-            //    foreach (Product product in Data.Products)
-            //    {
-            //        var gridItem = UserMode.CreateProductItem(product);
-
-            //        if (gridItem != null)
-            //        {
-            //            productsPanel.Children.Add(gridItem);
-            //        }
-            //    }
-
-            //    Grid.SetColumn(productsPanel, 0);
-            //    Grid.SetRow(productsPanel, 0);
-            //    tabItem0_rootGrid.Children.Add(productsPanel);
-            //}
-
-            // Column 1: right column width product image (large), name, description, price and buttons for adding (and removing?) the product to the shopping cart
-            //{
-            //    //var productsGrid = new Grid { ShowGridLines = true };
-            //    UserMode.RightColumn = new StackPanel { Orientation = Orientation.Vertical };
-
-            //    // TODO(johancz): change to image and split Helpers.CreateNewImage into smaller parts:
-            //    //Mockup0.RightColumn.Children.Add(Helpers.CreateNewImage());
-            //    //var detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
-            //    //Mockup0.RightColumn.Children.Add(detailsPanel);
-
-
-            //    Grid.SetColumn(UserMode.RightColumn, 1);
-            //    Grid.SetRow(UserMode.RightColumn, 0);
-            //    tabItem0_rootGrid.Children.Add(UserMode.RightColumn);
-            //}
-
-            //tabItem0.Content = tabItem0_rootGrid;
-            //tabItem1.Content = RightColumn;
-
-            //RootElement.Items.Add(tabItem0);
-            //RootElement.Items.Add(tabItem1);
-
-            // Left/Products-list Column
-            //LeftColumn = new WrapPanel();
-            //LeftColumn_ = new Image();
-            //LeftColumn_ = new Label();
-            //LeftColumn_ = new Label();
-            //LeftColumn_ = new Button();
-
-            // Right/Details Column
-            //RightColumn = new StackPanel();
-            //RightColumn_DetailsImage = new Image();
-            //var rightColumn_DetailsPanel = new StackPanel { Orientation = Orientation.Vertical };
-            //RightColumn_DetailsName = new Label();
-            //RightColumn_DetailsPrice = new Label();
-            //RightColumn_DetailsDescription = new Label();
-            //RightColumn_DetailsAddToCartButton = new Button
-            //{
-            //    FontSize = 14,
-            //    Content = "(+) Add to shopping cart",
-            //    HorizontalAlignment = HorizontalAlignment.Right,
-            //    Visibility = Visibility.Collapsed
-            //};
-            //RightColumn_DetailsAddToCartButton.Click += RightColumn_DetailsAddToCartButton_Click;
-
-            //// TODO(johancz): replace mockup 0 code in MainWindow.CreateUIElements with this class.
-
-            //rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsName);
-            //rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsPrice);
-            //rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsDescription);
-            //rightColumn_DetailsPanel.Children.Add(RightColumn_DetailsAddToCartButton);
-
-            //RightColumn.Children.Add(RightColumn_DetailsImage);
-            //RightColumn.Children.Add(rightColumn_DetailsPanel);
+            RootElement.Children.Add(RootGrid);
 
             return RootElement;
+        }
+
+        private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
+            RootGrid.Height = RootElement.ActualHeight;
+            RootGrid.Width = RootElement.ActualWidth;
         }
 
         public static StackPanel CreateProductItem(Product product)
@@ -427,10 +353,6 @@ namespace Butik_User
             stackPanel.Children.Add(new StackPanel() { Orientation = Orientation.Horizontal });
             ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = product.Name });
             ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = $"{product.Price} kr" });
-            //var stackPanel2 = new StackPanel() { Orientation = Orientation.Horizontal };
-            //stackPanel2.Children.Add(new Label { Content = product.Name });
-            //stackPanel2.Children.Add(new Label { Content = product.Price });
-            //stackPanel.Children.Add(stackPanel2);
 
             stackPanel.MouseUp += UserMode.ProductItem_MouseUp;
 
@@ -439,16 +361,14 @@ namespace Butik_User
 
         private static void UpdateDetailsColumn(Product product)
         {
-            ((Image)RightColumn.Children[0]).Source = Helpers.CreateBitmapImageFromUriString(product.ImageUri.ToString());
-            //((StackPanel)RightColumn.Children[1]).Children.Add(new Label { Content = $"{product.Price} kr" });
-            //((StackPanel)RightColumn.Children[1]).Children.Add(new Label { Content = product.Name });
-            //((StackPanel)RightColumn.Children[1]).Children.Add(new Label { Content = product.Description });
-            //RightColumn_DetailsImage = Helpers.CreateNewImage(product.ImageUri.ToString());
+            RightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.ImageUri.ToString());
             RightColumn_DetailsName.Content = product.Name;
             RightColumn_DetailsPrice.Content = $"{product.Price} kr";
             RightColumn_DetailsDescription.Content = product.Description;
             RightColumn_detailsAddToCartButton.Tag = product;
             RightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
+
+            RightColumnContentRoot.Visibility = Visibility.Visible;
         }
 
         ////////////////////////////////////////////////////////
@@ -484,177 +404,7 @@ namespace Butik_User
         private static void RightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            Data.ActiveShoppingCart.AddProduct((Product)((StackPanel)sender).Tag);
-        }
-    }
-
-    /// <summary>
-    /// Mockup1
-    /// </summary>
-    public static class Mockup1
-    {
-        private static List<List> Lists = new List<List>();
-        private static List<Product> Products = new List<Product>();
-        private static ShoppingCart ActiveShoppingCart = new ShoppingCart();
-
-        // UIElements
-        public static UIElement RootElement { get; private set; }
-        public static ListBox ProductsListbox { get; private set; }
-        static Grid ProductsGrid;
-        static TextBox Logging;
-        static ListBox ProductListBox;
-
-        public static void Create()
-        {
-            //var tabItem_products = new TabItem();
-            //tabItem_products.Header = "Products";
-            //var tabItem_shoppingCart = new TabItem();
-            //tabItem_shoppingCart.Header = "Shopping Cart";
-
-            //// "Product"-tabItem grid
-            //ProductsGrid = new Grid();
-            //ProductsGrid.Children.Add(new Border
-            //{
-            //    BorderBrush = Brushes.Black,
-            //    BorderThickness = new Thickness(1)
-            //});
-            //ProductsGrid.Margin = new Thickness(5);
-            //ProductsGrid.RowDefinitions.Add(new RowDefinition());
-            //ProductsGrid.RowDefinitions.Add(new RowDefinition());
-            ////grid_products.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            //ProductsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //ProductsGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            //tabItem_products.Content = ProductsGrid;
-            //ProductsGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
-
-            //var searchStackPanel = new DockPanel
-            //{
-            //    //HorizontalAlignment = HorizontalAlignment.Stretch,
-            //    //padd
-            //    LastChildFill = true
-            //};
-            //var searchTextbox = new TextBox
-            //{
-            //    Name = "SearchTextBox",
-            //    Background = Brushes.AliceBlue,
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    //HorizontalAlignment = HorizontalAlignment.Left,
-            //    FontSize = 14,
-            //    Padding = new Thickness(5),
-            //    //HorizontalAlignment = HorizontalAlignment.Stretch
-            //};
-            //searchTextbox.TextChanged += SearchTextChanged;
-            //var searchLabel = new Label
-            //{
-            //    Content = "Search",
-            //    FontSize = 14,
-            //    Target = searchTextbox
-            //};
-            //searchLabel.Tag = searchTextbox;
-            //searchLabel.MouseUp += (object sender, MouseButtonEventArgs e) =>
-            //{
-            //    if (((Label)sender).Target != null)
-            //    {
-            //        ((Label)sender).Target.Focus();
-            //    }
-            //};
-            //searchStackPanel.Children.Add(searchLabel);
-            //searchStackPanel.Children.Add(searchTextbox);
-            //AddControlToGrid(ProductsGrid, searchStackPanel, 0, 0);
-
-            //// temporary logging
-            //Logging = new TextBox
-            //{
-            //    Background = Brushes.AliceBlue,
-            //    VerticalAlignment = VerticalAlignment.Top,
-            //    HorizontalAlignment = HorizontalAlignment.Left
-            //};
-            //AddControlToGrid(ProductsGrid, Logging, 0, 1);
-
-            //Tabs.Items.Add(tabItem_products);
-            //Tabs.Items.Add(tabItem_shoppingCart);
-        }
-
-        private static void DrawProductListbox()
-        {
-            // LINQ?
-            foreach (Product product in Data.Products)
-            {
-                var listBoxItem = CreateListboxItem(product);
-
-                if (listBoxItem != null)
-                {
-                    ProductsListbox.Items.Add(listBoxItem);
-                }
-            }
-        }
-
-        private static void SearchTextChanged(object sender, TextChangedEventArgs e)
-        {
-            // TODO(johancz): only show products that match the search query
-        }
-
-        private static void AddControlToGrid(Grid grid, UIElement control, int row, int column)
-        {
-            Grid.SetRow(control, row);
-            Grid.SetColumn(control, column);
-            grid.Children.Add(control);
-        }
-
-        private static ListBoxItem? CreateListboxItem(Product product)
-        {
-            ///////////// REPLACE WITH DATAGRID? //////////////////////////////////////////////////////////////////////////////////
-            var stackPanel = new StackPanel
-            {
-                Orientation = Orientation.Horizontal
-            };
-
-            Image image = Helpers.CreateNewImage("/Images/broccoli-1238250_640.jpg", 50, null, true);
-
-            stackPanel.Children.Add(image);
-            ///////////// REPLACE WITH DATAGRID? //////////////////////////////////////////////////////////////////////////////////
-            var stackPanelNameDesciption = new StackPanel { Orientation = Orientation.Vertical };
-            stackPanelNameDesciption.Children.Add(new Label() { Content = product.Name });
-            stackPanelNameDesciption.Children.Add(new Label() { Content = product.Description });
-            stackPanel.Children.Add(stackPanelNameDesciption);
-            stackPanel.Children.Add(new Label() { Content = $"{product.Price} kr", FontSize = 30 });
-            stackPanel.Children.Add(new Label() { Content = "+", FontSize = 30 });
-
-            // TODO(johancz): return null if the image can't be created?
-            // TODO(johancz): return null if the product lacks data?
-            return new ListBoxItem() { Content = stackPanel };
-        }
-
-        private static void AddImageToGrid(Grid grid, Image image, int row, int column)
-        {
-            Grid.SetRow(image, row);
-            Grid.SetColumn(image, column);
-            grid.Children.Add(image);
-        }
-
-        public static void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            Logging.Text = $"window width: {e.NewSize.Width}\nwindow height: {e.NewSize.Height}";
-        }
-    }
-
-    /// <summary>
-    /// MockupTEMPLATE
-    /// </summary>
-    public static class MockupTEMPLATE
-    {
-        public static UIElement RootElement { get; private set; }
-
-        public static void Create()
-        {
-            var mockupTEMPLATE_root_UIelement = new Grid
-            {
-                ShowGridLines = true,
-            };
-            mockupTEMPLATE_root_UIelement.RowDefinitions.Add(new RowDefinition());
-            mockupTEMPLATE_root_UIelement.RowDefinitions.Add(new RowDefinition());
-            mockupTEMPLATE_root_UIelement.ColumnDefinitions.Add(new ColumnDefinition());
-            mockupTEMPLATE_root_UIelement.ColumnDefinitions.Add(new ColumnDefinition());
+            Data.ActiveShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
         }
     }
 }
