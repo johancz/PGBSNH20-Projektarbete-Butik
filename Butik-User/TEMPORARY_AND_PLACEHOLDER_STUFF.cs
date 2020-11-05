@@ -1,7 +1,9 @@
 ﻿////////////////////////// [START] REMOVE BEFORE "RELEASE"
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows;
 using System.Windows.Media;
 
 namespace Butik_User
@@ -18,140 +20,140 @@ namespace Butik_User
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Trump",
                 Description = "Oh boy.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/oranges-2100108_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("oranges-2100108_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Gulebøj",
                 Description = "Healthy I guess",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/bananas-3700718_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("bananas-3700718_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
             products.Add(new Product
             {
                 Name = "Broccoli",
                 Description = "Green thing, do not boil.",
                 Price = 2.5,
-                ImageUri = new Uri("/Images/broccoli-1238250_640.jpg", UriKind.Relative)
+                ImageUri = new Uri("broccoli-1238250_640.jpg", UriKind.Relative)
             });
 
             return products;
