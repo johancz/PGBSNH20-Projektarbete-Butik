@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Butik_User;
 
 namespace Butik_Admin
 {
@@ -39,6 +40,8 @@ namespace Butik_Admin
 
             RootCanvas = new Canvas();
             MainTabControl = new TabControl();
+
+            var userMode = UserMode.Create();
 
             var userModeTabControl = new TabControl();
             // "User Mode" TabItem.Content
