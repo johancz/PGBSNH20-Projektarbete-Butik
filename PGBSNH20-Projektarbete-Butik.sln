@@ -7,6 +7,18 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Butik-User", "Butik-User\Bu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Butik-Admin", "Butik-Admin\Butik-Admin.csproj", "{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{3D69A8B7-952F-4C7C-9ADB-394B292EB398}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\OneDrive\Skrivbord\banana.jpg = ..\..\..\..\OneDrive\Skrivbord\banana.jpg
+		..\..\..\..\OneDrive\Skrivbord\broccoli.jpg = ..\..\..\..\OneDrive\Skrivbord\broccoli.jpg
+		..\..\..\..\OneDrive\Skrivbord\oranges.jpg = ..\..\..\..\OneDrive\Skrivbord\oranges.jpg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TextFiles", "TextFiles", "{410D7501-789E-4108-B87D-4BB01A0BABBF}"
+	ProjectSection(SolutionItems) = preProject
+		LoadProducts.csv = LoadProducts.csv
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
