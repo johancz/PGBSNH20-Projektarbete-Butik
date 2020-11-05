@@ -32,8 +32,8 @@ namespace Butik_User
 
             // Window options
             Title = ".... Store (user mode)"; // TODO(johancz): Change before RELEASE
-            Width = System.Windows.SystemParameters.WorkArea.Width >= 1000 ? System.Windows.SystemParameters.WorkArea.Width - 200 : 800;
-            Height = System.Windows.SystemParameters.WorkArea.Height >= 800 ? System.Windows.SystemParameters.WorkArea.Height - 200 : 600;
+            Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
+            Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             MinWidth = 400;
             MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;

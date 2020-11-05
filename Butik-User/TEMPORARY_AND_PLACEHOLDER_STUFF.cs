@@ -1,10 +1,6 @@
 ﻿////////////////////////// [START] REMOVE BEFORE "RELEASE"
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Media;
 
 namespace Butik_User
 {
