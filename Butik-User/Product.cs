@@ -8,6 +8,7 @@ using System.Windows.Controls;
 
 namespace Butik_User
 {
+
     public class Product
     {
         public string Name { get; set; }
