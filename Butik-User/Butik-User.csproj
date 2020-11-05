@@ -8,7 +8,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <Content Include="Images\**">
+    <Content Include="..\StoreData\Images\**\*.*"> <!-- '..\' and '*.*' are equired to include images from outside of the project dir. -->
+      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link> <!-- Required to include images from outside of the project dir. -->
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
