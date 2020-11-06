@@ -57,6 +57,5 @@ namespace StoreClassLibrary
             }
             return products;
         }
-
     }
 }

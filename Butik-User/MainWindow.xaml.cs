@@ -10,6 +10,7 @@
 using StoreClassLibrary;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,8 +29,11 @@ namespace Butik_User
 
         private void Start()
         {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+
             // Load all data; products, saved shopping carts, discount codes.
-            Data.Init(); // Move into UserMode?
+            Store.Init(); // Move into UserMode?
 
             // Window options
             Title = ".... Store (user mode)"; // TODO(johancz): Change before RELEASE
@@ -64,29 +68,7 @@ namespace Butik_User
         }
     }
 
-    public static class Data
-    {
-        public static List<Product> Products { get; set; } = new List<Product>();
-        public static ShoppingCart ActiveShoppingCart { get; set; } = new ShoppingCart();
-        public static List<DiscountCode> DiscountCodes { get; set; }
-
-        public static void Init()
-        {
-            Products = Product.LoadAll();
-            LoadShoppingCart();
-            LoadDiscountCodes();
-        }
-
-        private static void LoadShoppingCart()
-        {
-            //ActiveShoppingCart = ...
-        }
-
-        private static void LoadDiscountCodes()
-        {
-            //DiscountCodes = ...
-        }
-    }
+   
 
     public static class Helpers
     {
@@ -211,7 +193,7 @@ namespace Butik_User
 #endif
                     var productsPanel = new WrapPanel();
 
-                    foreach (Product product in Data.Products)
+                    foreach (Product product in Store.Products)
                     {
                         var productItem = UserMode.CreateProductItem(product);
 
@@ -234,7 +216,7 @@ namespace Butik_User
                     var tabContent_shoppingCart = new ScrollViewer();
                     var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
 
-                    foreach (KeyValuePair<Product, int> product in Data.ActiveShoppingCart.Products)
+                    foreach (KeyValuePair<Product, int> product in Store.ActiveShoppingCart.Products)
                     {
                         // TODO(johancz): Create and draw a WPF-structure for each product in the shopping cart
                         //shoppingCartPanel.Children.Add(...);
@@ -392,7 +374,7 @@ namespace Butik_User
         private static void RightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            Data.ActiveShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
+            Store.ActiveShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
         }
     }
 }

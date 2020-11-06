@@ -17,6 +17,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TextFiles", "TextFiles", "{410D7501-789E-4108-B87D-4BB01A0BABBF}"
 	ProjectSection(SolutionItems) = preProject
 		LoadProducts.csv = LoadProducts.csv
+		Pseudocode.txt = Pseudocode.txt
+		pseudocodeGUI.txt = pseudocodeGUI.txt
 		TestProducts_Clean_5instances.csv = TestProducts_Clean_5instances.csv
 	EndProjectSection
 EndProject

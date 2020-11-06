@@ -1,4 +1,4 @@
-﻿namespace Butik_User
+﻿namespace StoreClassLibrary
 {
     public class DiscountCode
     {
