@@ -7,6 +7,7 @@
 // Disable this debugging symbol by commenting the line out.
 #define DEBUG_SET_BACKGROUND_COLOR
 
+using StoreClassLibrary;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -71,7 +72,7 @@ namespace Butik_User
 
         public static void Init()
         {
-            Data.Products = TEMPORARY_AND_PLACEHOLDER_STUFF.CreatePlaceHolderProducts();
+            Products = Product.LoadAll();
             LoadShoppingCart();
             LoadDiscountCodes();
         }
@@ -336,7 +337,7 @@ namespace Butik_User
                 Orientation = Orientation.Vertical,
                 Tag = product
             };
-            stackPanel.Children.Add(Helpers.CreateNewImage(product.ImageUri.ToString(), 50));
+            stackPanel.Children.Add(Helpers.CreateNewImage(product.Uri, 50));
             stackPanel.Children.Add(new StackPanel() { Orientation = Orientation.Horizontal });
             ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = product.Name });
             ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = $"{product.Price} kr" });
@@ -348,7 +349,7 @@ namespace Butik_User
 
         private static void UpdateDetailsColumn(Product product)
         {
-            RightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.ImageUri.ToString());
+            RightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
             RightColumn_DetailsName.Content = product.Name;
             RightColumn_DetailsPrice.Content = $"{product.Price} kr";
             RightColumn_DetailsDescription.Content = product.Description;
