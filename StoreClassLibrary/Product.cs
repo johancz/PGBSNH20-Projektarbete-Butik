@@ -39,7 +39,7 @@ namespace StoreClassLibrary
             var products = new List<Product>();
             string input = File.ReadAllText(FilePath(fileName));
 
-            var infoArray = input.Split('#');
+            var infoArray = input.Trim().Split('#');
 
             for (int i = 0; i < infoArray.Length; i++)
             {

@@ -19,7 +19,7 @@ namespace StoreClassLibrary
 
             private static void LoadShoppingCart()
             {
-                //ActiveShoppingCart = ...
+                
             }
 
             private static void LoadDiscountCodes()

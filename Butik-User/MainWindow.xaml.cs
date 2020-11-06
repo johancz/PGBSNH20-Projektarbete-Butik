@@ -76,7 +76,7 @@ namespace Butik_User
         {
             try
             {
-                var uri = new Uri(uriString, UriKind.Relative);
+                var uri = new Uri(@"Images\" + uriString, UriKind.Relative);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;
@@ -84,6 +84,7 @@ namespace Butik_User
             catch (Exception e)
             {
                 // TODO(johancz): exception-handling
+                
                 return null;
             }
         }

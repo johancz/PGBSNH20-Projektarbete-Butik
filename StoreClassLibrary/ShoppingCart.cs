@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StoreClassLibrary
 {
-    public class ShoppingCart
+    public class ShoppingCart //Make static
     {
         /// <summary>
         /// Product: instance of Product-class
@@ -51,5 +51,7 @@ namespace StoreClassLibrary
         {
             Products = new Dictionary<Product, int>();
         }
+
+        //Add LoadShoppingcart
     }
 }

@@ -6,9 +6,40 @@
     <RootNamespace>Butik_User</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-  
+
   <ItemGroup>
-    <Content Include="Images\**">
+    <None Remove="banana.jpg" />
+    <None Remove="broccoli.jpg" />
+    <None Remove="Images\banana.jpg" />
+    <None Remove="Images\broccoli.jpg" />
+    <None Remove="Images\Fight Club Brad Pitt Notebook.png" />
+    <None Remove="Images\Fight Club Pin.png" />
+    <None Remove="Images\Fight Club Poster.png" />
+    <None Remove="Images\orange.jpg" />
+    <None Remove="Images\Tyler Sticker.png" />
+    <None Remove="orange.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Images\banana.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\broccoli.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Fight Club Brad Pitt Notebook.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Fight Club Pin.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Fight Club Poster.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\orange.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Tyler Sticker.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
