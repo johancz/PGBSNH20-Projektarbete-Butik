@@ -149,12 +149,12 @@ namespace Butik_User
     /// </summary>
     public static class UserMode
     {
-        public static Canvas RootElement { get; private set; }
-        private static Grid _rootGrid;
-        private static TabControl _tabControl;
-        private static TabItem _tabItem_BrowseStore;
-        private static TabItem _tabItem_ShoppingCart;
-        private static StackPanel _rightColumnContentRoot;
+        public static Canvas RootElement { get; private set; } // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
+        private static Grid _rootGrid; // Needed for event-handling
+        private static TabControl _tabControl; // TODO(johancz): convert to local variable
+        private static TabItem _tabItem_BrowseStore; // TODO(johancz): convert to local variable
+        private static TabItem _tabItem_ShoppingCart; // TODO(johancz): convert to local variable
+        private static StackPanel _rightColumnContentRoot; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
         private static Image _rightColumn_DetailsImage;
         private static Label _rightColumn_DetailsName;
         private static Label _rightColumn_DetailsPrice;
@@ -184,7 +184,10 @@ namespace Butik_User
             // Left Column
             {
                 // Left Column Content Root: TabControl
-                _tabControl = new TabControl();
+                _tabControl = new TabControl(); // TODO(johancz): convert to local variable
+#if DEBUG_SET_BACKGROUND_COLOR
+                _tabControl.Background = Brushes.Magenta; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
 
                 // "Browse Store" Tab
                 {
@@ -208,26 +211,75 @@ namespace Butik_User
                     tabContent_browseStore.Content = productsPanel;
 
                     // Create the TabItem and add it to the TabControl
-                    _tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore };
+                    _tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore }; // TODO(johancz): convert to local variable
                     _tabControl.Items.Add(_tabItem_BrowseStore);
                 }
 
                 // "Shopping Cart" Tab Contents
                 {
-                    var tabContent_shoppingCart = new ScrollViewer();
-                    var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
+                    var shoppingCartRootGrid = new Grid { ShowGridLines = true, Height = 50 };
+#if DEBUG_SET_BACKGROUND_COLOR
+                    shoppingCartRootGrid.Background = Brushes.LightGoldenrodYellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                    var shoppingCartScrollViewer = new ScrollViewer();
+                    shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition());
+                    shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-                    foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
+                    // Shopping cart toolbar (with load and save buttons, total sum label)
                     {
-                        // TODO(johancz): Create and draw a WPF-structure for each product in the shopping cart
-                        //shoppingCartPanel.Children.Add(...);
+                        var shoppingCart_toolbar = new Grid { ShowGridLines = true, Height = 50 };
+#if DEBUG_SET_BACKGROUND_COLOR
+                        shoppingCart_toolbar.Background = Brushes.LightSeaGreen; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+
+                        // TotalSum-Label
+                        var shoppingCart_itemCountLabel = new Label { Content = $"{Data.ActiveShoppingCart.TotalSum} kr" };
+                        // Add Label to toolbar
+                        Grid.SetColumn(shoppingCart_itemCountLabel, 0);
+                        shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
+
+                        // Save-button
+                        var shoppingCart_saveButton = new Button { Content = "Save Shopping Cart" };
+                        shoppingCart_saveButton.Click += shoppingCart_saveButton_Click;
+                        // Add Button to toolbar
+                        Grid.SetColumn(shoppingCart_saveButton, 1);
+                        shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
+
+                        // Load-button
+                        var shoppingCart_loadButton = new Button { Content = "Load Shopping Cart" };
+                        shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
+                        // Add Button to toolbar
+                        Grid.SetColumn(shoppingCart_loadButton, 2);
+                        shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
+
+                        // Add the toolbar to the Grid
+                        shoppingCartRootGrid.Children.Add(shoppingCart_toolbar);
                     }
 
-                    // Add the Products-WrapPanel to the ScrollViewer
-                    tabContent_shoppingCart.Content = shoppingCartPanel;
+                    // Shopping cart items (StackPanel)
+                    {
+                        var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
+
+                        foreach (KeyValuePair<Product, int> product in Data.ActiveShoppingCart.Products)
+                        {
+                            //TODO(johancz): Create and draw a WPF - structure for each product in the shopping cart
+                            //shoppingCartPanel.Children.Add(...);
+                        }
+
+                        shoppingCartScrollViewer.Content = shoppingCartPanel;
+                    }
+                    // Shopping Cart Save-button
+
+
+                    // Add the shopping cart's ScrollViewer to its "root"-Grid
+                    Grid.SetRow(shoppingCartScrollViewer, 1);
+                    shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
                     // Create the TabItem and add it to the TabControl
-                    _tabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = tabContent_shoppingCart };
+                    _tabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = shoppingCartRootGrid }; // TODO(johancz): convert to local variable
                     _tabControl.Items.Add(_tabItem_ShoppingCart);
                 }
 
@@ -306,13 +358,6 @@ namespace Butik_User
             return RootElement;
         }
 
-        private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
-            _rootGrid.Height = RootElement.ActualHeight;
-            _rootGrid.Width = RootElement.ActualWidth;
-        }
-
         public static StackPanel CreateProductItem(Product product)
         {
             var stackPanel = new StackPanel
@@ -337,6 +382,7 @@ namespace Butik_User
             _rightColumn_DetailsName.Content = product.Name;
             _rightColumn_DetailsPrice.Content = $"{product.Price} kr";
             _rightColumn_DetailsDescription.Content = product.Description;
+            _rightColumn_DetailsRemoveFromCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
 
@@ -346,6 +392,23 @@ namespace Butik_User
         ////////////////////////////////////////////////////////
         //////////////////// Event Handling ////////////////////
         ////////////////////////////////////////////////////////
+
+        private static void shoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            Data.ActiveShoppingCart.SaveToFile();
+        }
+
+        private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
+        {
+            Data.ActiveShoppingCart.LoadFromFile();
+        }
+
+        private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
+            _rootGrid.Height = RootElement.ActualHeight;
+            _rootGrid.Width = RootElement.ActualWidth;
+        }
 
         /// <summary>
         /// 
@@ -365,7 +428,8 @@ namespace Butik_User
         /// <param name="e"></param>
         private static void _rightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            // TODO(johancz): Error/Exception-handling
+            Data.ActiveShoppingCart.RemoveProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
         }
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿using StoreClassLibrary;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace StoreClassLibrary
@@ -9,24 +11,47 @@ namespace StoreClassLibrary
     {
         /// <summary>
         /// </summary>
-        ///  Collection of "KeyValuePair"s where:
-        ///  Key (Product): instance of Product-class
-        ///  Value (int):   itemcount of (Key)"Product"
-        public Dictionary<Product, int> Products;
-        public double TotalSum { get; set; } // TODO(johancz): decimal?
+        public Dictionary<Product, int> Products { get; private set; }
+        public double TotalSum { get; set; } = 0;
         public DiscountCode ActiveDiscountCode { get; set; }
 
         public void AddProduct(Product product)
         {
-            throw new NotImplementedException();
+            if (product == null)
+            {
+                // TODO(johancz): this silently handles cases where product is null, should it be handled otherwise?
+                return;
+            }
+
+            Products.TryAdd(product, 0);
+            Products[product]++;
+            TotalSum += product.Price;
         }
 
         public void RemoveProduct(Product product)
         {
-            throw new NotImplementedException();
+            if (product == null)
+            {
+                // TODO(johancz): this silently handles cases where product is null, should it be handled otherwise?
+                return;
+            }
+
+            if (Products.ContainsKey(product))
+            {
+                if (Products[product] > 1)
+                {
+                    Products[product]--;
+                }
+                else
+                {
+                    Products.Remove(product);
+                }
+
+                TotalSum -= product.Price;
+            }
         }
 
-        public void AddDiscountCode(DiscountCode discountCode)
+        public void SetDiscountCode(DiscountCode discountCode)
         {
             if (ActiveDiscountCode == null)
             {
@@ -36,15 +61,27 @@ namespace StoreClassLibrary
 
         public void RemoveDiscountCode()
         {
-            throw new NotImplementedException();
+            if (ActiveDiscountCode != null)
+            {
+                ActiveDiscountCode = null;
+            }
         }
 
         public void SaveToFile()
         {
+            // Copy files in .csproj instead?
+            // ..\..\..\.. takes us to the solution root folder
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\StoreData\ShoppingCart.csv");
+            var fileExists = File.Exists(filePath);
             throw new NotImplementedException();
         }
+
         public void LoadFromFile()
         {
+            // Copy files in .csproj instead?
+            // ..\..\..\.. takes us to the solution root folder
+            var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\StoreData\ShoppingCart.csv");
+            var fileExists = File.Exists(filePath);
             throw new NotImplementedException();
         }
 
