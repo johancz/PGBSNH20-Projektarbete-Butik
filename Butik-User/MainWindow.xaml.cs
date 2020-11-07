@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -84,6 +85,25 @@ namespace Butik_User
         private static Label _rightColumn_DetailsDescription;
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
+        //private static object _productItemLayoutSettings.gridItemWidth = 200;
+
+        internal struct _RightColumn
+        {
+            private static Image _rightColumn_DetailsImage;
+            private static Label _rightColumn_DetailsName;
+            private static Label _rightColumn_DetailsPrice;
+            private static Label _rightColumn_DetailsDescription;
+            private static Button _rightColumn_DetailsRemoveFromCartButton;
+            private static Button _rightColumn_detailsAddToCartButton;
+        }
+
+        internal struct _ProductItemLayoutSettings
+        {
+            internal const double gridItemWidth = 200;
+            internal const double gridItemHeight = 200;
+            internal const int gridItemImageHeight = 175;
+            internal const double gridItemTextHeight = 25;
+        }
 
         public static Canvas Create()
         {
@@ -118,7 +138,7 @@ namespace Butik_User
 #if DEBUG_SET_BACKGROUND_COLOR
                     tabContent_browseStore.Background = Brushes.LightCyan; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
-                    var productsPanel = new WrapPanel();
+                    var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
 
                     foreach (Product product in Store.Products)
                     {
@@ -281,21 +301,86 @@ namespace Butik_User
             return RootElement;
         }
 
-        public static StackPanel CreateProductItem(Product product)
+        private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var stackPanel = new StackPanel
+            // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
+            _rootGrid.Height = RootElement.ActualHeight;
+            _rootGrid.Width = RootElement.ActualWidth;
+        }
+
+        public static Grid CreateProductItem(Product product)
+
+        {
+            int gridItemWidth = 200;
+            int gridItemHeight = 200;
+            int gridItemImageHeight = 175;
+            int gridItemTextHeight = 25;
+
+            var tooltip = new ToolTip
             {
-                Orientation = Orientation.Vertical,
-                Tag = product
+                //Placement = PlacementMode.Relative, // alt placement, doesn't require the MouseLeave-fix below.
+                Placement = PlacementMode.Mouse,
+                Content = $"{product.Name}\n{product.Description}\n"
             };
-            stackPanel.Children.Add(Helpers.CreateNewImage(product.Uri, 50));
-            stackPanel.Children.Add(new StackPanel() { Orientation = Orientation.Horizontal });
-            ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = product.Name });
-            ((StackPanel)stackPanel.Children[1]).Children.Add(new Label { Content = $"{product.Price} kr" });
+            var productGrid = new Grid
+            {
+                Tag = product,
+                VerticalAlignment = VerticalAlignment.Top,
+                Width = _ProductItemLayoutSettings.gridItemWidth,
+                Height = _ProductItemLayoutSettings.gridItemHeight,
+                Margin = new Thickness(5),
+                ToolTip = tooltip
+            };
+            // This is required for the tooltip to appear at 'PlacementMode.Mouse' when hovering over another "productItem".
+            // Otherwise the tooltip will "stick" to the old (this) "productItem" if the mouse is moved to the other "productItem" too quickly.
+            productGrid.MouseLeave += (sender, e) =>
+            {
+                tooltip.IsOpen = false;
+            };
 
-            stackPanel.MouseUp += UserMode.ProductItem_MouseUp;
+#if DEBUG_SET_BACKGROUND_COLOR
+            productGrid.Background = Brushes.LightSlateGray; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            productGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(_ProductItemLayoutSettings.gridItemImageHeight, GridUnitType.Pixel) });
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(_ProductItemLayoutSettings.gridItemTextHeight, GridUnitType.Pixel) });
+            productGrid.MouseUp += UserMode.ProductItem_MouseUp;
 
-            return stackPanel;
+            // Image
+            var productThumbnail = Helpers.CreateNewImage(product.ImageUri.ToString(), _ProductItemLayoutSettings.gridItemImageHeight);
+            productThumbnail.Stretch = Stretch.UniformToFill;
+            productThumbnail.VerticalAlignment = VerticalAlignment.Top;
+            Grid.SetColumnSpan(productThumbnail, 2);
+            productGrid.Children.Add(productThumbnail);
+
+            // Name and price
+            //var nameAndPricePanel = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Top };
+            var nameLabel = new Label
+            {
+                Content = product.Name,
+#if DEBUG_SET_BACKGROUND_COLOR
+                Background = Brushes.LawnGreen // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            };
+            var priceLabel = new Label
+            {
+                Content = $"{product.Price} kr",
+#if DEBUG_SET_BACKGROUND_COLOR
+                Background = Brushes.LightCoral // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            };
+#if DEBUG_SET_BACKGROUND_COLOR
+            //nameAndPricePanel.Background = Brushes.LightGreen; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            Grid.SetColumn(nameLabel, 0);
+            Grid.SetRow(nameLabel, 1);
+            productGrid.Children.Add(nameLabel);
+            Grid.SetColumn(priceLabel, 1);
+            Grid.SetRow(priceLabel, 1);
+            productGrid.Children.Add(priceLabel);
+
+            return productGrid;
         }
 
         private static void UpdateDetailsColumn(Product product)
@@ -341,7 +426,7 @@ namespace Butik_User
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            UpdateDetailsColumn((Product)((StackPanel)sender).Tag);
+            UpdateDetailsColumn((Product)((Grid)sender).Tag);
         }
 
         /// <summary>
