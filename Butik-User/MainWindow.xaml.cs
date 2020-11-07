@@ -66,7 +66,7 @@ namespace Butik_User
     public static class Data
     {
         public static List<Product> Products { get; set; } = new List<Product>();
-        public static ShoppingCart ActiveShoppingCart { get; set; } = new ShoppingCart();
+        public static ProductList ActiveShoppingCart { get; set; } = new ProductList();
         public static List<DiscountCode> DiscountCodes { get; set; }
 
         public static void Init()

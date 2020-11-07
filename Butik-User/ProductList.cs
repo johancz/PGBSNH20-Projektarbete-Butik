@@ -4,11 +4,12 @@ using System.Text;
 
 namespace Butik_User
 {
-    public class ShoppingCart
+    public class ProductList
     {
         /// <summary>
-        /// Product: instance of Product-class
-        /// int:     amount of Product in ShoppingCart
+        /// Collection of "KeyValuePair"s where:
+        ///     Key (Product): instance of Product-class
+        ///     Value (int):   itemcount of (Key)"Product"
         /// </summary>
         public Dictionary<Product, int> Products;
         public double TotalSum { get; set; } // TODO(johancz): decimal?
@@ -46,7 +47,7 @@ namespace Butik_User
             throw new NotImplementedException();
         }
 
-        public ShoppingCart()
+        public ProductList()
         {
             Products = new Dictionary<Product, int>();
         }
