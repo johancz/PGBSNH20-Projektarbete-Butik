@@ -178,7 +178,7 @@ namespace Butik_User
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
 
-        public static UIElement Create()
+        public static Canvas Create()
         {
             // Root Canvas element
             RootElement = new Canvas();
