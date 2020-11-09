@@ -13,21 +13,6 @@ namespace StoreClassLibrary
             public static ProductList ShoppingCart { get; set; } = new ProductList();
             public static List<DiscountCode> DiscountCodes { get; set; }
 
-            public static void Init()
-            {
-                LoadShoppingCart();
-                LoadDiscountCodes();
-            }
-
-            private static void LoadShoppingCart()
-            {
-                
-            }
-
-            private static void LoadDiscountCodes()
-            {
-                //DiscountCodes = ...
-            }
             public static List<Product> LoadProducts(string fileName)
             {
                 var products = new List<Product>();
@@ -50,6 +35,22 @@ namespace StoreClassLibrary
                     products.Add(newProduct);
                 }
                 return products;
+            }
+
+            public static void Init()
+            {
+                LoadShoppingCart();
+                LoadDiscountCodes();
+            }
+
+            private static void LoadShoppingCart()
+            {
+                
+            }
+
+            private static void LoadDiscountCodes()
+            {
+                //DiscountCodes = ...
             }
     }
     

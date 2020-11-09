@@ -7,14 +7,7 @@ namespace StoreClassLibrary
 {
     public class ProductList
     {
-        /// <summary>
-<<<<<<< HEAD:StoreClassLibrary/ProductList.cs
-=======
-        /// Collection of "KeyValuePair"s where:
-        ///     Key (Product): instance of Product-class
-        ///     Value (int):   itemcount of (Key)"Product"
->>>>>>> johancz/junk/convert-ShoppingCart-class-into-generic-list-of-products:Butik-User/ProductList.cs
-        /// </summary>
+
         ///  Collection of "KeyValuePair"s where:
         ///  Key (Product): instance of Product-class
         ///  Value (int):   itemcount of (Key)"Product"

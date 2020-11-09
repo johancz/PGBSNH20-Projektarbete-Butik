@@ -72,7 +72,7 @@ namespace Butik_User
 
     public static class Helpers
     {
-        public static BitmapImage? CreateBitmapImageFromUriString(string uriString)
+        public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace Butik_User
 
                 return bitMapImage;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO(johancz): exception-handling
                 
@@ -135,7 +135,7 @@ namespace Butik_User
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // TODO(johancz): exception-handling
             }

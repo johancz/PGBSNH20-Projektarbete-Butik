@@ -19,7 +19,7 @@ namespace StoreTestProject
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
-            var products = Product.LoadAll("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
             var nameListActual = new List<string>();
 
             foreach (var p in products)
@@ -36,7 +36,7 @@ namespace StoreTestProject
         [TestMethod]
         public void ProductLoadAll_UnWantedHashtags()
         {
-            var products = Product.LoadAll("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -60,7 +60,7 @@ namespace StoreTestProject
         [TestMethod]
         public void ProductLoadAll_UnWantedWhite()
         {
-            var products = Product.LoadAll("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -81,7 +81,7 @@ namespace StoreTestProject
         [TestMethod]
         public void ProductLoadAll_WantedNewLinesCanExist()
         {
-            var products = Product.LoadAll("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -97,7 +97,7 @@ namespace StoreTestProject
         [TestMethod]
         public void ProductLoadAll_Only_JPG_PNG()
         {
-            var products = Product.LoadAll("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
             var fileExtensions = new List<string>();
             string extension = "";
 
