@@ -28,10 +28,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Fight Club Brad Pitt Notebook.png">
-    <Content Include="..\StoreData\Images\**\*.*"> <!-- '..\' and '*.*' are equired to include images from outside of the project dir. -->
-      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link> <!-- Required to include images from outside of the project dir. -->
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Images\Fight Club Pin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
