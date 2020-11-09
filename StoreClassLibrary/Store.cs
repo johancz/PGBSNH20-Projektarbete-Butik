@@ -11,7 +11,6 @@ namespace StoreClassLibrary
             public static string TextFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\";
             public static List<Product> Products { get; set; } = LoadProducts("LoadProducts.csv");
             public static ProductList ShoppingCart { get; set; } = new ProductList();
-            //public static ShoppingCart shoppingCart = LoadShoppingCart("ShoppingCart.csv");
             public static List<DiscountCode> DiscountCodes { get; set; }
 
             public static void Init()
