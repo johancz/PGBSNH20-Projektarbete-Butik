@@ -28,6 +28,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Fight Club Brad Pitt Notebook.png">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
     <Content Include="Images\Fight Club Pin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
