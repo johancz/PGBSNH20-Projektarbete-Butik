@@ -37,8 +37,8 @@ namespace Butik_User
 
             // Window options
             Title = ".... Store (user mode)"; // TODO(johancz): Change before RELEASE
-            Width = System.Windows.SystemParameters.WorkArea.Width >= 1000 ? System.Windows.SystemParameters.WorkArea.Width - 200 : 800;
-            Height = System.Windows.SystemParameters.WorkArea.Height >= 800 ? System.Windows.SystemParameters.WorkArea.Height - 200 : 600;
+            Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
+            Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             MinWidth = 400;
             MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -276,7 +276,7 @@ namespace Butik_User
                             FontSize = 14,
                             Content = "(-) Remove from shopping cart",
                             HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += RightColumn_DetailsRemoveFromCartButton_Click;
+                        }).Click += _rightColumn_DetailsRemoveFromCartButton_Click;
 
                         // Create "Add to Shopping Cart" button with "click"-event listener.
                         (_rightColumn_detailsAddToCartButton = new Button
@@ -284,7 +284,7 @@ namespace Butik_User
                             FontSize = 14,
                             Content = "(+) Add to shopping cart",
                             HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += RightColumn_DetailsAddToCartButton_Click;
+                        }).Click += _rightColumn_DetailsAddToCartButton_Click;
 
                         // Add buttons to their parent StackPanel and then add the StackPanel to the "details"-StackPanel
                         rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
@@ -333,6 +333,7 @@ namespace Butik_User
         private static void UpdateDetailsColumn(Product product)
         {
             _rightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
+
             _rightColumn_DetailsName.Content = product.Name;
             _rightColumn_DetailsPrice.Content = $"{product.Price} kr";
             _rightColumn_DetailsDescription.Content = product.Description;
@@ -362,7 +363,7 @@ namespace Butik_User
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void RightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
+        private static void _rightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -372,7 +373,7 @@ namespace Butik_User
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private static void RightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
+        private static void _rightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
             Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
