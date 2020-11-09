@@ -150,17 +150,17 @@ namespace Butik_User
     public static class UserMode
     {
         public static Canvas RootElement { get; private set; }
-        private static Grid RootGrid;
-        private static TabControl TabControl;
-        private static TabItem TabItem_BrowseStore;
-        private static TabItem TabItem_ShoppingCart;
-        private static StackPanel RightColumnContentRoot;
-        private static Image RightColumn_DetailsImage;
-        private static Label RightColumn_DetailsName;
-        private static Label RightColumn_DetailsPrice;
-        private static Label RightColumn_DetailsDescription;
-        private static Button RightColumn_DetailsRemoveFromCartButton;
-        private static Button RightColumn_detailsAddToCartButton;
+        private static Grid _rootGrid;
+        private static TabControl _tabControl;
+        private static TabItem _tabItem_BrowseStore;
+        private static TabItem _tabItem_ShoppingCart;
+        private static StackPanel _rightColumnContentRoot;
+        private static Image _rightColumn_DetailsImage;
+        private static Label _rightColumn_DetailsName;
+        private static Label _rightColumn_DetailsPrice;
+        private static Label _rightColumn_DetailsDescription;
+        private static Button _rightColumn_DetailsRemoveFromCartButton;
+        private static Button _rightColumn_detailsAddToCartButton;
 
         public static UIElement Create()
         {
@@ -173,18 +173,18 @@ namespace Butik_User
             // Grid with two columns;
             // the first column (left) for a tabcontrol with "Browse Store" and "ShoppingCart" tabs,
             // the Second column contains details about the selected product.
-            RootGrid = new Grid { ShowGridLines = true };
+            _rootGrid = new Grid { ShowGridLines = true };
 #if DEBUG_SET_BACKGROUND_COLOR
-            RootGrid.Background = Brushes.LightGoldenrodYellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+            _rootGrid.Background = Brushes.LightGoldenrodYellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
-            RootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            RootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            RootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            _rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
             // Left Column
             {
                 // Left Column Content Root: TabControl
-                TabControl = new TabControl();
+                _tabControl = new TabControl();
 
                 // "Browse Store" Tab
                 {
@@ -208,8 +208,8 @@ namespace Butik_User
                     tabContent_browseStore.Content = productsPanel;
 
                     // Create the TabItem and add it to the TabControl
-                    TabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore };
-                    TabControl.Items.Add(TabItem_BrowseStore);
+                    _tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore };
+                    _tabControl.Items.Add(_tabItem_BrowseStore);
                 }
 
                 // "Shopping Cart" Tab Contents
@@ -217,7 +217,7 @@ namespace Butik_User
                     var tabContent_shoppingCart = new ScrollViewer();
                     var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
 
-                    foreach (KeyValuePair<Product, int> product in Store.ActiveShoppingCart.Products)
+                    foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
                     {
                         // TODO(johancz): Create and draw a WPF-structure for each product in the shopping cart
                         //shoppingCartPanel.Children.Add(...);
@@ -227,23 +227,23 @@ namespace Butik_User
                     tabContent_shoppingCart.Content = shoppingCartPanel;
 
                     // Create the TabItem and add it to the TabControl
-                    TabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = tabContent_shoppingCart };
-                    TabControl.Items.Add(TabItem_ShoppingCart);
+                    _tabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = tabContent_shoppingCart };
+                    _tabControl.Items.Add(_tabItem_ShoppingCart);
                 }
 
                 // Add the left-column to the "root"-Grid.
-                Grid.SetColumn(TabControl, 0);
-                RootGrid.Children.Add(TabControl);
+                Grid.SetColumn(_tabControl, 0);
+                _rootGrid.Children.Add(_tabControl);
             }
 
             // TODO(johancz): The contents of the right column probably needs a ScrollViewer, and maybe the Image should scale better (e.g. not take up more than X% of the available height).
             // Right Column
             {
                 //  Right Column Content Root: StackPanel
-                RightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
+                _rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
 
                 // Create and add a Product.Image to the right column's root (StackPanel)
-                RightColumnContentRoot.Children.Add(RightColumn_DetailsImage = new Image());
+                _rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
 
                 // Details Column: name, price, description and shopping cart buttons.
                 {
@@ -255,23 +255,23 @@ namespace Butik_User
                     // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.
                     {
                         var rightColumn_detailsPanel_nameAndPrice = new StackPanel { Orientation = Orientation.Horizontal };
-                        RightColumn_DetailsName = new Label();
-                        RightColumn_DetailsPrice = new Label();
+                        _rightColumn_DetailsName = new Label();
+                        _rightColumn_DetailsPrice = new Label();
 
-                        rightColumn_detailsPanel_nameAndPrice.Children.Add(RightColumn_DetailsName);
-                        rightColumn_detailsPanel_nameAndPrice.Children.Add(RightColumn_DetailsPrice);
+                        rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
+                        rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsPrice);
                         rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_nameAndPrice);
                     }
 
                     // Create the product description Label
-                    RightColumn_DetailsDescription = new Label();
-                    rightColumn_detailsPanel.Children.Add(RightColumn_DetailsDescription);
+                    _rightColumn_DetailsDescription = new Label();
+                    rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsDescription);
 
                     // Create a StackPanel-parent for the "Shopping Cart"-buttons
                     var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
                     {
                         // Create "Remove from Shopping Cart" button with "click"-event listener.
-                        (RightColumn_DetailsRemoveFromCartButton = new Button
+                        (_rightColumn_DetailsRemoveFromCartButton = new Button
                         {
                             FontSize = 14,
                             Content = "(-) Remove from shopping cart",
@@ -279,7 +279,7 @@ namespace Butik_User
                         }).Click += RightColumn_DetailsRemoveFromCartButton_Click;
 
                         // Create "Add to Shopping Cart" button with "click"-event listener.
-                        (RightColumn_detailsAddToCartButton = new Button
+                        (_rightColumn_detailsAddToCartButton = new Button
                         {
                             FontSize = 14,
                             Content = "(+) Add to shopping cart",
@@ -287,21 +287,21 @@ namespace Butik_User
                         }).Click += RightColumn_DetailsAddToCartButton_Click;
 
                         // Add buttons to their parent StackPanel and then add the StackPanel to the "details"-StackPanel
-                        rightColumn_detailsPanel.Children.Add(RightColumn_DetailsRemoveFromCartButton);
-                        rightColumn_detailsPanel.Children.Add(RightColumn_detailsAddToCartButton);
+                        rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
+                        rightColumn_detailsPanel.Children.Add(_rightColumn_detailsAddToCartButton);
                         rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
                     }
 
-                    RightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
+                    _rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
                 }
 
                 // Add the right-column to the "root"-Grid.
-                Grid.SetColumn(RightColumnContentRoot, 1);
-                RootGrid.Children.Add(RightColumnContentRoot);
+                Grid.SetColumn(_rightColumnContentRoot, 1);
+                _rootGrid.Children.Add(_rightColumnContentRoot);
             }
 
             // Add "root" Grid to "root" Canvas
-            RootElement.Children.Add(RootGrid);
+            RootElement.Children.Add(_rootGrid);
 
             return RootElement;
         }
@@ -309,8 +309,8 @@ namespace Butik_User
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
-            RootGrid.Height = RootElement.ActualHeight;
-            RootGrid.Width = RootElement.ActualWidth;
+            _rootGrid.Height = RootElement.ActualHeight;
+            _rootGrid.Width = RootElement.ActualWidth;
         }
 
         public static StackPanel CreateProductItem(Product product)
@@ -332,14 +332,14 @@ namespace Butik_User
 
         private static void UpdateDetailsColumn(Product product)
         {
-            RightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
-            RightColumn_DetailsName.Content = product.Name;
-            RightColumn_DetailsPrice.Content = $"{product.Price} kr";
-            RightColumn_DetailsDescription.Content = product.Description;
-            RightColumn_detailsAddToCartButton.Tag = product;
-            RightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
+            _rightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
+            _rightColumn_DetailsName.Content = product.Name;
+            _rightColumn_DetailsPrice.Content = $"{product.Price} kr";
+            _rightColumn_DetailsDescription.Content = product.Description;
+            _rightColumn_detailsAddToCartButton.Tag = product;
+            _rightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
 
-            RightColumnContentRoot.Visibility = Visibility.Visible;
+            _rightColumnContentRoot.Visibility = Visibility.Visible;
         }
 
         ////////////////////////////////////////////////////////
@@ -375,7 +375,7 @@ namespace Butik_User
         private static void RightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            Store.ActiveShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
+            Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
         }
     }
 }
