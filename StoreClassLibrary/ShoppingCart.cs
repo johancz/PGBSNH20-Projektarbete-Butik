@@ -5,7 +5,7 @@ using System.Text;
 
 namespace StoreClassLibrary
 {
-    public class ShoppingCart //Make static
+    public class ShoppingCart
     {
         /// <summary>
         /// Product: instance of Product-class
