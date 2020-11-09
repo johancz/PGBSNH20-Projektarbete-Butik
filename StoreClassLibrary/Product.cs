@@ -11,10 +11,9 @@ namespace StoreClassLibrary
 {
     public class Product
     {
-
         public string Name { get; set; }
         public string Description;
-        public decimal Price { get; set; }
+        public decimal Price { get; set; } // TODO(johancz): is decimal necessary?
         public string Uri;
 
         public Product(string name, string uri, decimal price, string description)
@@ -24,6 +23,5 @@ namespace StoreClassLibrary
             Price = price;
             Description = description;
         }
-        
     }
 }

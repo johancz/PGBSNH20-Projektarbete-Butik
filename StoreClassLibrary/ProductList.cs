@@ -12,7 +12,7 @@ namespace StoreClassLibrary
         /// <summary>
         /// </summary>
         public Dictionary<Product, int> Products { get; private set; }
-        public double TotalSum { get; set; } = 0;
+        public decimal TotalSum { get; set; } = 0; // TODO(johancz): is decimal necessary?
         public DiscountCode ActiveDiscountCode { get; set; }
 
         public void AddProduct(Product product)
@@ -90,6 +90,6 @@ namespace StoreClassLibrary
             Products = new Dictionary<Product, int>();
         }
 
-        //Add LoadShoppingcart
+        //Add LoadShoppingcart // TODO(johancz): remove?
     }
 }

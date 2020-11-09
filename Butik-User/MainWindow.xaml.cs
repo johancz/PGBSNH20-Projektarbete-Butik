@@ -236,7 +236,7 @@ namespace Butik_User
                         shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
 
                         // TotalSum-Label
-                        var shoppingCart_itemCountLabel = new Label { Content = $"{Data.ActiveShoppingCart.TotalSum} kr" };
+                        var shoppingCart_itemCountLabel = new Label { Content = $"{Store.ShoppingCart.TotalSum} kr" };
                         // Add Label to toolbar
                         Grid.SetColumn(shoppingCart_itemCountLabel, 0);
                         shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
@@ -263,7 +263,7 @@ namespace Butik_User
                     {
                         var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
 
-                        foreach (KeyValuePair<Product, int> product in Data.ActiveShoppingCart.Products)
+                        foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
                         {
                             //TODO(johancz): Create and draw a WPF - structure for each product in the shopping cart
                             //shoppingCartPanel.Children.Add(...);
@@ -395,12 +395,12 @@ namespace Butik_User
 
         private static void shoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
         {
-            Data.ActiveShoppingCart.SaveToFile();
+            Store.ShoppingCart.SaveToFile();
         }
 
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
-            Data.ActiveShoppingCart.LoadFromFile();
+            Store.ShoppingCart.LoadFromFile();
         }
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -429,7 +429,7 @@ namespace Butik_User
         private static void _rightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            Data.ActiveShoppingCart.RemoveProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
+            Store.ShoppingCart.RemoveProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
         }
 
         /// <summary>
