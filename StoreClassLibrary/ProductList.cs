@@ -10,6 +10,9 @@ namespace StoreClassLibrary
     public class ProductList
     {
         /// <summary>
+        /// Collection of "KeyValuePair"s where:
+        ///     Key (Product): instance of Product-class
+        ///     Value (int):   itemcount of (Key)"Product"
         /// </summary>
         public Dictionary<Product, int> Products { get; private set; }
         public decimal TotalSum { get; set; } = 0; // TODO(johancz): is decimal necessary?
