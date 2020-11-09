@@ -10,7 +10,7 @@ namespace StoreClassLibrary
 
             public static string TextFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\";
             public static List<Product> Products { get; set; } = LoadProducts("LoadProducts.csv");
-            public static ShoppingCart ActiveShoppingCart { get; set; } = new ShoppingCart();
+            public static ProductList ShoppingCart { get; set; } = new ProductList();
             //public static ShoppingCart shoppingCart = LoadShoppingCart("ShoppingCart.csv");
             public static List<DiscountCode> DiscountCodes { get; set; }
 

@@ -5,12 +5,13 @@ using System.Text;
 
 namespace StoreClassLibrary
 {
-    public class ShoppingCart
+    public class ProductList
     {
         /// <summary>
-        /// Product: instance of Product-class
-        /// int:     amount of Product in ShoppingCart
         /// </summary>
+        ///  Collection of "KeyValuePair"s where:
+        ///  Key (Product): instance of Product-class
+        ///  Value (int):   itemcount of (Key)"Product"
         public Dictionary<Product, int> Products;
         public double TotalSum { get; set; } // TODO(johancz): decimal?
         public DiscountCode ActiveDiscountCode { get; set; }
@@ -47,7 +48,7 @@ namespace StoreClassLibrary
             throw new NotImplementedException();
         }
 
-        public ShoppingCart()
+        public ProductList()
         {
             Products = new Dictionary<Product, int>();
         }
