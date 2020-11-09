@@ -1,9 +1,0 @@
-10/13/2020 11:01:45
-Message: Index was outside the bounds of the array.
-   at ConsoleTemplate.Program.Main() in C:\Users\Anv\source\repos\Template\ConsoleTemplate\Program.cs:line 18
-10/13/2020 11:02:24
-Message: Index was outside the bounds of the array.
-   at ConsoleTemplate.Program.Main() in C:\Users\Anv\source\repos\Template\ConsoleTemplate\Program.cs:line 18
-10/13/2020 11:02:24
-Message: Attempted to divide by zero.
-   at ConsoleTemplate.Program.Main() in C:\Users\Anv\source\repos\Template\ConsoleTemplate\Program.cs:line 27
