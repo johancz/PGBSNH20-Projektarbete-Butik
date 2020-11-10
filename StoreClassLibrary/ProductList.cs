@@ -1,58 +1,161 @@
-﻿using StoreClassLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Linq;
 
 namespace StoreClassLibrary
 {
+    /// <summary>
+    /// Generic list of products which can be used for; shopping carts, shopping lists, wishlists, store-curated lists.
+    /// </summary>
     public class ProductList
     {
+        // Move to a Settings-class in StoreClassLibrary-namespace? Or StoreClassLibrary.Settings-namespace?
+        private static readonly DirectoryInfo _textFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent;
         /// <summary>
+        /// Collection of "KeyValuePair"s where:
+        ///     Key (Product): instance of Product-class
+        ///     Value (int):   itemcount of (Key)"Product"
         /// </summary>
-        ///  Collection of "KeyValuePair"s where:
-        ///  Key (Product): instance of Product-class
-        ///  Value (int):   itemcount of (Key)"Product"
-        public Dictionary<Product, int> Products;
-        public double TotalSum { get; set; } // TODO(johancz): decimal?
-        public DiscountCode ActiveDiscountCode { get; set; }
+        public Dictionary<Product, int> Products { get; private set; } = new Dictionary<Product, int>();
+        // TODO(johancz): Should this be saved to file?
+        public decimal TotalSum { get; private set; } = 0; // TODO(johancz): is decimal necessary?
+        // TODO(johancz): should this live in the Store-class?
+        // TODO(johancz): should this be saved to file?
+        public DiscountCode ActiveDiscountCode { get; private set; }
 
-        public void AddProduct(Product product)
+        public void AddProduct(Product product, int count)
         {
-            throw new NotImplementedException();
+            if (product == null)
+            {
+                // TODO(johancz): this silently handles cases where product is null, should it be handled otherwise?
+                return;
+            }
+
+            Products.TryAdd(product, 0);
+            Products[product] += count;
+            TotalSum += product.Price * count;
         }
 
         public void RemoveProduct(Product product)
         {
-            throw new NotImplementedException();
-        }
-
-        public void AddDiscountCode(DiscountCode discountCode)
-        {
-            if (ActiveDiscountCode == null)
+            if (product == null)
             {
-                ActiveDiscountCode = discountCode;
+                // TODO(johancz): this silently handles cases where product is null, should it be handled otherwise?
+                return;
+            }
+
+            if (Products.ContainsKey(product))
+            {
+                if (Products[product] > 1)
+                {
+                    Products[product]--;
+                }
+                else
+                {
+                    Products.Remove(product);
+                }
+
+                TotalSum -= product.Price;
             }
         }
 
+        // TODO(johancz): should this live in the Store-class?
+        // TODO(johancz): should this be saved to file?
+        public void SetDiscountCode(DiscountCode discountCode)
+        {
+            ActiveDiscountCode = discountCode;
+        }
+
+        // TODO(johancz): should this live in the Store-class?
+        // TODO(johancz): should this be saved to file?
         public void RemoveDiscountCode()
         {
-            throw new NotImplementedException();
+            ActiveDiscountCode = null;
         }
 
-        public void SaveToFile()
+        // TODO(johancz): Here or in Shop-class?
+        /// <summary>
+        /// Save this ProductList to file.
+        /// </summary>
+        /// <param name="fileName">Filename (including file-extension) of file the list should be saved to.</param>
+        /// <returns>bool: true if the file was saved successfully, false if it couldn't be saved.</returns>
+        public bool SaveToFile(string fileName)
         {
-            throw new NotImplementedException();
-        }
-        public void LoadFromFile()
-        {
-            throw new NotImplementedException();
+            if (Products.Count == 0)
+            {
+                return false;
+            }
+
+            string[] fileContents = Products.Select(productItem => productItem.Key + ";" + productItem.Value).ToArray();
+
+            try
+            {
+                // TODO(johancz): Copy files in .csproj instead? This would simplify the path to the ShoppingCart.csv file.
+                // TODO(johancz): Allow for absolute values and work out the proper path + filename in the Store-class?
+                File.WriteAllLines(Path.Combine(_textFolderPath.FullName, fileName), fileContents);
+                return true;
+            }
+            catch (Exception)
+            {
+                // TODO(johancz): exception handling
+                return false;
+            }
         }
 
-        public ProductList()
+        // TODO(johancz): Here or in Shop-class?
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName">Filename (including file-extension) of the list to be loaded.</param>
+        /// <returns></returns>
+        public static ProductList LoadFromFile(string fileName) // TODO()
         {
-            Products = new Dictionary<Product, int>();
-        }
+            string[] fileLines;
 
-        //Add LoadShoppingcart
+            try
+            {
+                // TODO (johancz): Copy files in .csproj instead? This would simplify the path to the ShoppingCart.csv file.
+                fileLines = File.ReadAllLines(Path.Combine(_textFolderPath.FullName, fileName));
+            }
+            catch (Exception)
+            {
+                // TODO(johancz): exception handling
+                throw;
+            }
+
+            var shoppingList = new ProductList();
+            decimal totalSum = 0;
+
+            foreach (string line in fileLines)
+            {
+                // Split the line-string into an items-array and trim each item.
+                string[] items = line.Split(';').Select(item => item.Trim()).ToArray();
+
+                // Silently ignore lines that are do have the required number of items.
+                // ToDO(johancz): items.Length != 3 - if the expires property is used.
+                if (items.Length != 2)
+                {
+                    continue;
+                }
+
+                var product = Store.Products.Find(product => product.Name == items[0]);
+                int count = 0;
+
+                if (product == null || !int.TryParse(items[1], out count))
+                {
+                    // The Product on ShoppingList does not exist in the Store's list of Products ...
+                    // or
+                    // the 2nd column could not be parsed to an Integer.
+                    // Silently ignore this line.
+                    continue;
+                }
+
+                shoppingList.AddProduct(product: product, count: count);
+                totalSum += product.Price * count;
+            }
+
+            return shoppingList;
+        }
     }
 }
