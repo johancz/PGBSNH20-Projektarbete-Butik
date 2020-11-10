@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Butik_User
+namespace StoreClassLibrary
 {
     public static class Helpers
     {
@@ -81,37 +81,37 @@ namespace Butik_User
     }
 
     // TODO(johancz): Move to a test project?
-#if DEBUG
-    [TestClass]
-    public class HelpersTests
-    {
-        [TestMethod]
-        // MethodBeingTested_Input_Output
-        public void CreateNewImage_ValidUriString_Image()
-        {
-            throw new NotImplementedException();
-        }
+//#if DEBUG
+//    [TestClass]
+//    public class HelpersTests
+//    {
+//        [TestMethod]
+//        // MethodBeingTested_Input_Output
+//        public void CreateNewImage_ValidUriString_Image()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        [TestMethod]
-        // MethodBeingTested_Input_Output
-        public void CreateNewImage_InValidUriString_null()
-        {
-            throw new NotImplementedException();
-        }
+//        [TestMethod]
+//        // MethodBeingTested_Input_Output
+//        public void CreateNewImage_InValidUriString_null()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        [TestMethod]
-        // MethodBeingTested_Input_Output
-        public void CreateBitmapImageFromUriString_ValidUriString_BitmapImage()
-        {
-            throw new NotImplementedException();
-        }
+//        [TestMethod]
+//        // MethodBeingTested_Input_Output
+//        public void CreateBitmapImageFromUriString_ValidUriString_BitmapImage()
+//        {
+//            throw new NotImplementedException();
+//        }
 
-        [TestMethod]
-        // MethodBeingTested_Input_Output
-        public void CreateBitmapImageFromUriString_InvalidUriString_null()
-        {
-            throw new NotImplementedException();
-        }
-    }
-#endif
+//        [TestMethod]
+//        // MethodBeingTested_Input_Output
+//        public void CreateBitmapImageFromUriString_InvalidUriString_null()
+//        {
+//            throw new NotImplementedException();
+//        }
+//    }
+//#endif
 }
