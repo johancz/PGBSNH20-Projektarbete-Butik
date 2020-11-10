@@ -73,11 +73,9 @@ namespace Butik_User
     /// </summary>
     public static class UserMode
     {
-        public static Canvas RootElement { get; private set; } // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
+        private static Canvas _root; // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
         private static Grid _rootGrid; // Needed for event-handling
-        private static TabControl _tabControl; // TODO(johancz): convert to local variable
-        private static TabItem _tabItem_BrowseStore; // TODO(johancz): convert to local variable
-        private static TabItem _tabItem_ShoppingCart; // TODO(johancz): convert to local variable
+        
         private static StackPanel _rightColumnContentRoot; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
         private static Image _rightColumn_DetailsImage;
         private static Label _rightColumn_DetailsName;
@@ -85,19 +83,20 @@ namespace Butik_User
         private static Label _rightColumn_DetailsDescription;
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
-        //private static object _productItemLayoutSettings.gridItemWidth = 200;
+        // use the above or the struct below
+        //internal struct RightColumn
+        //{
+        //    internal static StackPanel Root; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
+        //    internal static Image DetailsImage;
+        //    internal static Label DetailsName;
+        //    internal static Label DetailsPrice;
+        //    internal static Label DetailsDescription;
+        //    internal static Button DetailsRemoveFromCartButton;
+        //    internal static Button detailsAddToCartButton;
+        //};
 
-        internal struct _RightColumn
-        {
-            private static Image _rightColumn_DetailsImage;
-            private static Label _rightColumn_DetailsName;
-            private static Label _rightColumn_DetailsPrice;
-            private static Label _rightColumn_DetailsDescription;
-            private static Button _rightColumn_DetailsRemoveFromCartButton;
-            private static Button _rightColumn_detailsAddToCartButton;
-        }
-
-        internal struct _ProductItemLayoutSettings
+        // TODO(johancz): Move to Settings-class?
+        internal struct ProductItem_LayoutSettings
         {
             internal const double gridItemWidth = 200;
             internal const double gridItemHeight = 200;
@@ -107,12 +106,12 @@ namespace Butik_User
 
         public static Canvas Create()
         {
-            // Root Canvas element
-            RootElement = new Canvas();
-            RootElement.SizeChanged += RootElement_SizeChanged;
+            _root = new Canvas();
+            _root.SizeChanged += RootElement_SizeChanged;
 #if DEBUG_SET_BACKGROUND_COLOR
-            RootElement.Background = Brushes.LightBlue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+            _root.Background = Brushes.LightBlue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
+
             // Grid with two columns;
             // the first column (left) for a tabcontrol with "Browse Store" and "ShoppingCart" tabs,
             // the Second column contains details about the selected product.
@@ -127,9 +126,9 @@ namespace Butik_User
             // Left Column
             {
                 // Left Column Content Root: TabControl
-                _tabControl = new TabControl(); // TODO(johancz): convert to local variable
+                var tabControl = new TabControl(); // TODO(johancz): convert to local variable
 #if DEBUG_SET_BACKGROUND_COLOR
-                _tabControl.Background = Brushes.Magenta; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+                tabControl.Background = Brushes.Magenta; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
 
                 // "Browse Store" Tab
@@ -154,8 +153,8 @@ namespace Butik_User
                     tabContent_browseStore.Content = productsPanel;
 
                     // Create the TabItem and add it to the TabControl
-                    _tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore }; // TODO(johancz): convert to local variable
-                    _tabControl.Items.Add(_tabItem_BrowseStore);
+                    var tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore }; // TODO(johancz): convert to local variable
+                    tabControl.Items.Add(tabItem_BrowseStore);
                 }
 
                 // "Shopping Cart" Tab Contents
@@ -222,13 +221,13 @@ namespace Butik_User
                     shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
                     // Create the TabItem and add it to the TabControl
-                    _tabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = shoppingCartRootGrid }; // TODO(johancz): convert to local variable
-                    _tabControl.Items.Add(_tabItem_ShoppingCart);
+                    var tabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = shoppingCartRootGrid }; // TODO(johancz): convert to local variable
+                    tabControl.Items.Add(tabItem_ShoppingCart);
                 }
 
                 // Add the left-column to the "root"-Grid.
-                Grid.SetColumn(_tabControl, 0);
-                _rootGrid.Children.Add(_tabControl);
+                Grid.SetColumn(tabControl, 0);
+                _rootGrid.Children.Add(tabControl);
             }
 
             // TODO(johancz): The contents of the right column probably needs a ScrollViewer, and maybe the Image should scale better (e.g. not take up more than X% of the available height).
@@ -296,18 +295,18 @@ namespace Butik_User
             }
 
             // Add "root" Grid to "root" Canvas
-            RootElement.Children.Add(_rootGrid);
+            _root.Children.Add(_rootGrid);
 
-            return RootElement;
+            return _root;
         }
 
         public static Grid CreateProductItem(Product product)
-
         {
-            int gridItemWidth = 200;
-            int gridItemHeight = 200;
-            int gridItemImageHeight = 175;
-            int gridItemTextHeight = 25;
+            // TODO(johancz): use the ProductItem_LayoutSettings-struct or the following lines
+            //int gridItemWidth = 200;
+            //int gridItemHeight = 200;
+            //int gridItemImageHeight = 175;
+            //int gridItemTextHeight = 25;
 
             var tooltip = new ToolTip
             {
@@ -319,8 +318,8 @@ namespace Butik_User
             {
                 Tag = product,
                 VerticalAlignment = VerticalAlignment.Top,
-                Width = _ProductItemLayoutSettings.gridItemWidth,
-                Height = _ProductItemLayoutSettings.gridItemHeight,
+                Width = ProductItem_LayoutSettings.gridItemWidth,
+                Height = ProductItem_LayoutSettings.gridItemHeight,
                 Margin = new Thickness(5),
                 ToolTip = tooltip
             };
@@ -336,12 +335,12 @@ namespace Butik_User
 #endif
             productGrid.ColumnDefinitions.Add(new ColumnDefinition());
             productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(_ProductItemLayoutSettings.gridItemImageHeight, GridUnitType.Pixel) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(_ProductItemLayoutSettings.gridItemTextHeight, GridUnitType.Pixel) });
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(ProductItem_LayoutSettings.gridItemImageHeight, GridUnitType.Pixel) });
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(ProductItem_LayoutSettings.gridItemTextHeight, GridUnitType.Pixel) });
             productGrid.MouseUp += UserMode.ProductItem_MouseUp;
 
             // Image
-            var productThumbnail = Helpers.CreateNewImage(product.Uri, _ProductItemLayoutSettings.gridItemImageHeight);
+            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
             productThumbnail.Stretch = Stretch.UniformToFill;
             productThumbnail.VerticalAlignment = VerticalAlignment.Top;
             Grid.SetColumnSpan(productThumbnail, 2);
@@ -407,8 +406,8 @@ namespace Butik_User
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
-            _rootGrid.Height = RootElement.ActualHeight;
-            _rootGrid.Width = RootElement.ActualWidth;
+            _rootGrid.Height = _root.ActualHeight;
+            _rootGrid.Width = _root.ActualWidth;
         }
 
         /// <summary>
