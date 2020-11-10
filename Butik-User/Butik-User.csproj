@@ -8,46 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="banana.jpg" />
-    <None Remove="broccoli.jpg" />
-    <None Remove="Images\banana.jpg" />
-    <None Remove="Images\broccoli.jpg" />
-    <None Remove="Images\Fight Club Brad Pitt Notebook.png" />
-    <None Remove="Images\Fight Club Pin.png" />
-    <None Remove="Images\Fight Club Poster.png" />
-    <None Remove="Images\orange.jpg" />
-    <None Remove="Images\Tyler Sticker.png" />
-    <None Remove="orange.jpg" />
+    <Compile Remove="Images\**" />
+    <EmbeddedResource Remove="Images\**" />
+    <None Remove="Images\**" />
+    <Page Remove="Images\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Note(johancz): Lämna kvar-->
-    <!--<Content Include="..\StoreData\Images\**\*.*"> --><!-- '..\' and '*.*' are equired to include images from outside of the project dir. --><!--
-      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link> --><!-- Required to include images from outside of the project dir. --><!--
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>-->
-
-    <Content Include="Images\banana.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\broccoli.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Fight Club Brad Pitt Notebook.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Fight Club Pin.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Fight Club Poster.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\orange.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Tyler Sticker.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <None Remove="banana.jpg" />
+    <None Remove="broccoli.jpg" />
+    <None Remove="orange.jpg" />
   </ItemGroup>
   
   <ItemGroup>
