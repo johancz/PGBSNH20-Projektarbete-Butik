@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Controls;
 using Butik_User;
 
@@ -18,6 +19,8 @@ namespace Butik_Admin
 
         private void Start()
         {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
             // Window options
             Title = ".... Store (admin mode)";
             Width = 800;
