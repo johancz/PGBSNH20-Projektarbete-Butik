@@ -11,6 +11,7 @@ using StoreClassLibrary;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -69,11 +70,13 @@ namespace Butik_User
 
     public static class Helpers
     {
+        public static string ImageFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\Images\\";
+
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try
             {
-                var uri = new Uri(@"Images\" + uriString, UriKind.Relative);
+                var uri = new Uri(ImageFolderPath + uriString, UriKind.Absolute);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;
