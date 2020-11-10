@@ -301,13 +301,6 @@ namespace Butik_User
             return RootElement;
         }
 
-        private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
-            _rootGrid.Height = RootElement.ActualHeight;
-            _rootGrid.Width = RootElement.ActualWidth;
-        }
-
         public static Grid CreateProductItem(Product product)
 
         {
@@ -348,7 +341,7 @@ namespace Butik_User
             productGrid.MouseUp += UserMode.ProductItem_MouseUp;
 
             // Image
-            var productThumbnail = Helpers.CreateNewImage(product.ImageUri.ToString(), _ProductItemLayoutSettings.gridItemImageHeight);
+            var productThumbnail = Helpers.CreateNewImage(product.Uri, _ProductItemLayoutSettings.gridItemImageHeight);
             productThumbnail.Stretch = Stretch.UniformToFill;
             productThumbnail.VerticalAlignment = VerticalAlignment.Top;
             Grid.SetColumnSpan(productThumbnail, 2);
