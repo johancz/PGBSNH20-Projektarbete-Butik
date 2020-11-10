@@ -10,7 +10,6 @@ namespace StoreClassLibrary.Tests
         [TestMethod]
         public void DiscountCode_AllParamsAreValidNoExpiry_ValidDiscountCode()
         {
-            //
             var discountCode = new DiscountCode("a", 0.0001, null);
             Assert.AreEqual("a", discountCode.Code);
             Assert.AreEqual(0.0001, discountCode.Percentage);
