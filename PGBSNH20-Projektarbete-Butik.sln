@@ -23,6 +23,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreTestProject", "StoreTe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreClassLibraryTests", "StoreClassLibraryTests\StoreClassLibraryTests.csproj", "{6C04713E-C0DF-4F82-9DB0-1D5B25213744}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreData", "StoreData", "{FBAE58BB-F549-4EFA-A8C8-CA7BB9F3A5DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ADBFEBF7-C218-4163-A970-58D9DBA7B8A0}"
+	ProjectSection(SolutionItems) = preProject
+		Images\banana.jpg = Images\banana.jpg
+		Images\broccoli.jpg = Images\broccoli.jpg
+		Images\Fight Club Brad Pitt Notebook.png = Images\Fight Club Brad Pitt Notebook.png
+		Images\Fight Club Pin.png = Images\Fight Club Pin.png
+		Images\Fight Club Poster.png = Images\Fight Club Poster.png
+		Images\orange.jpg = Images\orange.jpg
+		Images\Tyler Sticker.png = Images\Tyler Sticker.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +65,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ADBFEBF7-C218-4163-A970-58D9DBA7B8A0} = {FBAE58BB-F549-4EFA-A8C8-CA7BB9F3A5DA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB669ECE-79DC-4CB0-A184-F9D76443B53A}
