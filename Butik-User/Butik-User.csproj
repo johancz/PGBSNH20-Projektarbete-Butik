@@ -39,6 +39,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Fight Club Poster.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\orange.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
