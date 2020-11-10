@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Butik-User", "Butik-User\Butik-User.csproj", "{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreUser", "StoreUser\StoreUser.csproj", "{3BCF0AB7-35B8-4A61-858F-4ABE2AA8057B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Butik-Admin", "Butik-Admin\Butik-Admin.csproj", "{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdmin", "StoreAdmin\StoreAdmin.csproj", "{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TextFiles", "TextFiles", "{410D7501-789E-4108-B87D-4BB01A0BABBF}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,11 +17,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TextFiles", "TextFiles", "{
 		TestProducts_Clean_5instances.csv = TestProducts_Clean_5instances.csv
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreClassLibrary", "StoreClassLibrary\StoreClassLibrary.csproj", "{06153904-16CE-4C01-B045-798813339A15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCommon", "StoreCommon\StoreCommon.csproj", "{06153904-16CE-4C01-B045-798813339A15}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreTestProject", "StoreTestProject\StoreTestProject.csproj", "{88EC3BD3-0645-4208-A7F5-368250268ADE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreClassLibraryTests", "StoreClassLibraryTests\StoreClassLibraryTests.csproj", "{6C04713E-C0DF-4F82-9DB0-1D5B25213744}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCommonTests", "StoreCommonTests\StoreCommonTests.csproj", "{6C04713E-C0DF-4F82-9DB0-1D5B25213744}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreData", "StoreData", "{FBAE58BB-F549-4EFA-A8C8-CA7BB9F3A5DA}"
 EndProject
@@ -35,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ADBFEB
 		Images\orange.jpg = Images\orange.jpg
 		Images\Tyler Sticker.png = Images\Tyler Sticker.png
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreAdminTests", "StoreAdminTests\StoreAdminTests.csproj", "{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoreUserTests", "StoreUserTests\StoreUserTests.csproj", "{5A376C90-5E49-4735-9674-56639EA764D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,14 +56,18 @@ Global
 		{06153904-16CE-4C01-B045-798813339A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06153904-16CE-4C01-B045-798813339A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06153904-16CE-4C01-B045-798813339A15}.Release|Any CPU.Build.0 = Release|Any CPU
-		{88EC3BD3-0645-4208-A7F5-368250268ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88EC3BD3-0645-4208-A7F5-368250268ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{88EC3BD3-0645-4208-A7F5-368250268ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88EC3BD3-0645-4208-A7F5-368250268ADE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6C04713E-C0DF-4F82-9DB0-1D5B25213744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6C04713E-C0DF-4F82-9DB0-1D5B25213744}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C04713E-C0DF-4F82-9DB0-1D5B25213744}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C04713E-C0DF-4F82-9DB0-1D5B25213744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A376C90-5E49-4735-9674-56639EA764D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A376C90-5E49-4735-9674-56639EA764D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A376C90-5E49-4735-9674-56639EA764D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A376C90-5E49-4735-9674-56639EA764D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
