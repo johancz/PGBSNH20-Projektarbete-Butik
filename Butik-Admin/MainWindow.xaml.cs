@@ -32,7 +32,7 @@ namespace Butik_Admin
             RootCanvas = new Canvas();
             MainTabControl = new TabControl();
 
-            var userMode = UserMode.Create();
+            var userMode = UserView.Create();
 
             var userModeTabControl = new TabControl();
             // "User Mode" TabItem.Content

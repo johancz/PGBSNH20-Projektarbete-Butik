@@ -33,7 +33,7 @@ namespace Butik_User
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
             // Load all data; products, saved shopping carts, discount codes.
-            Store.Init(); // Move into UserMode?
+            Store.Init(); // Move into UserView?
 
             // Window options
             Title = ".... Store (user mode)"; // TODO(johancz): Change before RELEASE
@@ -43,7 +43,7 @@ namespace Butik_User
             MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            Content = UserMode.Create();
+            Content = UserView.Create();
 
             //SizeChanged += MainWindow_OnSizeChanged;
             KeyUp += MainWindow_KeyUp;
@@ -71,7 +71,7 @@ namespace Butik_User
     /// <summary>
     /// Mockup0
     /// </summary>
-    public static class UserMode
+    public static class UserView
     {
         private static Canvas _root; // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
         private static Grid _rootGrid; // Needed for event-handling
@@ -141,7 +141,7 @@ namespace Butik_User
 
                     foreach (Product product in Store.Products)
                     {
-                        var productItem = UserMode.CreateProductItem(product);
+                        var productItem = UserView.CreateProductItem(product);
 
                         if (productItem != null)
                         {
@@ -337,7 +337,7 @@ namespace Butik_User
             productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(ProductItem_LayoutSettings.gridItemImageHeight, GridUnitType.Pixel) });
             productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(ProductItem_LayoutSettings.gridItemTextHeight, GridUnitType.Pixel) });
-            productGrid.MouseUp += UserMode.ProductItem_MouseUp;
+            productGrid.MouseUp += UserView.ProductItem_MouseUp;
 
             // Image
             var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
