@@ -1,8 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Butik_User;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using StoreClassLibrary;
 
 namespace Butik_User.Tests
 {
