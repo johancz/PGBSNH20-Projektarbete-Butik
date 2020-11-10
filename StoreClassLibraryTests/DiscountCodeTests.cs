@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using StoreClassLibrary;
 
-namespace Butik_User.Tests
+namespace StoreClassLibrary.Tests
 {
     [TestClass]
     public class DiscountCodeTests
@@ -11,6 +10,7 @@ namespace Butik_User.Tests
         [TestMethod]
         public void DiscountCode_AllParamsAreValidNoExpiry_ValidDiscountCode()
         {
+            //
             var discountCode = new DiscountCode("a", 0.0001, null);
             Assert.AreEqual("a", discountCode.Code);
             Assert.AreEqual(0.0001, discountCode.Percentage);

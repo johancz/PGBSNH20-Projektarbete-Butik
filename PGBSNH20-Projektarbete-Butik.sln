@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreClassLibrary", "StoreC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreTestProject", "StoreTestProject\StoreTestProject.csproj", "{88EC3BD3-0645-4208-A7F5-368250268ADE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Butik-UserTests", "Butik-UserTests\Butik-UserTests.csproj", "{6C04713E-C0DF-4F82-9DB0-1D5B25213744}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreClassLibraryTests", "StoreClassLibraryTests\StoreClassLibraryTests.csproj", "{6C04713E-C0DF-4F82-9DB0-1D5B25213744}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
