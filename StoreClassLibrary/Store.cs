@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace StoreClassLibrary
 {
         public static class Store
         {
-
             public static string TextFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\";
             public static List<Product> Products { get; set; } = LoadProducts("LoadProducts.csv");
             public static ProductList ShoppingCart { get; set; } = new ProductList();
@@ -43,15 +41,24 @@ namespace StoreClassLibrary
                 LoadDiscountCodes();
             }
 
-            private static void LoadShoppingCart()
+            // TODO(johancz): not required if the method lives in the ProductList-class.
+            public static void LoadShoppingCart()
             {
-                
+            // TODO(johancz): error checking? the ShoppingCart might already contain items.
+            //ShoppingCart.AddRange(ProductList.LoadFromFile("ShoppingCart.csv")); // possible solution to the above, if they should be merged.
+            //MessageBox.Show("You already have items in your shopping cart, do you want to merge shopping cart you're trying to merge?", "Merge Shopping Carts?", MessageBoxButton.YesNoCancel);
+                ShoppingCart = ProductList.LoadFromFile("ShoppingCart.csv"); // TODO(johancz): Should the ShoppingCart be loaded by default? We would need a new shopping cart button which creates a new shoppingcart and overwrites the file with a blank file.
+            }
+
+        // TODO(johancz): not required if the method lives in the ProductList-class.
+        public static void SaveShoppingCart()
+            {
+                ShoppingCart.SaveToFile("ShoppingCart.csv");
             }
 
             private static void LoadDiscountCodes()
             {
-                //DiscountCodes = ...
+                // TODO(johancz): DiscountCodes = ...
             }
     }
-    
 }

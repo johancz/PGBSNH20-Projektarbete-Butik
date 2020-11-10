@@ -31,7 +31,6 @@ namespace Butik_User
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-
             // Load all data; products, saved shopping carts, discount codes.
             Store.Init(); // Move into UserMode?
 
@@ -67,8 +66,6 @@ namespace Butik_User
             }
         }
     }
-
-   
 
     public static class Helpers
     {
@@ -395,12 +392,12 @@ namespace Butik_User
 
         private static void shoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
         {
-            Store.ShoppingCart.SaveToFile();
+            Store.SaveShoppingCart();
         }
 
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
-            Store.ShoppingCart.LoadFromFile();
+            Store.LoadShoppingCart();
         }
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -440,7 +437,7 @@ namespace Butik_User
         private static void _rightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
+            Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag, 1); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
         }
     }
 }
