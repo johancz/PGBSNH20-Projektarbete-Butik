@@ -21,6 +21,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Note(johancz): Lämna kvar-->
+    <!--<Content Include="..\StoreData\Images\**\*.*"> --><!-- '..\' and '*.*' are equired to include images from outside of the project dir. --><!--
+      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link> --><!-- Required to include images from outside of the project dir. --><!--
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>-->
+
     <Content Include="Images\banana.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -28,8 +34,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Fight Club Brad Pitt Notebook.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</Content>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Fight Club Pin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -42,10 +48,6 @@
     <Content Include="Images\Tyler Sticker.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
   </ItemGroup>
   
   <ItemGroup>
