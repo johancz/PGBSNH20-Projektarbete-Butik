@@ -6,7 +6,7 @@ namespace StoreCommon
 {
     public static class Store
     {
-        public static string TextFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\";
+        public static string CSVsFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\StoreData\\.CSVs\\";
         public static List<Product> Products { get; set; } = LoadProducts("LoadProducts.csv");
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<DiscountCode> DiscountCodes { get; set; }
@@ -14,7 +14,7 @@ namespace StoreCommon
         public static List<Product> LoadProducts(string fileName)
         {
             var products = new List<Product>();
-            string input = File.ReadAllText(TextFolderPath + fileName);
+            string input = File.ReadAllText(CSVsFolderPath + fileName);
 
             var infoArray = input.Trim().Split('#');
 

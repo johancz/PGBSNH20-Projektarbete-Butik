@@ -9,10 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdmin", "StoreAdmin\St
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSVs", "CSVs", "{410D7501-789E-4108-B87D-4BB01A0BABBF}"
 	ProjectSection(SolutionItems) = preProject
-		DiscountCodes.csv = DiscountCodes.csv
-		LoadProducts.csv = LoadProducts.csv
+		StoreData\.CSVs\DiscountCodes.csv = StoreData\.CSVs\DiscountCodes.csv
+		StoreData\.CSVs\LoadProducts.csv = StoreData\.CSVs\LoadProducts.csv
 		ShoppingCart.csv = ShoppingCart.csv
-		TestProducts_Clean_5instances.csv = TestProducts_Clean_5instances.csv
+		StoreData\.CSVs\TestProducts_Clean_5instances.csv = StoreData\.CSVs\TestProducts_Clean_5instances.csv
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCommon", "StoreCommon\StoreCommon.csproj", "{06153904-16CE-4C01-B045-798813339A15}"
@@ -23,13 +23,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreData", "StoreData", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ADBFEBF7-C218-4163-A970-58D9DBA7B8A0}"
 	ProjectSection(SolutionItems) = preProject
-		Images\banana.jpg = Images\banana.jpg
-		Images\broccoli.jpg = Images\broccoli.jpg
-		Images\Fight Club Brad Pitt Notebook.png = Images\Fight Club Brad Pitt Notebook.png
-		Images\Fight Club Pin.png = Images\Fight Club Pin.png
-		Images\Fight Club Poster.png = Images\Fight Club Poster.png
-		Images\orange.jpg = Images\orange.jpg
-		Images\Tyler Sticker.png = Images\Tyler Sticker.png
+		StoreData\Images\banana.jpg = StoreData\Images\banana.jpg
+		StoreData\Images\broccoli.jpg = StoreData\Images\broccoli.jpg
+		StoreData\Images\Fight Club Brad Pitt Notebook.png = StoreData\Images\Fight Club Brad Pitt Notebook.png
+		StoreData\Images\Fight Club Pin.png = StoreData\Images\Fight Club Pin.png
+		StoreData\Images\Fight Club Poster.png = StoreData\Images\Fight Club Poster.png
+		StoreData\Images\orange.jpg = StoreData\Images\orange.jpg
+		StoreData\Images\Tyler Sticker.png = StoreData\Images\Tyler Sticker.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdminTests", "StoreAdminTests\StoreAdminTests.csproj", "{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}"
