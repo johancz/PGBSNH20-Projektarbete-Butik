@@ -6,7 +6,6 @@ namespace StoreCommon
     {
         public string Code { get; set; }
         public double Percentage { get; set; }
-        public DateTime? Expires { get; set; }
 
         /// <summary>
         /// A DiscountCode which can be added to the store's active ShoppingCart.
@@ -21,10 +20,7 @@ namespace StoreCommon
         /// The percentage of the TotalSum of an ShoppingCart that will be deducted from the TotalSum.
         /// Must be > 0.0 and <= 100.0.
         /// </param>
-        /// <param  name="expires">
-        /// The DateTime when the DiscountCode expires.
-        /// </param>
-        public DiscountCode(string code, double percentage, DateTime? expires = null)
+        public DiscountCode(string code, double percentage)
         {
             var now = DateTime.Now;
             if (code == null)
@@ -39,14 +35,9 @@ namespace StoreCommon
             {
                 throw new ArgumentException("The percentage is under 0.0 or above 1.0.", nameof(percentage));
             }
-            else if (expires != null && expires <= DateTime.Now)
-            {
-                throw new ArgumentException("The expiry-DateTime has to be greater than DateTime.Now.", nameof(expires));
-            }
 
             Code = code;
             Percentage = percentage;
-            Expires = expires;
         }
     }
 }
