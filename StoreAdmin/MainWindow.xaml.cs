@@ -60,7 +60,7 @@ namespace StoreAdmin
 
             // Create Tabs
             var userModeTab = new TabItem {  Header = "Store (User mode)", Content = userModeTabControl };
-            var adminModeTab = new TabItem {  Header = "Store (Admin mode", Content = adminModeTabControl };
+            var adminModeTab = new TabItem {  Header = "Store (Admin mode)", Content = adminModeTabControl };
             MainTabControl.Items.Add(userModeTab);
             MainTabControl.Items.Add(adminModeTab);
 

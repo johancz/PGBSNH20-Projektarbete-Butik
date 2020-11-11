@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Media;
 
 namespace StoreCommon
 {
     public static class Store
     {
-        public static string CSVsFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\StoreData\\.CSVs\\";
-        public static List<Product> Products { get; set; } = LoadProducts("LoadProducts.csv");
+        public static List<Product> Products { get; set; } = LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv"));
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<DiscountCode> DiscountCodes { get; set; }
 
-        public static List<Product> LoadProducts(string fileName)
+        public static List<Product> LoadProducts(string pathAndFileName)
         {
             var products = new List<Product>();
-            string input = File.ReadAllText(CSVsFolderPath + fileName);
+            string input = File.ReadAllText(pathAndFileName);
 
             var infoArray = input.Trim().Split('#');
 
@@ -45,15 +45,16 @@ namespace StoreCommon
         public static void LoadShoppingCart()
         {
             // TODO(johancz): error checking? the ShoppingCart might already contain items.
-            //ShoppingCart.AddRange(ProductList.LoadFromFile("ShoppingCart.csv")); // possible solution to the above, if they should be merged.
+            //ShoppingCart.AddRange(ProductList.LoadFromFile("ExampleShoppingCart.csv")); // possible solution to the above, if they should be merged.
             //MessageBox.Show("You already have items in your shopping cart, do you want to merge shopping cart you're trying to merge?", "Merge Shopping Carts?", MessageBoxButton.YesNoCancel);
-            ShoppingCart = ProductList.LoadFromFile("ShoppingCart.csv"); // TODO(johancz): Should the ShoppingCart be loaded by default? We would need a new shopping cart button which creates a new shoppingcart and overwrites the file with a blank file.
+            ShoppingCart = ProductList.LoadFromFile(Path.Combine(Helpers.StoreDataCsvPath, "ExampleShoppingCart.csv"));
+            // TODO(johancz): Should the ShoppingCart be loaded by default? We would need a new shopping cart button which creates a new shoppingcart and overwrites the file with a blank file.
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile("ShoppingCart.csv");
+            ShoppingCart.SaveToFile(Path.Combine(Helpers.StoreDataTemporaryOutput, "ShoppingCart.csv"));
         }
 
         private static void LoadDiscountCodes()

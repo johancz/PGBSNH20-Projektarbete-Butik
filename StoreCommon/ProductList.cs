@@ -78,9 +78,9 @@ namespace StoreCommon
         /// <summary>
         /// Save this ProductList to file.
         /// </summary>
-        /// <param name="fileName">Filename (including file-extension) of file the list should be saved to.</param>
+        /// <param name="pathAndFileName">Filename (including file-extension) of file the list should be saved to.</param>
         /// <returns>bool: true if the file was saved successfully, false if it couldn't be saved.</returns>
-        public bool SaveToFile(string fileName)
+        public bool SaveToFile(string pathAndFileName)
         {
             if (Products.Count == 0)
             {
@@ -91,9 +91,9 @@ namespace StoreCommon
 
             try
             {
-                // TODO(johancz): Copy files in .csproj instead? This would simplify the path to the ShoppingCart.csv file.
+                // TODO(johancz): Copy files in .csproj instead? This would simplify the path to the ExampleShoppingCart.csv file.
                 // TODO(johancz): Allow for absolute values and work out the proper path + filename in the Store-class?
-                File.WriteAllLines(Path.Combine(_textFolderPath.FullName, fileName), fileContents);
+                File.WriteAllLines(pathAndFileName, fileContents);
                 return true;
             }
             catch (Exception)
@@ -107,16 +107,16 @@ namespace StoreCommon
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="fileName">Filename (including file-extension) of the list to be loaded.</param>
+        /// <param name="pathAndFileName">Filename (including file-extension) of the list to be loaded.</param>
         /// <returns></returns>
-        public static ProductList LoadFromFile(string fileName) // TODO()
+        public static ProductList LoadFromFile(string pathAndFileName) // TODO()
         {
             string[] fileLines;
 
             try
             {
-                // TODO (johancz): Copy files in .csproj instead? This would simplify the path to the ShoppingCart.csv file.
-                fileLines = File.ReadAllLines(Path.Combine(Store.CSVsFolderPath, fileName));
+                // TODO (johancz): Copy files in .csproj instead? This would simplify the path to the ExampleShoppingCart.csv file.
+                fileLines = File.ReadAllLines(pathAndFileName);
             }
             catch (Exception)
             {

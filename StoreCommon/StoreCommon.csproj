@@ -5,5 +5,15 @@
     <RootNamespace>StoreCommon</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="StoreData\**">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="StoreData\TemporaryOutput\" />
+  </ItemGroup>
   
 </Project>
