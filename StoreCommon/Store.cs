@@ -8,9 +8,9 @@ namespace StoreCommon
 {
     public static class Store
     {
-        public static List<Product> Products { get; set; } = LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv"));
+        public static List<Product> Products { get; set; } = new List<Product>();
         public static ProductList ShoppingCart { get; set; } = new ProductList();
-        public static List<DiscountCode> DiscountCodes { get; set; }
+        public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
 
         public static List<Product> LoadProducts(string pathAndFileName)
         {
@@ -38,8 +38,9 @@ namespace StoreCommon
 
         public static void Init()
         {
-            LoadShoppingCart();
+            Products = LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv"));
             LoadDiscountCodes();
+            LoadShoppingCart();
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
