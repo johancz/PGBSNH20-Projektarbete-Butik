@@ -116,7 +116,7 @@ namespace StoreCommon
             try
             {
                 // TODO (johancz): Copy files in .csproj instead? This would simplify the path to the ShoppingCart.csv file.
-                fileLines = File.ReadAllLines(Path.Combine(_textFolderPath.FullName, fileName));
+                fileLines = File.ReadAllLines(Path.Combine(Store.CSVsFolderPath, fileName));
             }
             catch (Exception)
             {
