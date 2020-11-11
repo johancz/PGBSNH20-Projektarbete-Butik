@@ -80,20 +80,21 @@ namespace StoreCommon
         /// </summary>
         /// <param name="pathAndFileName">Filename (including file-extension) of file the list should be saved to.</param>
         /// <returns>bool: true if the file was saved successfully, false if it couldn't be saved.</returns>
-        public bool SaveToFile(string pathAndFileName)
+        public bool SaveToFile(string path, string fileName)
         {
             if (Products.Count == 0)
             {
+                // TODO(johancz): visa ett meddelande om kunden försöker spara en tom lista? eller det kanske är bättre att disabla/gömma knappen
+                // The ProductList is empty, do nothing.
                 return false;
             }
 
-            string[] fileContents = Products.Select(productItem => productItem.Key + ";" + productItem.Value).ToArray();
+            string[] fileContents = Products.Select(productItem => productItem.Key.Name + ";" + productItem.Value).ToArray();
 
             try
             {
-                // TODO(johancz): Copy files in .csproj instead? This would simplify the path to the ExampleShoppingCart.csv file.
-                // TODO(johancz): Allow for absolute values and work out the proper path + filename in the Store-class?
-                File.WriteAllLines(pathAndFileName, fileContents);
+                Directory.CreateDirectory(path);
+                File.WriteAllLines(Path.Combine(path, fileName), fileContents);
                 return true;
             }
             catch (Exception)

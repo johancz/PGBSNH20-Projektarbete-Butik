@@ -54,7 +54,7 @@ namespace StoreCommon
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(Path.Combine(Helpers.StoreDataTemporaryOutput, "ShoppingCart.csv"));
+            ShoppingCart.SaveToFile(Helpers.StoreDataTemporaryOutput, "ShoppingCart.csv");
         }
 
         private static void LoadDiscountCodes()
