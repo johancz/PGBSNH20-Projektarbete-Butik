@@ -9,7 +9,7 @@ namespace StoreCommon
 {
     public class Helpers
     {
-        public static string ImageFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\Images\\";
+        public static string ImageFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\StoreData\\Images\\";
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try
