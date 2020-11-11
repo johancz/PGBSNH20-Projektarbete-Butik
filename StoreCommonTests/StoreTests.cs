@@ -1,7 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace StoreCommon.Tests
 {
@@ -12,6 +15,7 @@ namespace StoreCommon.Tests
         public void TestInit()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
         }
 
         [TestMethod()]
@@ -139,10 +143,27 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void LoadDiscountCodes_LoadFromExampleFile_Success()
         {
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "csvFiles");
-            //Helpers.StoreDataTemporaryOutputPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "csvFiles");
+            // The contents of the test file (ExampleDiscountCodes.csv):
+            // Gimme-free-stuff;1
+            // Half-Off;0.5
 
+            // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
+            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "StoreTests_LoadDiscountCodes", "csvFiles");
             Store.LoadDiscountCodes();
+
+            var expectedDiscountCodes = new List<DiscountCode>
+            {
+                new DiscountCode(code: "Gimme-free-stuff", percentage: 1),
+                new DiscountCode(code: "Half-Off", percentage: 0.5),
+            };
+
+            var expectedCodes = expectedDiscountCodes.Select(discountCode => discountCode.Code).ToArray();
+            var expectedPercentages = expectedDiscountCodes.Select(discountCode => discountCode.Percentage).ToArray();
+            var actualCodes = Store.DiscountCodes.Select(discountCode => discountCode.Code).ToArray();
+            var actualPercentages = Store.DiscountCodes.Select(discountCode => discountCode.Percentage).ToArray();
+
+            CollectionAssert.AreEqual(expectedCodes, actualCodes);
+            CollectionAssert.AreEqual(expectedPercentages, actualPercentages);
         }
     }
 }

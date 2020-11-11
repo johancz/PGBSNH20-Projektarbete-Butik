@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Globalization;
 using System.IO;
 
 namespace StoreCommon.Tests
@@ -7,6 +8,13 @@ namespace StoreCommon.Tests
     [TestClass()]
     public class ProductTests
     {
+        [TestInitialize]
+        public void TestInit()
+        {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
+        }
+
         [TestMethod()]
         public void StoreDataPathsAndFilesExist()
         {
