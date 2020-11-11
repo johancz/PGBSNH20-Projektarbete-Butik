@@ -135,5 +135,14 @@ namespace StoreCommon.Tests
             bool onlyJpgPng = fileExtensions.TrueForAll(e => e == ".jpg" || e == ".png");
             Assert.IsTrue(onlyJpgPng);
         }
+
+        [TestMethod]
+        public void LoadDiscountCodes_LoadFromExampleFile_Success()
+        {
+            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "csvFiles");
+            //Helpers.StoreDataTemporaryOutputPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "csvFiles");
+
+            Store.LoadDiscountCodes();
+        }
     }
 }

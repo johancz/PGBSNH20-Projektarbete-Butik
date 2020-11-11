@@ -104,13 +104,12 @@ namespace StoreCommon
             }
         }
 
-        // TODO(johancz): Here or in Shop-class?
         /// <summary>
         /// 
         /// </summary>
         /// <param name="pathAndFileName">Filename (including file-extension) of the list to be loaded.</param>
         /// <returns></returns>
-        public static ProductList LoadFromFile(string pathAndFileName) // TODO()
+        public static ProductList LoadFromFile(string pathAndFileName)
         {
             string[] fileLines;
 
@@ -134,7 +133,6 @@ namespace StoreCommon
                 string[] items = line.Split(';').Select(item => item.Trim()).ToArray();
 
                 // Silently ignore lines that are do have the required number of items.
-                // ToDO(johancz): items.Length != 3 - if the expires property is used.
                 if (items.Length != 2)
                 {
                     continue;
