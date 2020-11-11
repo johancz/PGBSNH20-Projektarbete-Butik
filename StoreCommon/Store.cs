@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Media;
 
 namespace StoreCommon
@@ -54,12 +55,60 @@ namespace StoreCommon
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(Helpers.StoreDataTemporaryOutput, "ShoppingCart.csv");
+            ShoppingCart.SaveToFile(Helpers.StoreDataTemporaryOutputPath, "ShoppingCart.csv");
         }
 
-        private static void LoadDiscountCodes()
+        public static void LoadDiscountCodes()
         {
-            // TODO(johancz): DiscountCodes = ...
+            string[] fileLines;
+
+            try
+            {
+                // If the file "DiscountCodes.csv" exists in the "temp"-folder, read from it, otherwise read from "ExampleDiscountCodes.csv".
+                if (File.Exists(Path.Combine(Helpers.StoreDataTemporaryOutputPath, "DiscountCodes.csv")))
+                {
+                    fileLines = File.ReadAllLines(Path.Combine(Helpers.StoreDataTemporaryOutputPath, "DiscountCodes.csv"));
+                }
+                else
+                {
+                    fileLines = File.ReadAllLines(Path.Combine(Helpers.StoreDataCsvPath, "ExampleDiscountCodes.csv"));
+                }
+            }
+            catch (Exception)
+            {
+                // TODO(johancz): exception handling
+                throw;
+            }
+
+            var discountCodes = new List<DiscountCode>();
+
+            foreach (string line in fileLines)
+            {
+                // Split the line-string into an items-array and trim each item.
+                string[] items = line.Split(';').Select(item => item.Trim()).ToArray();
+
+                // Silently ignore lines that are do have the required number of items.
+                if (items.Length != 2)
+                {
+                    continue;
+                }
+
+                string discountCode = items[0].Trim();
+                double discountPercentage;
+
+                if (discountCode == "" || !Double.TryParse(items[1], out discountPercentage))
+                {
+                    // the item in the 1st column (DiscountCode.Code) is an emptry string.
+                    // or
+                    // the item in the 2nd column could not be parsed to a double.
+                    // Silently ignore this line.
+                    continue;
+                }
+
+                discountCodes.Add(new DiscountCode(code: discountCode, percentage: discountPercentage));
+            }
+
+            DiscountCodes = discountCodes;
         }
     }
 }

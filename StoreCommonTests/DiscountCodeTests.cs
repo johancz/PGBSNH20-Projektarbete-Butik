@@ -31,74 +31,48 @@ namespace StoreCommon.Tests
             Assert.IsTrue(File.Exists(Path.Combine(Helpers.StoreDataImagesPath, "Tyler Sticker.png")), "TODO(johancz)");
         }
 
-        // TODO(johancz): unnecessary test? remove?
         [TestMethod]
-        public void DiscountCode_AllParamsAreValidNoExpiry_ValidDiscountCode()
+        public void DiscountCode_AllParamsAreValid_ValidDiscountCode()
         {
-            var discountCode = new DiscountCode("a", 0.0001, null);
+            var discountCode = new DiscountCode("a", 0.0001);
             Assert.AreEqual("a", discountCode.Code);
             Assert.AreEqual(0.0001, discountCode.Percentage);
-            Assert.AreEqual(null, discountCode.Expires);
         }
 
-        // TODO(johancz): unnecessary test? remove?
-        [TestMethod]
-        public void DiscountCode_AllParamsAreValidWithExpiryNotExpired_ValidDiscountCode()
-        {
-            var now = DateTime.Now;
-            var discountCode = new DiscountCode("a", 0.0001, now.AddYears(2));
-            Assert.AreEqual("a", discountCode.Code);
-            Assert.AreEqual(0.0001, discountCode.Percentage);
-            Assert.AreEqual(now.AddYears(2), discountCode.Expires);
-        }
-
-        // TODO(johancz): unnecessary test? remove?
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void DiscountCode_CodeParamIsNull_ArgumentNullException()
         {
-            var discountCode = new DiscountCode(null, 0.0001, null);
+            var discountCode = new DiscountCode(null, 0.0001);
         }
 
-        // TODO(johancz): unnecessary test? remove?
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_CodeParamNotValidEmptyString_ArgumentException()
         {
-            var discountCode = new DiscountCode("", 0.0001, null);
+            var discountCode = new DiscountCode("", 0.0001);
         }
 
-        // TODO(johancz): unnecessary test? remove?
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_CodeParamNotValidTooLong_ArgumentException()
         {
             // 101 character long string
-            var discountCode = new DiscountCode("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM", 0.1, null);
+            var discountCode = new DiscountCode("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM", 0.1);
         }
 
-        // TODO(johancz): unnecessary test? remove?
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_PercentageParamValueTooSmall_ArgumentException()
         {
-            var discountCode = new DiscountCode("a", 0.0, null);
+            var discountCode = new DiscountCode("a", 0.0);
         }
 
-        // TODO(johancz): unnecessary test? remove?
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_PercentageParamValueTooBig_ArgumentException()
         {
-            var discountCode = new DiscountCode("a", 1.0001, null);
-        }
-
-        // TODO(johancz): unnecessary test? remove?
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void DiscountCode_DateTimeParamValueTooSmall_ArgumentException()
-        {
-            var discountCode = new DiscountCode("a", 1.0, DateTime.Now.AddSeconds(-1));
+            var discountCode = new DiscountCode("a", 1.0001);
         }
     }
 }
