@@ -7,9 +7,12 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public class Helpers
+    public static class Helpers
     {
-        public static string ImageFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\StoreData\\Images\\";
+        public static string ImageFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + @"\StoreData\Images\";
+        public static string StoreDataCsvPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
+        public static string StoreDataImagesPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
+
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try

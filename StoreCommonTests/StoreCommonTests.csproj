@@ -14,14 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<ProjectReference Include="..\StoreUser\StoreUser.csproj" />-->
     <ProjectReference Include="..\StoreCommon\StoreCommon.csproj" />
   </ItemGroup>
-
-  <!--<ItemGroup>
-    <Content Label="" Include="..\TestData\**">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>-->
 
 </Project>
