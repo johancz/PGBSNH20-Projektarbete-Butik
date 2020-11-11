@@ -7,36 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreUser", "StoreUser\Stor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdmin", "StoreAdmin\StoreAdmin.csproj", "{71F13D17-71F4-4AB1-B3F8-9FEAA6798C5E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSVs", "CSVs", "{410D7501-789E-4108-B87D-4BB01A0BABBF}"
-	ProjectSection(SolutionItems) = preProject
-		StoreData\.CSVs\DiscountCodes.csv = StoreData\.CSVs\DiscountCodes.csv
-		StoreData\.CSVs\LoadProducts.csv = StoreData\.CSVs\LoadProducts.csv
-		ShoppingCart.csv = ShoppingCart.csv
-		StoreData\.CSVs\TestProducts_Clean_5instances.csv = StoreData\.CSVs\TestProducts_Clean_5instances.csv
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCommon", "StoreCommon\StoreCommon.csproj", "{06153904-16CE-4C01-B045-798813339A15}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreCommonTests", "StoreCommonTests\StoreCommonTests.csproj", "{6C04713E-C0DF-4F82-9DB0-1D5B25213744}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StoreData", "StoreData", "{FBAE58BB-F549-4EFA-A8C8-CA7BB9F3A5DA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{ADBFEBF7-C218-4163-A970-58D9DBA7B8A0}"
-	ProjectSection(SolutionItems) = preProject
-		StoreData\Images\banana.jpg = StoreData\Images\banana.jpg
-		StoreData\Images\broccoli.jpg = StoreData\Images\broccoli.jpg
-		StoreData\Images\Fight Club Brad Pitt Notebook.png = StoreData\Images\Fight Club Brad Pitt Notebook.png
-		StoreData\Images\Fight Club Pin.png = StoreData\Images\Fight Club Pin.png
-		StoreData\Images\Fight Club Poster.png = StoreData\Images\Fight Club Poster.png
-		StoreData\Images\orange.jpg = StoreData\Images\orange.jpg
-		StoreData\Images\Tyler Sticker.png = StoreData\Images\Tyler Sticker.png
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreAdminTests", "StoreAdminTests\StoreAdminTests.csproj", "{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreUserTests", "StoreUserTests\StoreUserTests.csproj", "{5A376C90-5E49-4735-9674-56639EA764D4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestProjects", "TestProjects", "{910E5F7B-8972-4E0B-BC57-6C2DD746C115}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A1B5646A-FD6C-4E0A-9B10-4AF3C6C31912}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,11 +52,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{410D7501-789E-4108-B87D-4BB01A0BABBF} = {FBAE58BB-F549-4EFA-A8C8-CA7BB9F3A5DA}
-		{6C04713E-C0DF-4F82-9DB0-1D5B25213744} = {910E5F7B-8972-4E0B-BC57-6C2DD746C115}
-		{ADBFEBF7-C218-4163-A970-58D9DBA7B8A0} = {FBAE58BB-F549-4EFA-A8C8-CA7BB9F3A5DA}
-		{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84} = {910E5F7B-8972-4E0B-BC57-6C2DD746C115}
-		{5A376C90-5E49-4735-9674-56639EA764D4} = {910E5F7B-8972-4E0B-BC57-6C2DD746C115}
+		{6C04713E-C0DF-4F82-9DB0-1D5B25213744} = {A1B5646A-FD6C-4E0A-9B10-4AF3C6C31912}
+		{68CF3FBE-C1F1-4CF9-9701-E743B4C96C84} = {A1B5646A-FD6C-4E0A-9B10-4AF3C6C31912}
+		{5A376C90-5E49-4735-9674-56639EA764D4} = {A1B5646A-FD6C-4E0A-9B10-4AF3C6C31912}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB669ECE-79DC-4CB0-A184-F9D76443B53A}

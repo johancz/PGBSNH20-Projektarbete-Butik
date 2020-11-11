@@ -6,19 +6,6 @@
     <RootNamespace>StoreUser</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Images\**" />
-    <EmbeddedResource Remove="Images\**" />
-    <None Remove="Images\**" />
-    <Page Remove="Images\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="banana.jpg" />
-    <None Remove="broccoli.jpg" />
-    <None Remove="orange.jpg" />
-  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\StoreCommon\StoreCommon.csproj" />
