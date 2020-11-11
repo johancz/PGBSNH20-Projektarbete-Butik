@@ -5,7 +5,7 @@ using System.IO;
 namespace StoreCommon.Tests
 {
     [TestClass]
-    class IOTests
+    public class IOTests
     {
         [TestInitialize]
         public void TestInit()
@@ -14,7 +14,7 @@ namespace StoreCommon.Tests
             Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void HardcodedPathsAndFilesExist()
         {
             Assert.IsFalse(
