@@ -9,15 +9,16 @@ namespace StoreCommon
 {
     public static class Helpers
     {
-        public static string ImageFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + @"\StoreData\Images\";
         public static string StoreDataCsvPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
         public static string StoreDataImagesPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
+        // TODO(johancz): Temporary output path, this should use the system's temp-folder.
+        public static string StoreDataTemporaryOutput { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "TemporaryOutput");
 
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try
             {
-                var uri = new Uri(ImageFolderPath + uriString, UriKind.Absolute);
+                var uri = new Uri(Path.Combine(StoreDataImagesPath, uriString), UriKind.Absolute);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;

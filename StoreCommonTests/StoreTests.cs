@@ -41,7 +41,7 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
-            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
             var nameListActual = new List<string>();
 
             foreach (var p in products)
@@ -58,7 +58,7 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedHashtags()
         {
-            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -82,7 +82,7 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedWhite()
         {
-            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -103,7 +103,7 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_WantedNewLinesCanExist()
         {
-            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -119,7 +119,7 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_Only_JPG_PNG()
         {
-            var products = Store.LoadProducts("TestProducts_Clean_5instances.csv");
+            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
             var fileExtensions = new List<string>();
             string extension = "";
 

@@ -36,12 +36,7 @@ namespace StoreAdmin.Tests
         [TestMethod()]
         public void MainWindowTest()
         {
-            var cd = Environment.CurrentDirectory;
-            var cd2 = new System.IO.DirectoryInfo(cd);
-            var exists = Directory.Exists(Path.Combine(cd, "StoreData"));
-            var exists2 = Directory.Exists(Path.Combine(cd, "StoreData", "Images"));
-            var exists_data = Helpers.StoreDataCsvPath;
-            var exists_images = Helpers.StoreDataImagesPath;
+            throw new NotImplementedException();
         }
     }
 }
