@@ -1,4 +1,4 @@
-﻿using StoreCommon;
+using StoreCommon;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Input;

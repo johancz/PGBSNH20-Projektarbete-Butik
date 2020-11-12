@@ -1,4 +1,4 @@
-﻿/*
+/*
  TODO:
   * Right Column does not have a ScrollViewer
   * The Image in the right column should scale better, e.g. it should not take up more than X% of the available height.
@@ -9,9 +9,11 @@
 
 using StoreCommon;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -53,6 +55,10 @@ namespace StoreUser
             internal const double gridItemTextHeight = 25;
         }
 
+        /// <summary>
+        /// Create the UserView (which can be used in StoreUser and StoreAdmin
+        /// </summary>
+        /// <returns></returns>
         public static Canvas Create()
         {
             _root = new Canvas(); // TODO(johancz): use a different control if we don't implement animations?
@@ -81,98 +87,16 @@ namespace StoreUser
 #endif
 
                 // "Browse Store" Tab
-                {
-                    var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-#if DEBUG_SET_BACKGROUND_COLOR
-                    tabContent_browseStore.Background = Brushes.LightCyan; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-                    var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
-
-                    foreach (Product product in Store.Products)
-                    {
-                        var productItem = UserView.CreateProductItem(product);
-
-                        if (productItem != null)
-                        {
-                            productsPanel.Children.Add(productItem);
-                        }
-                    }
-
-                    // Add the Products-WrapPanel to the ScrollViewer
-                    tabContent_browseStore.Content = productsPanel;
-
-                    // Create the TabItem and add it to the TabControl
-                    var tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore }; // TODO(johancz): convert to local variable
-                    tabControl.Items.Add(tabItem_BrowseStore);
-                }
+                //{
+                //    tabControl.Items.Add(tabItem_BrowseStore);
+                //}
+                tabControl.Items.Add(BrowseStoreTab(header: "Browse Store"));
 
                 // "Shopping Cart" Tab Contents
-                {
-                    var shoppingCartRootGrid = new Grid { ShowGridLines = true, Height = 50 };
-#if DEBUG_SET_BACKGROUND_COLOR
-                    shoppingCartRootGrid.Background = Brushes.LightGoldenrodYellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-                    var shoppingCartScrollViewer = new ScrollViewer();
-                    shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition());
-                    shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-                    // Shopping cart toolbar (with load and save buttons, total sum label)
-                    {
-                        var shoppingCart_toolbar = new Grid { ShowGridLines = true, Height = 50 };
-#if DEBUG_SET_BACKGROUND_COLOR
-                        shoppingCart_toolbar.Background = Brushes.LightSeaGreen; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
-                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
-
-                        // TotalSum-Label
-                        var shoppingCart_itemCountLabel = new Label { Content = $"{Store.ShoppingCart.TotalSum} kr" };
-                        // Add Label to toolbar
-                        Grid.SetColumn(shoppingCart_itemCountLabel, 0);
-                        shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
-
-                        // Save-button
-                        var shoppingCart_saveButton = new Button { Content = "Save Shopping Cart" };
-                        shoppingCart_saveButton.Click += shoppingCart_saveButton_Click;
-                        // Add Button to toolbar
-                        Grid.SetColumn(shoppingCart_saveButton, 1);
-                        shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
-
-                        // Load-button
-                        var shoppingCart_loadButton = new Button { Content = "Load Shopping Cart" };
-                        shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
-                        // Add Button to toolbar
-                        Grid.SetColumn(shoppingCart_loadButton, 2);
-                        shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
-
-                        // Add the toolbar to the Grid
-                        shoppingCartRootGrid.Children.Add(shoppingCart_toolbar);
-                    }
-
-                    // Shopping cart items (StackPanel)
-                    {
-                        var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
-
-                        foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
-                        {
-                            //TODO(johancz): Create and draw a WPF - structure for each product in the shopping cart
-                            //shoppingCartPanel.Children.Add(...);
-                        }
-
-                        shoppingCartScrollViewer.Content = shoppingCartPanel;
-                    }
-                    // Shopping Cart Save-button
-
-
-                    // Add the shopping cart's ScrollViewer to its "root"-Grid
-                    Grid.SetRow(shoppingCartScrollViewer, 1);
-                    shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
-
-                    // Create the TabItem and add it to the TabControl
-                    var tabItem_ShoppingCart = new TabItem { Header = "Shopping Cart", Content = shoppingCartRootGrid }; // TODO(johancz): convert to local variable
-                    tabControl.Items.Add(tabItem_ShoppingCart);
-                }
+                //{
+                //tabControl.Items.Add(tabItem_ShoppingCart);
+                //}
+                tabControl.Items.Add(ShoppingCartTab(header: "My Shopping Cart"));
 
                 // Add the left-column to the "root"-Grid.
                 Grid.SetColumn(tabControl, 0);
@@ -182,62 +106,7 @@ namespace StoreUser
             // TODO(johancz): The contents of the right column probably needs a ScrollViewer, and maybe the Image should scale better (e.g. not take up more than X% of the available height).
             // Right Column
             {
-                //  Right Column Content Root: StackPanel
-                _rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
-
-                // Create and add a Product.Image to the right column's root (StackPanel)
-                _rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
-
-                // Details Column: name, price, description and shopping cart buttons.
-                {
-                    var rightColumn_detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
-#if DEBUG_SET_BACKGROUND_COLOR
-                    rightColumn_detailsPanel.Background = Brushes.LightSalmon; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-
-                    // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.
-                    {
-                        var rightColumn_detailsPanel_nameAndPrice = new StackPanel { Orientation = Orientation.Horizontal };
-                        _rightColumn_DetailsName = new Label();
-                        _rightColumn_DetailsPrice = new Label();
-
-                        rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
-                        rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsPrice);
-                        rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_nameAndPrice);
-                    }
-
-                    // Create the product description Label
-                    _rightColumn_DetailsDescription = new Label();
-                    rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsDescription);
-
-                    // Create a StackPanel-parent for the "Shopping Cart"-buttons
-                    var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
-                    {
-                        // Create "Remove from Shopping Cart" button with "click"-event listener.
-                        (_rightColumn_DetailsRemoveFromCartButton = new Button
-                        {
-                            FontSize = 14,
-                            Content = "(-) Remove from shopping cart",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += _rightColumn_DetailsRemoveFromCartButton_Click;
-
-                        // Create "Add to Shopping Cart" button with "click"-event listener.
-                        (_rightColumn_detailsAddToCartButton = new Button
-                        {
-                            FontSize = 14,
-                            Content = "(+) Add to shopping cart",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += _rightColumn_DetailsAddToCartButton_Click;
-
-                        // Add buttons to their parent StackPanel and then add the StackPanel to the "details"-StackPanel
-                        rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
-                        rightColumn_detailsPanel.Children.Add(_rightColumn_detailsAddToCartButton);
-                        rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
-                    }
-
-                    _rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
-                }
-
+                _rightColumnContentRoot = RightColumn();
                 // Add the right-column to the "root"-Grid.
                 Grid.SetColumn(_rightColumnContentRoot, 1);
                 _rootGrid.Children.Add(_rightColumnContentRoot);
@@ -248,6 +117,214 @@ namespace StoreUser
 
             return _root;
         }
+
+        ////////////////////////////////////////////////////////
+        //////////////////// Main Controls /////////////////////
+        ////////////////////////////////////////////////////////
+
+
+        /// <summary>
+        /// The "browse store" TabItem
+        /// </summary>
+        /// <returns></returns>
+        private static TabItem BrowseStoreTab(string header)
+        {
+            var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+#if DEBUG_SET_BACKGROUND_COLOR
+            tabContent_browseStore.Background = Brushes.LightCyan; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
+
+            foreach (Product product in Store.Products)
+            {
+                var productItem = UserView.CreateProductItem(product);
+
+                if (productItem != null)
+                {
+                    productsPanel.Children.Add(productItem);
+                }
+            }
+
+            // Add the Products-WrapPanel to the ScrollViewer
+            tabContent_browseStore.Content = productsPanel;
+
+            // Create the TabItem and return it.
+            return new TabItem { Header = header, Content = tabContent_browseStore };
+        }
+
+        /// <summary>
+        /// The Shopping cart TabItem
+        /// </summary>
+        /// <returns></returns>
+        private static TabItem ShoppingCartTab(string header)
+        {
+            var shoppingCartRootGrid = new Grid { ShowGridLines = true};
+#if DEBUG_SET_BACKGROUND_COLOR
+            shoppingCartRootGrid.Background = Brushes.NavajoWhite; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+            var shoppingCartScrollViewer = new ScrollViewer();
+            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            // Shopping cart toolbar (with load and save buttons, total sum label)
+            {
+                var shoppingCart_toolbar = new Grid { ShowGridLines = true, Height = 50 };
+#if DEBUG_SET_BACKGROUND_COLOR
+                shoppingCart_toolbar.Background = Brushes.LightGray; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+
+                // TotalSum-Label
+                var shoppingCart_itemCountLabel = new Label
+                {
+                    Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.\n{Store.ShoppingCart.TotalSum} kr"
+                };
+                // Add Label to toolbar
+                Grid.SetColumn(shoppingCart_itemCountLabel, 0);
+                shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
+
+                // Save-button
+                var shoppingCart_saveButton = new Button { Content = "Save Shopping Cart" };
+                shoppingCart_saveButton.Click += shoppingCart_saveButton_Click;
+                // Add Button to toolbar
+                Grid.SetColumn(shoppingCart_saveButton, 1);
+                shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
+
+                // Load-button
+                var shoppingCart_loadButton = new Button { Content = "Load Shopping Cart" };
+                shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
+                // Add Button to toolbar
+                Grid.SetColumn(shoppingCart_loadButton, 2);
+                shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
+
+                // Add the toolbar to the Grid
+                shoppingCartRootGrid.Children.Add(shoppingCart_toolbar);
+            }
+
+            // Shopping cart items (StackPanel)
+            {
+                var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
+#if DEBUG_SET_BACKGROUND_COLOR
+                shoppingCartPanel.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+
+                var listBox = new ListBox();
+#if DEBUG_SET_BACKGROUND_COLOR
+                listBox.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                //var nameBinding = new Binding("Name");
+                //var priceBinding = new Binding("Price");
+                //nameBinding.Source = Store.ShoppingCart.Products;
+                //var bindingGroup = new BindingGroup();
+                //bindingGroup.Items.Add(nameBinding);
+                //bindingGroup.Items.Add(priceBinding);
+                //var listBoxItemTemplate = new DataTemplate();
+                //var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                //var fef = new FrameworkElementFactory();
+                //var labelName = new Label { };
+                //var labelCount = new Label { Text = new Binding { Path = Store.Sho };
+                //fef.SetValue(stackPanel);
+                //listBoxItemTemplate.VisualTree = fef;
+                //listbox.ItemTemplate = ;
+
+                var sc = Store.ShoppingCart;
+                foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
+                {
+                    //TODO(johancz): Create and draw a WPF - structure for each product in the shopping cart
+                    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                    var labelName = new Label { Content = product.Key.Name };
+                    var labelCount = new Label { Content = product.Value };
+                    var labelTotalPrice = new Label { Content = product.Value * product.Key.Price };
+                    var listBoxItem = new ListBoxItem();
+                    stackPanel.Children.Add(labelName);
+                    stackPanel.Children.Add(labelCount);
+                    stackPanel.Children.Add(labelTotalPrice);
+                    listBoxItem.Content = stackPanel;
+                    listBox.Items.Add(listBoxItem);
+                }
+
+#if DEBUG_SET_BACKGROUND_COLOR
+                shoppingCartScrollViewer.Background = Brushes.Blue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                //shoppingCartScrollViewer.Content = shoppingCartPanel;
+                shoppingCartScrollViewer.Content = listBox;
+            }
+            // Shopping Cart Save-button
+
+            // Add the shopping cart's ScrollViewer to its "root"-Grid
+            Grid.SetRow(shoppingCartScrollViewer, 1);
+            shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
+
+            // Create the TabItem and return it.
+            return new TabItem { Header = header, Content = shoppingCartRootGrid };
+        }
+
+        private static StackPanel RightColumn()
+        {
+            //  Right Column Content Root: StackPanel
+            var rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
+
+            // Create and add a Product.Image to the right column's root (StackPanel)
+            rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
+
+            // Details Column: name, price, description and shopping cart buttons.
+            {
+                var rightColumn_detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
+#if DEBUG_SET_BACKGROUND_COLOR
+                rightColumn_detailsPanel.Background = Brushes.LightSalmon; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+
+                // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.
+                {
+                    var rightColumn_detailsPanel_nameAndPrice = new StackPanel { Orientation = Orientation.Horizontal };
+                    _rightColumn_DetailsName = new Label();
+                    _rightColumn_DetailsPrice = new Label();
+
+                    rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
+                    rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsPrice);
+                    rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_nameAndPrice);
+                }
+
+                // Create the product description Label
+                _rightColumn_DetailsDescription = new Label();
+                rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsDescription);
+
+                // Create a StackPanel-parent for the "Shopping Cart"-buttons
+                var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
+                {
+                    // Create "Remove from Shopping Cart" button with "click"-event listener.
+                    (_rightColumn_DetailsRemoveFromCartButton = new Button
+                    {
+                        FontSize = 14,
+                        Content = "(-) Remove from shopping cart",
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                    }).Click += _rightColumn_DetailsRemoveFromCartButton_Click;
+
+                    // Create "Add to Shopping Cart" button with "click"-event listener.
+                    (_rightColumn_detailsAddToCartButton = new Button
+                    {
+                        FontSize = 14,
+                        Content = "(+) Add to shopping cart",
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                    }).Click += _rightColumn_DetailsAddToCartButton_Click;
+
+                    // Add buttons to their parent StackPanel and then add the StackPanel to the "details"-StackPanel
+                    rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
+                    rightColumn_detailsPanel.Children.Add(_rightColumn_detailsAddToCartButton);
+                    rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
+                }
+
+                rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
+            }
+
+            return rightColumnContentRoot;
+        }
+
+        ////////////////////////////////////////////////////////
+        //////////////////// Helper Methods ////////////////////
+        ////////////////////////////////////////////////////////
 
         public static Grid CreateProductItem(Product product)
         {

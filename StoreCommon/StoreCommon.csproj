@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Content Include="StoreData\**">
+      <BuildAction>Content</BuildAction>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
