@@ -1,13 +1,19 @@
-﻿using System.Globalization;
+﻿#define DEBUG_SET_BACKGROUND_COLOR
+
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using StoreCommon;
 using StoreUser;
 
 namespace StoreAdmin
 {
     public partial class MainWindow : Window
     {
-        private Canvas RootCanvas;
+        private TabControl _adminView;
+        private Canvas _userView;
 
         public TabControl MainTabControl;
 
@@ -23,52 +29,73 @@ namespace StoreAdmin
 
             // Window options
             Title = ".... Store (admin mode)";
-            Width = 800;
-            Height = 600;
+            Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
+            Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             MinWidth = 400;
             MinHeight = 300;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            SizeChanged += MainWindow_SizeChanged;
+            KeyUp += MainWindow_KeyUp;
 
-            RootCanvas = new Canvas();
+            Canvas rootCanvas = new Canvas(); // TODO(johancz): can be removed if we don't implement animations? use MainTabControl instead?
             MainTabControl = new TabControl();
 
-            var userMode = UserView.Create();
+            // Load all data; products, saved shopping carts, discount codes.
+            Store.Init();
 
-            var userModeTabControl = new TabControl();
-            // "User Mode" TabItem.Content
-            {
-                // TODO(johancz) add reference to Butik-User project create the content for the userModeTab with that?
+            // Get the "UserView" from StoreUser, essentially the root-control of the StoreUser-program.
+            _userView = UserView.Create();
 
-                // Create "User Mode" Tabs
-                var userModeTab_BrowseStore = new TabItem { Header = "Browse Store" };
-                var userModeTab_ShoppingCart = new TabItem { Header = "Shopping Cart" };
-                userModeTabControl.Items.Add(userModeTab_BrowseStore);
-                userModeTabControl.Items.Add(userModeTab_ShoppingCart);
-            }
-
-            var adminModeTabControl = new TabControl();
-            // "User Mode" TabItem.Content
+            _adminView = new TabControl();
             {
                 // TODO(johancz): create Content for the tabs
 
                 // Create "Admin Mode" Tabs
                 var adminModeTab_manageProducts = new TabItem { Header = "Manage Products" };
                 var adminModeTab_manageDiscountCodes = new TabItem { Header = "Manage Discount Codes" };
-                adminModeTabControl.Items.Add(adminModeTab_manageProducts);
-                adminModeTabControl.Items.Add(adminModeTab_manageDiscountCodes);
+                _adminView.Items.Add(adminModeTab_manageProducts);
+                _adminView.Items.Add(adminModeTab_manageDiscountCodes);
             }
 
+#if DEBUG_SET_BACKGROUND_COLOR
+            MainTabControl.Background = Brushes.LightBlue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+
+#if DEBUG_SET_BACKGROUND_COLOR
+            _userView.Background = Brushes.Salmon; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+
             // Create Tabs
-            var userModeTab = new TabItem {  Header = "Store (User mode)", Content = userModeTabControl };
-            var adminModeTab = new TabItem {  Header = "Store (Admin mode)", Content = adminModeTabControl };
-            MainTabControl.Items.Add(userModeTab);
-            MainTabControl.Items.Add(adminModeTab);
+            var userViewTab = new TabItem {  Header = "Store (User mode)", Content = _userView };
+            var adminViewTab = new TabItem { Header = "Store (Admin mode)", Content = _adminView };
+            MainTabControl.Items.Add(userViewTab);
+            MainTabControl.Items.Add(adminViewTab);
+            MainTabControl.SelectedIndex = 1;
 
             // Add the main TabControl to the Canvas
-            RootCanvas.Children.Add(MainTabControl);
+            rootCanvas.Children.Add(MainTabControl);
 
-            // Set RootCanvas as the Content of the MainWindow
-            Content = RootCanvas;
+            // Set rootCanvas as the Content of the MainWindow
+            Content = rootCanvas;
+        }
+
+        ////////////////////////////////////////////////////////
+        //////////////////// Event Handling ////////////////////
+        ////////////////////////////////////////////////////////
+
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            // Close Window with ESC-key.
+            if (e.Key == Key.Escape)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ((Grid)_userView.Children[0]).Height = _userView.Height = ActualHeight;
+            ((Grid)_userView.Children[0]).Width = _userView.Width = ActualWidth;
         }
     }
 }

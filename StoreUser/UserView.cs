@@ -55,7 +55,7 @@ namespace StoreUser
 
         public static Canvas Create()
         {
-            _root = new Canvas();
+            _root = new Canvas(); // TODO(johancz): use a different control if we don't implement animations?
             _root.SizeChanged += RootElement_SizeChanged;
 #if DEBUG_SET_BACKGROUND_COLOR
             _root.Background = Brushes.LightBlue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
