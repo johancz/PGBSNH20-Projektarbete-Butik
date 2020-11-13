@@ -149,7 +149,10 @@ namespace StoreUser
             tabContent_browseStore.Content = productsPanel;
 
             // Create the TabItem and return it.
-            return new TabItem { Header = header, Content = tabContent_browseStore };
+            return new TabItem {
+                Header = new Label { Content = header, FontSize = 16 },
+                Content = tabContent_browseStore
+            };
         }
 
         /// <summary>
@@ -258,7 +261,10 @@ namespace StoreUser
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
             // Create the TabItem and return it.
-            return new TabItem { Header = header, Content = shoppingCartRootGrid };
+            return new TabItem {
+                Header = new Label { Content = header, FontSize = 16 },
+                Content = shoppingCartRootGrid
+            };
         }
 
         private static StackPanel RightColumn()

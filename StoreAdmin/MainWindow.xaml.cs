@@ -66,8 +66,16 @@ namespace StoreAdmin
 #endif
 
             // Create Tabs
-            var userViewTab = new TabItem {  Header = "Store (User mode)", Content = _userView };
-            var adminViewTab = new TabItem { Header = "Store (Admin mode)", Content = _adminView };
+            var userViewTab = new TabItem
+            {
+                Header = new Label { Content = "Store (User mode)", FontSize = 16 },
+                Content = _userView
+            };
+            var adminViewTab = new TabItem
+            {
+                Header = new Label { Content = "Store(Admin mode)", FontSize = 16 },
+                Content = _adminView
+            };
             MainTabControl.Items.Add(userViewTab);
             MainTabControl.Items.Add(adminViewTab);
             MainTabControl.SelectedIndex = 1;
