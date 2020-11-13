@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Media;
 
 namespace StoreCommon
 {
@@ -35,7 +34,29 @@ namespace StoreCommon
             }
             Products = products;
         }
+        public static void LoadProducts(string pathAndFileName, out List<Product> products)
+        {
+            products = new List<Product>();
+            string input = File.ReadAllText(pathAndFileName);
 
+            var infoArray = input.Trim().Split('#');
+
+            for (int i = 0; i < infoArray.Length; i++)
+            {
+                if (infoArray[i] == "") { break; }
+                var name = infoArray[i].Trim();
+                i++;
+                var uri = infoArray[i].Trim();
+                i++;
+                var price = decimal.Parse(infoArray[i].Trim());
+                i++;
+                var description = infoArray[i].Trim();
+
+                var newProduct = new Product(name, uri, price, description);
+                products.Add(newProduct);
+            }
+            
+        }
         public static void Init()
         {
             LoadProducts(WinTemp.ProductCSV);
@@ -64,8 +85,8 @@ namespace StoreCommon
             string[] fileLines;
 
             try
-            {            
-               fileLines = File.ReadAllLines(path);              
+            {
+                fileLines = File.ReadAllLines(path);
             }
             catch (Exception)
             {

@@ -1,6 +1,4 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -27,11 +25,12 @@ namespace StoreCommon.Tests
             string combine = Path.Combine(folderPath, imageName);
             string path = Path.Combine(WinTemp.Images, "broccoli.jpg");
         }
-        
+
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
-            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
+            var products = new List<Product>();
+            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
             var nameListActual = new List<string>();
 
             foreach (var p in products)
@@ -48,7 +47,8 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedHashtags()
         {
-            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
+            var products = new List<Product>();
+            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -72,7 +72,8 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedWhite()
         {
-            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
+            var products = new List<Product>();
+            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -93,7 +94,8 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_WantedNewLinesCanExist()
         {
-            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
+            var products = new List<Product>();
+            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
             var charList = new List<char>();
 
             foreach (var p in products)
@@ -101,7 +103,7 @@ namespace StoreCommon.Tests
                 foreach (var c in p.Description)
                 {
                     charList.Add(c);
-                }              
+                }
             }
             bool targetExists = charList.Exists(c => c == '\n');
             Assert.IsTrue(targetExists);
@@ -109,7 +111,8 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_Only_JPG_PNG()
         {
-            var products = Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"));
+            var products = new List<Product>();
+            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
             var fileExtensions = new List<string>();
             string extension = "";
 
