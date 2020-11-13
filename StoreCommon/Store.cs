@@ -12,7 +12,7 @@ namespace StoreCommon
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
 
-        public static List<Product> LoadProducts(string pathAndFileName)
+        public static void LoadProducts(string pathAndFileName)
         {
             var products = new List<Product>();
             string input = File.ReadAllText(pathAndFileName);
@@ -33,12 +33,12 @@ namespace StoreCommon
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);
             }
-            return products;
+            Products = products;
         }
 
         public static void Init()
         {
-            Products = LoadProducts(WinTemp.ProductCSV);
+            LoadProducts(WinTemp.ProductCSV);
             LoadDiscountCodes(WinTemp.DiscountCSV);
             LoadShoppingCart(WinTemp.ShoppingCartCSV);
         }
