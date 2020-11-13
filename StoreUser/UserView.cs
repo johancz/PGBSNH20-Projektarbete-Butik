@@ -8,12 +8,16 @@
 #define DEBUG_SET_BACKGROUND_COLOR
 
 using StoreCommon;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -26,6 +30,7 @@ namespace StoreUser
     {
         private static Canvas _root; // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
         private static Grid _rootGrid; // Needed for event-handling
+        private static TabControl _tabControl;
 
         private static StackPanel _rightColumnContentRoot; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
         private static Image _rightColumn_DetailsImage;
@@ -45,6 +50,9 @@ namespace StoreUser
         //    internal static Button DetailsRemoveFromCartButton;
         //    internal static Button detailsAddToCartButton;
         //};
+        private static TabItem _shoppingCartTab;
+
+        private static ListView _shoppingList_listView;
 
         // TODO(johancz): Move to Settings-class?
         internal struct ProductItem_LayoutSettings
@@ -81,26 +89,27 @@ namespace StoreUser
             // Left Column
             {
                 // Left Column Content Root: TabControl
-                var tabControl = new TabControl(); // TODO(johancz): convert to local variable
+                _tabControl = new TabControl(); // TODO(johancz): convert to local variable
 #if DEBUG_SET_BACKGROUND_COLOR
-                tabControl.Background = Brushes.Magenta; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+                _tabControl.Background = Brushes.Magenta; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
 
                 // "Browse Store" Tab
                 //{
-                //    tabControl.Items.Add(tabItem_BrowseStore);
+                //    _tabControl.Items.Add(tabItem_BrowseStore);
                 //}
-                tabControl.Items.Add(BrowseStoreTab(header: "Browse Store"));
+                _tabControl.Items.Add(BrowseStoreTab(header: "Browse Store"));
 
                 // "Shopping Cart" Tab Contents
                 //{
                 //tabControl.Items.Add(tabItem_ShoppingCart);
                 //}
-                tabControl.Items.Add(ShoppingCartTab(header: "My Shopping Cart"));
+                _shoppingCartTab = ShoppingCartTab(header: "My Shopping Cart");
+                _tabControl.Items.Add(_shoppingCartTab);
 
                 // Add the left-column to the "root"-Grid.
-                Grid.SetColumn(tabControl, 0);
-                _rootGrid.Children.Add(tabControl);
+                Grid.SetColumn(_tabControl, 0);
+                _rootGrid.Children.Add(_tabControl);
             }
 
             // TODO(johancz): The contents of the right column probably needs a ScrollViewer, and maybe the Image should scale better (e.g. not take up more than X% of the available height).
@@ -149,7 +158,8 @@ namespace StoreUser
             tabContent_browseStore.Content = productsPanel;
 
             // Create the TabItem and return it.
-            return new TabItem {
+            return new TabItem
+            {
                 Header = new Label { Content = header, FontSize = 16 },
                 Content = tabContent_browseStore
             };
@@ -161,7 +171,8 @@ namespace StoreUser
         /// <returns></returns>
         private static TabItem ShoppingCartTab(string header)
         {
-            var shoppingCartRootGrid = new Grid { ShowGridLines = true};
+            GridView gridView;
+            var shoppingCartRootGrid = new Grid { ShowGridLines = true };
 #if DEBUG_SET_BACKGROUND_COLOR
             shoppingCartRootGrid.Background = Brushes.NavajoWhite; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
@@ -213,47 +224,93 @@ namespace StoreUser
                 shoppingCartPanel.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
 
-                var listBox = new ListBox();
-#if DEBUG_SET_BACKGROUND_COLOR
-                listBox.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-                //var nameBinding = new Binding("Name");
-                //var priceBinding = new Binding("Price");
-                //nameBinding.Source = Store.ShoppingCart.Products;
-                //var bindingGroup = new BindingGroup();
-                //bindingGroup.Items.Add(nameBinding);
-                //bindingGroup.Items.Add(priceBinding);
-                //var listBoxItemTemplate = new DataTemplate();
-                //var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                //var fef = new FrameworkElementFactory();
-                //var labelName = new Label { };
-                //var labelCount = new Label { Text = new Binding { Path = Store.Sho };
-                //fef.SetValue(stackPanel);
-                //listBoxItemTemplate.VisualTree = fef;
-                //listbox.ItemTemplate = ;
 
-                var sc = Store.ShoppingCart;
-                foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
+                var buttonFactory_buttonRemove1 = new FrameworkElementFactory(typeof(Button));
+                buttonFactory_buttonRemove1.SetBinding(Button.ContentProperty, new Binding("buttonRemove1.Content"));
+                buttonFactory_buttonRemove1.SetBinding(Button.TagProperty, new Binding("buttonRemove1.Tag"));
+                buttonFactory_buttonRemove1.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartRemoveProduct_Click));
+
+                var add1_buttonFactory = new FrameworkElementFactory(typeof(Button));
+                add1_buttonFactory.SetBinding(Button.ContentProperty, new Binding("buttonAdd1.Content"));
+                add1_buttonFactory.SetBinding(Button.TagProperty, new Binding("buttonAdd1.Tag"));
+                add1_buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartAddProduct_Click));
+
+                var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
+                stackPanelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+                stackPanelFactory.AppendChild(buttonFactory_buttonRemove1);
+                stackPanelFactory.AppendChild(add1_buttonFactory);
+
+                _shoppingList_listView = new ListView();
+                _shoppingList_listView.ItemsSource = CreateShoppingCartData();
+#if DEBUG_SET_BACKGROUND_COLOR
+                _shoppingList_listView.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+
+                gridView = new GridView { AllowsColumnReorder = false };
+                var style = new Style { TargetType = typeof(GridViewColumnHeader) };
+                style.Setters.Add(new Setter(ListViewItem.IsEnabledProperty, false));
+                var t = new Trigger { Property = ListViewItem.IsEnabledProperty, Value = false };
+                t.Setters.Add(new Setter(TextElement.ForegroundProperty, Brushes.Black));
+                style.Triggers.Add(t);
+                gridView.ColumnHeaderContainerStyle = style;
+                gridView.Columns.Add(new GridViewColumn
                 {
-                    //TODO(johancz): Create and draw a WPF - structure for each product in the shopping cart
-                    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                    var labelName = new Label { Content = product.Key.Name };
-                    var labelCount = new Label { Content = product.Value };
-                    var labelTotalPrice = new Label { Content = product.Value * product.Key.Price };
-                    var listBoxItem = new ListBoxItem();
-                    stackPanel.Children.Add(labelName);
-                    stackPanel.Children.Add(labelCount);
-                    stackPanel.Children.Add(labelTotalPrice);
-                    listBoxItem.Content = stackPanel;
-                    listBox.Items.Add(listBoxItem);
-                }
+                    //width
+                    DisplayMemberBinding = new Binding("productName"),
+                    Header = "Produkt"
+                });
+                gridView.Columns.Add(new GridViewColumn
+                {
+                    DisplayMemberBinding = new Binding("productPrice"),
+                    Header = "Price"
+                });
+                gridView.Columns.Add(new GridViewColumn
+                {
+                    DisplayMemberBinding = new Binding("productCount"),
+                    Header = "# of items"
+                });
+                gridView.Columns.Add(new GridViewColumn
+                {
+                    DisplayMemberBinding = new Binding("productTotalPrice"),
+                    Header = "Total Price"
+                });
+                gridView.Columns.Add(new GridViewColumn
+                {
+                    CellTemplate = new DataTemplate { VisualTree = stackPanelFactory },
+                    Header = "+/- items"
+                });
+                _shoppingList_listView.View = gridView;
+
+
+                //foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
+                //{
+
+                //    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                //    var labelName = new Label { Content = product.Key.Name };
+                //    var labelCount = new Label { Content = product.Value };
+                //    var labelTotalPrice = new Label { Content = product.Value * product.Key.Price };
+                //    stackPanel.Children.Add(labelName);
+                //    stackPanel.Children.Add(labelCount);
+                //    stackPanel.Children.Add(labelTotalPrice);
+
+                //    //var listBoxItem = new ListBoxItem();
+                //    //listBoxItem.Content = stackPanel;
+                //    //listBox.Items.Add(listBoxItem);
+
+                //    var listViewItem = new ListViewItem();
+                //    listViewItem.Content = stackPanel;
+                //    listView.Items.Add(listViewItem);
+                //}
 
 #if DEBUG_SET_BACKGROUND_COLOR
                 shoppingCartScrollViewer.Background = Brushes.Blue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
                 //shoppingCartScrollViewer.Content = shoppingCartPanel;
-                shoppingCartScrollViewer.Content = listBox;
+                //shoppingCartScrollViewer.Content = listBox;
+                shoppingCartScrollViewer.Content = _shoppingList_listView;
+                //shoppingCartScrollViewer.Content = dataGrid;
             }
+
             // Shopping Cart Save-button
 
             // Add the shopping cart's ScrollViewer to its "root"-Grid
@@ -261,10 +318,34 @@ namespace StoreUser
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
             // Create the TabItem and return it.
-            return new TabItem {
+            return new TabItem
+            {
+                Name = "UserView_ShoppingCartTab",
                 Header = new Label { Content = header, FontSize = 16 },
                 Content = shoppingCartRootGrid
             };
+        }
+
+        private static IEnumerable<object> CreateShoppingCartData()
+        {
+            var combinedData = Store.ShoppingCart.Products.Select(product =>
+            {
+                //var t = new Tuple<string, Product> { Item1 = "remove", Item2 = product };
+                //var t2 = new Tuple<string, Product>(mode: "remove", product: product);
+                var productRow = new
+                {
+                    productName = product.Key.Name,
+                    productPrice = product.Key.Price + product.Key.Currency.Symbol,
+                    productCount = product.Value,
+                    productTotalPrice = product.Key.Price * product.Value + product.Key.Currency.Symbol,
+                    buttonRemove1 = new { Content = " - ", Tag = product.Key },
+                    buttonAdd1 = new { Content = " + ", Tag = product.Key },
+                };
+
+                return productRow;
+            });
+
+            return combinedData;
         }
 
         private static StackPanel RightColumn()
@@ -462,6 +543,7 @@ namespace StoreUser
         {
             // TODO(johancz): Error/Exception-handling
             Store.ShoppingCart.RemoveProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
+            _shoppingList_listView.ItemsSource = CreateShoppingCartData();
         }
 
         /// <summary>
@@ -473,6 +555,21 @@ namespace StoreUser
         {
             // TODO(johancz): Error/Exception-handling
             Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag, 1); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
+            _shoppingList_listView.ItemsSource = CreateShoppingCartData();
+        }
+
+        static void UserView_ShoppingCartRemoveProduct_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO(johancz): Error/Exception-handling
+            Store.ShoppingCart.RemoveProduct((Product)((Button)sender).Tag);
+            _shoppingList_listView.ItemsSource = CreateShoppingCartData();
+        }
+
+        static void UserView_ShoppingCartAddProduct_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO(johancz): Error/Exception-handling
+            Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag, 1);
+            _shoppingList_listView.ItemsSource = CreateShoppingCartData();
         }
     }
 }
