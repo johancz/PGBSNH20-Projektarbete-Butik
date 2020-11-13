@@ -349,7 +349,7 @@ namespace StoreUser
 
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
-            Store.LoadShoppingCart();
+            Store.LoadShoppingCart(WinTemp.ShoppingCartCSV);
         }
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
