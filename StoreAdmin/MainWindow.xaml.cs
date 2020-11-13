@@ -1,6 +1,4 @@
-﻿#define DEBUG_SET_BACKGROUND_COLOR
-
-using StoreCommon;
+﻿using StoreCommon;
 using StoreUser;
 using System.Globalization;
 using System.Windows;
@@ -14,7 +12,9 @@ namespace StoreAdmin
     {
         private TabControl _adminView;
         private Canvas _userView;
-        private Canvas _ManageProducts;
+        private Canvas _manageProducts;
+        private WrapPanel _wrapPanel;
+        private Grid _rootGrid;
 
         public TabControl MainTabControl;
 
@@ -44,7 +44,8 @@ namespace StoreAdmin
 
             _userView = UserView.Create();
             _adminView = new TabControl();
-            _ManageProducts = ManageProductsView.Create();
+            //_manageProducts = ManageProductsView.Create();
+            _rootGrid = ManageProductsView.CreateGrid();
 
             var adminModeTab_manageProducts = new TabItem { Header = "Manage Products"};
             var adminModeTab_manageDiscountCodes = new TabItem { Header = "Manage Discount Codes" };
@@ -56,7 +57,7 @@ namespace StoreAdmin
 
             var userViewTab = new TabItem { Header = "Store (User mode)", Content = _userView };
             var adminViewTab = new TabItem { Header = "Store (Admin mode)", Content = _adminView };
-            adminModeTab_manageProducts.Content = _ManageProducts;
+            adminModeTab_manageProducts.Content = _wrapPanel;
 
             MainTabControl.Items.Add(userViewTab);
             MainTabControl.Items.Add(adminViewTab);

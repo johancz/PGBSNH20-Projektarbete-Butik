@@ -16,7 +16,7 @@ namespace StoreAdmin
     {
         public static Canvas _root;
         private static Grid _rootGrid;
-        private static StackPanel _rightColumnContentRoot;
+        private static WrapPanel _productsPanel;
 
         internal struct ProductItem_LayoutSettings
         {
@@ -24,6 +24,28 @@ namespace StoreAdmin
             internal const double gridItemHeight = 200;
             internal const int gridItemImageHeight = 175;
             internal const double gridItemTextHeight = 25;
+        }
+        public static Grid CreateGrid()
+        {
+            var rootGrid = new Grid();
+
+            var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center, Width = 600 };
+
+            foreach (Product product in Store.Products)
+            {
+                var productItem = UserView.CreateProductItem(product);
+
+                if (productItem != null)
+                {
+                    productsPanel.Children.Add(productItem);
+                }
+            }
+            rootGrid.Children.Add(productsPanel);
+
+            _productsPanel = productsPanel;
+            _rootGrid = rootGrid;
+          
+            return _rootGrid;
         }
         public static Canvas Create()
         {
@@ -37,8 +59,23 @@ namespace StoreAdmin
             _rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-
             _root.Children.Add(_rootGrid);
+
+            var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
+
+            foreach (Product product in Store.Products)
+            {
+                var productItem = UserView.CreateProductItem(product);
+
+                if (productItem != null)
+                {
+                    productsPanel.Children.Add(productItem);
+                }
+            }
+            _productsPanel = productsPanel;
+            _rootGrid.Children.Add(productsPanel);
+            Grid.SetColumn(productsPanel, 0);
+            Grid.SetRow(productsPanel, 0);
 
             return _root;
         }
@@ -100,17 +137,17 @@ namespace StoreAdmin
             tabControl.Items.Add(tabItem_BrowseStore);
 
             var shoppingCartRootGrid = new Grid { ShowGridLines = true, Height = 50 };
-#if DEBUG_SET_BACKGROUND_COLOR
+
             shoppingCartRootGrid.Background = Brushes.LightGoldenrodYellow;
-#endif
+
             var shoppingCartScrollViewer = new ScrollViewer();
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition());
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             var shoppingCart_toolbar = new Grid { ShowGridLines = true, Height = 50 };
-#if DEBUG_SET_BACKGROUND_COLOR
+
             shoppingCart_toolbar.Background = Brushes.LightSeaGreen;
-#endif
+
             shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
             shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
@@ -153,9 +190,9 @@ namespace StoreAdmin
             _rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
             _rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
             var rightColumn_detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
-#if DEBUG_SET_BACKGROUND_COLOR
+
             rightColumn_detailsPanel.Background = Brushes.LightSalmon;
-#endif
+
             var rightColumn_detailsPanel_nameAndPrice = new StackPanel { Orientation = Orientation.Horizontal };
             _rightColumn_DetailsName = new Label();
             _rightColumn_DetailsPrice = new Label();
