@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Media;
 
 namespace StoreCommon
 {
@@ -12,7 +11,7 @@ namespace StoreCommon
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
 
-        public static List<Product> LoadProducts(string pathAndFileName)
+        public static void LoadProducts(string pathAndFileName)
         {
             var products = new List<Product>();
             string input = File.ReadAllText(pathAndFileName);
@@ -33,47 +32,61 @@ namespace StoreCommon
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);
             }
-            return products;
+            Products = products;
         }
+        public static void LoadProducts(string pathAndFileName, out List<Product> products)
+        {
+            products = new List<Product>();
+            string input = File.ReadAllText(pathAndFileName);
 
+            var infoArray = input.Trim().Split('#');
+
+            for (int i = 0; i < infoArray.Length; i++)
+            {
+                if (infoArray[i] == "") { break; }
+                var name = infoArray[i].Trim();
+                i++;
+                var uri = infoArray[i].Trim();
+                i++;
+                var price = decimal.Parse(infoArray[i].Trim());
+                i++;
+                var description = infoArray[i].Trim();
+
+                var newProduct = new Product(name, uri, price, description);
+                products.Add(newProduct);
+            }
+            
+        }
         public static void Init()
         {
-            Products = LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv"));
-            LoadDiscountCodes();
-            LoadShoppingCart();
+            LoadProducts(WinTemp.ProductCSV);
+            LoadDiscountCodes(WinTemp.DiscountCSV);
+            LoadShoppingCart(WinTemp.ShoppingCartCSV);
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
-        public static void LoadShoppingCart()
+        public static void LoadShoppingCart(string path)
         {
             // TODO(johancz): error checking? the ShoppingCart might already contain items.
             //ShoppingCart.AddRange(ProductList.LoadFromFile("ExampleShoppingCart.csv")); // possible solution to the above, if they should be merged.
             //MessageBox.Show("You already have items in your shopping cart, do you want to merge shopping cart you're trying to merge?", "Merge Shopping Carts?", MessageBoxButton.YesNoCancel);
-            ShoppingCart = ProductList.LoadFromFile(Path.Combine(Helpers.StoreDataCsvPath, "ExampleShoppingCart.csv"));
+            ShoppingCart = ProductList.LoadFromFile(path);
             // TODO(johancz): Should the ShoppingCart be loaded by default? We would need a new shopping cart button which creates a new shoppingcart and overwrites the file with a blank file.
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(Helpers.StoreDataTemporaryOutputPath, "ShoppingCart.csv");
+            ShoppingCart.SaveToFile(WinTemp.ShoppingCartCSV);
         }
 
-        public static void LoadDiscountCodes()
+        public static void LoadDiscountCodes(string path)
         {
             string[] fileLines;
 
             try
             {
-                // If the file "DiscountCodes.csv" exists in the "temp"-folder, read from it, otherwise read from "ExampleDiscountCodes.csv".
-                if (File.Exists(Path.Combine(Helpers.StoreDataTemporaryOutputPath, "DiscountCodes.csv")))
-                {
-                    fileLines = File.ReadAllLines(Path.Combine(Helpers.StoreDataTemporaryOutputPath, "DiscountCodes.csv"));
-                }
-                else
-                {
-                    fileLines = File.ReadAllLines(Path.Combine(Helpers.StoreDataCsvPath, "ExampleDiscountCodes.csv"));
-                }
+                fileLines = File.ReadAllLines(path);
             }
             catch (Exception)
             {

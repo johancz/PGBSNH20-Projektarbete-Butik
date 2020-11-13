@@ -103,7 +103,29 @@ namespace StoreCommon
                 return false;
             }
         }
+        public bool SaveToFile(string path)
+        {
+            if (Products.Count == 0)
+            {
+                // TODO(johancz): visa ett meddelande om kunden försöker spara en tom lista? eller det kanske är bättre att disabla/gömma knappen
+                // The ProductList is empty, do nothing.
+                return false;
+            }
 
+            string[] fileContents = Products.Select(productItem => productItem.Key.Name + ";" + productItem.Value).ToArray();
+
+            try
+            {
+                Directory.CreateDirectory(path);
+                File.WriteAllLines(path, fileContents);
+                return true;
+            }
+            catch (Exception)
+            {
+                // TODO(johancz): exception handling
+                return false;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
