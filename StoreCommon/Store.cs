@@ -38,42 +38,34 @@ namespace StoreCommon
 
         public static void Init()
         {
-            Products = LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv"));
-            LoadDiscountCodes();
-            LoadShoppingCart();
+            Products = LoadProducts(WinTemp.ProductCSV);
+            LoadDiscountCodes(WinTemp.DiscountCSV);
+            LoadShoppingCart(WinTemp.ShoppingCartCSV);
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
-        public static void LoadShoppingCart()
+        public static void LoadShoppingCart(string path)
         {
             // TODO(johancz): error checking? the ShoppingCart might already contain items.
             //ShoppingCart.AddRange(ProductList.LoadFromFile("ExampleShoppingCart.csv")); // possible solution to the above, if they should be merged.
             //MessageBox.Show("You already have items in your shopping cart, do you want to merge shopping cart you're trying to merge?", "Merge Shopping Carts?", MessageBoxButton.YesNoCancel);
-            ShoppingCart = ProductList.LoadFromFile(Path.Combine(Helpers.StoreDataCsvPath, "ExampleShoppingCart.csv"));
+            ShoppingCart = ProductList.LoadFromFile(path);
             // TODO(johancz): Should the ShoppingCart be loaded by default? We would need a new shopping cart button which creates a new shoppingcart and overwrites the file with a blank file.
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(Helpers.StoreDataTemporaryOutputPath, "ShoppingCart.csv");
+            ShoppingCart.SaveToFile(WinTemp.ShoppingCartCSV);
         }
 
-        public static void LoadDiscountCodes()
+        public static void LoadDiscountCodes(string path)
         {
             string[] fileLines;
 
             try
-            {
-                // If the file "DiscountCodes.csv" exists in the "temp"-folder, read from it, otherwise read from "ExampleDiscountCodes.csv".
-                if (File.Exists(Path.Combine(Helpers.StoreDataTemporaryOutputPath, "DiscountCodes.csv")))
-                {
-                    fileLines = File.ReadAllLines(Path.Combine(Helpers.StoreDataTemporaryOutputPath, "DiscountCodes.csv"));
-                }
-                else
-                {
-                    fileLines = File.ReadAllLines(Path.Combine(Helpers.StoreDataCsvPath, "ExampleDiscountCodes.csv"));
-                }
+            {            
+               fileLines = File.ReadAllLines(path);              
             }
             catch (Exception)
             {

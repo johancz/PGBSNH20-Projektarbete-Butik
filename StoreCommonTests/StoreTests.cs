@@ -17,7 +17,17 @@ namespace StoreCommon.Tests
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
         }
+        [TestMethod]
+        public void TempDirectory()
+        {
+            string Store = WinTemp.Images;
+            string imageName = "c:\\temp\\Image\\name.jpg".Split('\\')[^1];
 
+            string folderPath = "c:\\temp\\Image\\Names";
+            string combine = Path.Combine(folderPath, imageName);
+            string path = Path.Combine(WinTemp.Images, "broccoli.jpg");
+        }
+        
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
@@ -125,7 +135,7 @@ namespace StoreCommon.Tests
 
             // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
             Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "StoreTests_LoadDiscountCodes", "csvFiles");
-            Store.LoadDiscountCodes();
+            Store.LoadDiscountCodes(Helpers.StoreDataCsvPath);
 
             var expectedDiscountCodes = new List<DiscountCode>
             {
