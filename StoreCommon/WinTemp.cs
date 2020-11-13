@@ -31,7 +31,7 @@ namespace StoreCommon
             var imageFolder = new DirectoryInfo(Images);
             storeFolder.Create();
             imageFolder.Create();
-            
+
             if (!File.Exists(productCSV))
             {
                 File.Copy(InputProductsCSV, productCSV);
