@@ -8,11 +8,8 @@
 #define DEBUG_SET_BACKGROUND_COLOR
 
 using StoreCommon;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -71,17 +68,11 @@ namespace StoreUser
         {
             _root = new Canvas(); // TODO(johancz): use a different control if we don't implement animations?
             _root.SizeChanged += RootElement_SizeChanged;
-#if DEBUG_SET_BACKGROUND_COLOR
-            _root.Background = Brushes.LightBlue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
 
             // Grid with two columns;
             // the first column (left) for a tabcontrol with "Browse Store" and "ShoppingCart" tabs,
             // the Second column contains details about the selected product.
             _rootGrid = new Grid { ShowGridLines = true };
-#if DEBUG_SET_BACKGROUND_COLOR
-            _rootGrid.Background = Brushes.LightGoldenrodYellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
             _rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -89,25 +80,11 @@ namespace StoreUser
             // Left Column
             {
                 // Left Column Content Root: TabControl
-                _tabControl = new TabControl(); // TODO(johancz): convert to local variable
-#if DEBUG_SET_BACKGROUND_COLOR
-                _tabControl.Background = Brushes.Magenta; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-
-                // "Browse Store" Tab
-                //{
-                //    _tabControl.Items.Add(tabItem_BrowseStore);
-                //}
+                _tabControl = new TabControl { Padding = new Thickness(0) }; // TODO(johancz): convert to local variable
                 _tabControl.Items.Add(BrowseStoreTab(header: "Browse Store"));
-
-                // "Shopping Cart" Tab Contents
-                //{
-                //tabControl.Items.Add(tabItem_ShoppingCart);
-                //}
                 _shoppingCartTab = ShoppingCartTab(header: "My Shopping Cart");
                 _tabControl.Items.Add(_shoppingCartTab);
 
-                // Add the left-column to the "root"-Grid.
                 Grid.SetColumn(_tabControl, 0);
                 _rootGrid.Children.Add(_tabControl);
             }
@@ -127,9 +104,9 @@ namespace StoreUser
             return _root;
         }
 
-        ////////////////////////////////////////////////////////
-        //////////////////// Main Controls /////////////////////
-        ////////////////////////////////////////////////////////
+        /******************************************************/
+        /******************* Main Controls ********************/
+        /******************************************************/
 
 
         /// <summary>
@@ -139,9 +116,6 @@ namespace StoreUser
         private static TabItem BrowseStoreTab(string header)
         {
             var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-#if DEBUG_SET_BACKGROUND_COLOR
-            tabContent_browseStore.Background = Brushes.LightCyan; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
             var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
 
             foreach (Product product in Store.Products)
@@ -172,23 +146,20 @@ namespace StoreUser
         private static TabItem ShoppingCartTab(string header)
         {
             GridView gridView;
-            var shoppingCartRootGrid = new Grid { ShowGridLines = true };
-#if DEBUG_SET_BACKGROUND_COLOR
-            shoppingCartRootGrid.Background = Brushes.NavajoWhite; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
+            var shoppingCartRootGrid = new Grid();
             var shoppingCartScrollViewer = new ScrollViewer();
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             // Shopping cart toolbar (with load and save buttons, total sum label)
             {
-                var shoppingCart_toolbar = new Grid { ShowGridLines = true, Height = 50 };
+                var shoppingCart_toolbar = new Grid {};
 #if DEBUG_SET_BACKGROUND_COLOR
                 shoppingCart_toolbar.Background = Brushes.LightGray; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
                 shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
-                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
                 // TotalSum-Label
                 var shoppingCart_itemCountLabel = new Label
@@ -200,14 +171,28 @@ namespace StoreUser
                 shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
 
                 // Save-button
-                var shoppingCart_saveButton = new Button { Content = "Save Shopping Cart" };
+                var shoppingCart_saveButton = new Button
+                {
+                    Content = "Save Shopping Cart",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Padding = new Thickness(5),
+                    Margin = new Thickness(5),
+                };
                 shoppingCart_saveButton.Click += shoppingCart_saveButton_Click;
                 // Add Button to toolbar
                 Grid.SetColumn(shoppingCart_saveButton, 1);
                 shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
 
                 // Load-button
-                var shoppingCart_loadButton = new Button { Content = "Load Shopping Cart" };
+                var shoppingCart_loadButton = new Button
+                {
+                    Content = "Load Shopping Cart",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Padding = new Thickness(5),
+                    Margin = new Thickness(5),
+                };
                 shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
                 // Add Button to toolbar
                 Grid.SetColumn(shoppingCart_loadButton, 2);
@@ -220,9 +205,6 @@ namespace StoreUser
             // Shopping cart items (StackPanel)
             {
                 var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
-#if DEBUG_SET_BACKGROUND_COLOR
-                shoppingCartPanel.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
 
 
                 var buttonFactory_buttonRemove1 = new FrameworkElementFactory(typeof(Button));
@@ -242,9 +224,6 @@ namespace StoreUser
 
                 _shoppingList_listView = new ListView();
                 _shoppingList_listView.ItemsSource = CreateShoppingCartData();
-#if DEBUG_SET_BACKGROUND_COLOR
-                _shoppingList_listView.Background = Brushes.Yellow; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
 
                 gridView = new GridView { AllowsColumnReorder = false };
                 var style = new Style { TargetType = typeof(GridViewColumnHeader) };
@@ -281,10 +260,9 @@ namespace StoreUser
                 });
                 _shoppingList_listView.View = gridView;
 
-
+                // TODO(johancz): ifall vi byter till en dummare control.
                 //foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
                 //{
-
                 //    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
                 //    var labelName = new Label { Content = product.Key.Name };
                 //    var labelCount = new Label { Content = product.Value };
@@ -301,23 +279,12 @@ namespace StoreUser
                 //    listViewItem.Content = stackPanel;
                 //    listView.Items.Add(listViewItem);
                 //}
-
-#if DEBUG_SET_BACKGROUND_COLOR
-                shoppingCartScrollViewer.Background = Brushes.Blue; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-                //shoppingCartScrollViewer.Content = shoppingCartPanel;
-                //shoppingCartScrollViewer.Content = listBox;
                 shoppingCartScrollViewer.Content = _shoppingList_listView;
-                //shoppingCartScrollViewer.Content = dataGrid;
             }
 
-            // Shopping Cart Save-button
-
-            // Add the shopping cart's ScrollViewer to its "root"-Grid
             Grid.SetRow(shoppingCartScrollViewer, 1);
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
-            // Create the TabItem and return it.
             return new TabItem
             {
                 Name = "UserView_ShoppingCartTab",
@@ -330,8 +297,6 @@ namespace StoreUser
         {
             var combinedData = Store.ShoppingCart.Products.Select(product =>
             {
-                //var t = new Tuple<string, Product> { Item1 = "remove", Item2 = product };
-                //var t2 = new Tuple<string, Product>(mode: "remove", product: product);
                 var productRow = new
                 {
                     productName = product.Key.Name,
@@ -350,7 +315,6 @@ namespace StoreUser
 
         private static StackPanel RightColumn()
         {
-            //  Right Column Content Root: StackPanel
             var rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
 
             // Create and add a Product.Image to the right column's root (StackPanel)
