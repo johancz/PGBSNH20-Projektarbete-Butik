@@ -31,8 +31,8 @@ namespace StoreAdmin
             Title = ".... Store (admin mode)";
             Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
             Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
-            MinWidth = 400;
-            MinHeight = 300;
+            MinWidth = 800;
+            MinHeight = 600;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             SizeChanged += MainWindow_SizeChanged;
             KeyUp += MainWindow_KeyUp;

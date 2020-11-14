@@ -25,11 +25,11 @@ namespace StoreUser
         private static Canvas _root; // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
         private static Grid _rootGrid; // Needed for event-handling
 
-        private static StackPanel _rightColumnContentRoot; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
+        private static Grid _rightColumnContentRoot; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
         private static Image _rightColumn_DetailsImage;
         private static Label _rightColumn_DetailsName;
         private static Label _rightColumn_DetailsPrice;
-        private static Label _rightColumn_DetailsDescription;
+        private static TextBlock _rightColumn_DetailsDescription;
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
         // use the above or the struct below
@@ -183,59 +183,89 @@ namespace StoreUser
             // Right Column
             {
                 //  Right Column Content Root: StackPanel
-                _rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
+                _rightColumnContentRoot = new Grid { Visibility = Visibility.Hidden };
+#if DEBUG_SET_BACKGROUND_COLOR
+                _rightColumnContentRoot.Background = Brushes.LightGreen; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
                 // Create and add a Product.Image to the right column's root (StackPanel)
                 _rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
 
                 // Details Column: name, price, description and shopping cart buttons.
                 {
-                    var rightColumn_detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
+                    var rightColumn_detailsPanel = new Grid { ShowGridLines = true };
+                    rightColumn_detailsPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                    rightColumn_detailsPanel.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+                    Grid.SetRow(rightColumn_detailsPanel, 1);
+                    _rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
 #if DEBUG_SET_BACKGROUND_COLOR
                     rightColumn_detailsPanel.Background = Brushes.LightSalmon; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
 #endif
 
+                    var detailsColumn_namePriceDescription = new StackPanel { Orientation = Orientation.Vertical };
                     // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.
                     {
                         var rightColumn_detailsPanel_nameAndPrice = new StackPanel { Orientation = Orientation.Horizontal };
-                        _rightColumn_DetailsName = new Label();
-                        _rightColumn_DetailsPrice = new Label();
+                        _rightColumn_DetailsName = new Label { FontSize = 16 };
 
                         rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
-                        rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsPrice);
-                        rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_nameAndPrice);
+                        detailsColumn_namePriceDescription.Children.Add(rightColumn_detailsPanel_nameAndPrice);
                     }
 
                     // Create the product description Label
-                    _rightColumn_DetailsDescription = new Label();
-                    rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsDescription);
+                    var scrollViewer = new ScrollViewer
+                    {
+                        Content = _rightColumn_DetailsDescription = new TextBlock { TextWrapping = TextWrapping.Wrap/*, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch*/ },
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+                    };
+#if DEBUG_SET_BACKGROUND_COLOR
+                    scrollViewer.Background = Brushes.LightGray; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
+                    detailsColumn_namePriceDescription.Children.Add(scrollViewer);
+                    Grid.SetColumn(detailsColumn_namePriceDescription, 1);
+                    rightColumn_detailsPanel.Children.Add(detailsColumn_namePriceDescription);
 
                     // Create a StackPanel-parent for the "Shopping Cart"-buttons
-                    var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
+                    var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(5) };
+#if DEBUG_SET_BACKGROUND_COLOR
+                    rightColumn_detailsPanel_shoppingCartButtons.Background = Brushes.LightSalmon; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
+#endif
                     {
                         // Create "Remove from Shopping Cart" button with "click"-event listener.
-                        (_rightColumn_DetailsRemoveFromCartButton = new Button
+                        _rightColumn_DetailsRemoveFromCartButton = new Button
                         {
-                            FontSize = 14,
-                            Content = "(-) Remove from shopping cart",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += _rightColumn_DetailsRemoveFromCartButton_Click;
+                            Padding = new Thickness(5),
+                            //Margin = new Thickness(5),
+                            Content = new Label { Content = "(-) Remove from shopping cart", HorizontalAlignment = HorizontalAlignment.Left },
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            HorizontalContentAlignment = HorizontalAlignment.Left,
+
+                        };
+                        _rightColumn_DetailsRemoveFromCartButton.Click += _rightColumn_DetailsRemoveFromCartButton_Click;
 
                         // Create "Add to Shopping Cart" button with "click"-event listener.
-                        (_rightColumn_detailsAddToCartButton = new Button
+                        _rightColumn_detailsAddToCartButton = new Button
                         {
-                            FontSize = 14,
-                            Content = "(+) Add to shopping cart",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += _rightColumn_DetailsAddToCartButton_Click;
+                            Padding = new Thickness(5),
+                            //Margin = new Thickness(5),
+                            Content = new Label { Content = "(+) Add to shopping cart", HorizontalAlignment = HorizontalAlignment.Left },
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            HorizontalContentAlignment = HorizontalAlignment.Left,
+                        };
+                        _rightColumn_detailsAddToCartButton.Click += _rightColumn_DetailsAddToCartButton_Click;
 
+                        _rightColumn_DetailsPrice = new Label { FontSize = 16 };
+                        rightColumn_detailsPanel_shoppingCartButtons.Children.Add(_rightColumn_DetailsPrice);
                         // Add buttons to their parent StackPanel and then add the StackPanel to the "details"-StackPanel
-                        rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
-                        rightColumn_detailsPanel.Children.Add(_rightColumn_detailsAddToCartButton);
+                        rightColumn_detailsPanel_shoppingCartButtons.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
+                        rightColumn_detailsPanel_shoppingCartButtons.Children.Add(_rightColumn_detailsAddToCartButton);
+                        Grid.SetColumn(rightColumn_detailsPanel_shoppingCartButtons, 0);
                         rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
                     }
-
-                    _rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
                 }
 
                 // Add the right-column to the "root"-Grid.
@@ -330,7 +360,7 @@ namespace StoreUser
 
             _rightColumn_DetailsName.Content = product.Name;
             _rightColumn_DetailsPrice.Content = $"{product.Price} kr";
-            _rightColumn_DetailsDescription.Content = product.Description;
+            _rightColumn_DetailsDescription.Text = product.Description;
             _rightColumn_DetailsRemoveFromCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
