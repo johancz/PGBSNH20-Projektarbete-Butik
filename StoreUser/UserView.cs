@@ -1,13 +1,4 @@
-/*
- TODO:
-  * Right Column does not have a ScrollViewer
-  * The Image in the right column should scale better, e.g. it should not take up more than X% of the available height.
- */
-
-// Disable this debugging symbol by commenting the line out.
-#define DEBUG_SET_BACKGROUND_COLOR
-
-using StoreCommon;
+﻿﻿using StoreCommon;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -20,33 +11,21 @@ using System.Windows.Media;
 
 namespace StoreUser
 {
-    /// <summary>
-    /// Mockup0
-    /// </summary>
     public static class UserView
     {
-        private static Canvas _root; // Needed for event-handling, TODO(johancz): remove getter & setter & make private?
+        private static Canvas _root; // Needed for event-handling
         private static Grid _rootGrid; // Needed for event-handling
-        private static TabControl _tabControl;
 
-        private static StackPanel _rightColumnContentRoot; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
+        // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
+        // TODO(johancz): Add another "_rightColumnContentRoot" showing a placeholder for when a product is not selected.
+        private static Grid _rightColumnContentRoot; 
         private static Image _rightColumn_DetailsImage;
         private static Label _rightColumn_DetailsName;
         private static Label _rightColumn_DetailsPrice;
-        private static Label _rightColumn_DetailsDescription;
+        private static TextBlock _rightColumn_DetailsDescription;
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
-        // use the above or the struct below
-        //internal struct RightColumn
-        //{
-        //    internal static StackPanel Root; // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
-        //    internal static Image DetailsImage;
-        //    internal static Label DetailsName;
-        //    internal static Label DetailsPrice;
-        //    internal static Label DetailsDescription;
-        //    internal static Button DetailsRemoveFromCartButton;
-        //    internal static Button detailsAddToCartButton;
-        //};
+        
         private static TabItem _shoppingCartTab;
 
         private static ListView _shoppingList_listView;
@@ -57,7 +36,6 @@ namespace StoreUser
             internal const double gridItemWidth = 200;
             internal const double gridItemHeight = 200;
             internal const int gridItemImageHeight = 175;
-            internal const double gridItemTextHeight = 25;
         }
 
         /// <summary>
@@ -77,10 +55,10 @@ namespace StoreUser
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
 
-            // Left Column
+            // _rootGrid child: Left Column (TabControl)
             {
                 // Left Column Content Root: TabControl
-                _tabControl = new TabControl { Padding = new Thickness(0) }; // TODO(johancz): convert to local variable
+                var tabControl = new TabControl(); // TODO(johancz): convert to local variable
 
                 {
                     var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
@@ -99,13 +77,9 @@ namespace StoreUser
                     // Add the Products-WrapPanel to the ScrollViewer
                     tabContent_browseStore.Content = productsPanel;
 
-                    // Create the TabItem and return it.
-                    var tabItem_BrowseStore = new TabItem
-                    {
-                        Header = new Label { Content = "Browse Store", FontSize = 16 },
-                        Content = tabContent_browseStore
-                    };
-                    _tabControl.Items.Add(tabItem_BrowseStore);
+                    // Create the TabItem and add it to the TabControl
+                    var tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore };
+                    tabControl.Items.Add(tabItem_BrowseStore);
                 }
 
                 // "Shopping Cart" Tab Contents
@@ -256,66 +230,103 @@ namespace StoreUser
                         Header = new Label { Content = "My Shopping Cart", FontSize = 16 },
                         Content = shoppingCartRootGrid
                     };
-                    _tabControl.Items.Add(_shoppingCartTab);
+                    tabControl.Items.Add(_shoppingCartTab);
 
                 }
 
-                Grid.SetColumn(_tabControl, 0);
-                _rootGrid.Children.Add(_tabControl);
+                Grid.SetColumn(tabControl, 0);
+                _rootGrid.Children.Add(tabControl);
             }
 
-            // Right Column
+            // _rootGrid child: Right Column (Details)
             {
-                _rightColumnContentRoot = new StackPanel { Orientation = Orientation.Vertical, Visibility = Visibility.Hidden };
+                //  Right Column Content Root: StackPanel
+                _rightColumnContentRoot = new Grid { Visibility = Visibility.Hidden, ShowGridLines = true };
+                _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                // Needs to be GridUnitType.Star for MaxWidth to work on the TextBlock containing the product's description.
+                _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
                 // Create and add a Product.Image to the right column's root (StackPanel)
                 _rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
 
                 // Details Column: name, price, description and shopping cart buttons.
                 {
-                    var rightColumn_detailsPanel = new StackPanel { Orientation = Orientation.Vertical };
+                    var detailsColumn_detailsGrid = new Grid { ShowGridLines = true };
+                    detailsColumn_detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                    detailsColumn_detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
+                    Grid.SetRow(detailsColumn_detailsGrid, 1);
+                    _rightColumnContentRoot.Children.Add(detailsColumn_detailsGrid);
+
+                    var detailsColumn_namePriceDescription = new Grid { ShowGridLines = true };
+                    detailsColumn_namePriceDescription.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                    detailsColumn_namePriceDescription.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                     // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.
                     {
-                        var rightColumn_detailsPanel_nameAndPrice = new StackPanel { Orientation = Orientation.Horizontal };
-                        _rightColumn_DetailsName = new Label();
-                        _rightColumn_DetailsPrice = new Label();
+                        var rightColumn_detailsPanel_nameAndPrice = new StackPanel
+                        {
+                            Orientation = Orientation.Horizontal,
+                            Margin = new Thickness(5),
+                        };
+                        _rightColumn_DetailsName = new Label { FontSize = 16, FontWeight = FontWeights.SemiBold };
 
                         rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
-                        rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsPrice);
-                        rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_nameAndPrice);
+                        Grid.SetRow(rightColumn_detailsPanel_nameAndPrice, 0);
+                        detailsColumn_namePriceDescription.Children.Add(rightColumn_detailsPanel_nameAndPrice);
                     }
 
+                    _rightColumn_DetailsDescription = new TextBlock
+                    {
+                        TextWrapping = TextWrapping.Wrap,
+                    };
                     // Create the product description Label
-                    _rightColumn_DetailsDescription = new Label();
-                    rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsDescription);
+                    var scrollViewer = new ScrollViewer
+                    {
+                        Margin = new Thickness(5),
+                        Content = _rightColumn_DetailsDescription,
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+                    };
+                    Grid.SetRow(scrollViewer, 1);
+                    detailsColumn_namePriceDescription.Children.Add(scrollViewer);
+                    Grid.SetColumn(detailsColumn_namePriceDescription, 1);
+                    detailsColumn_detailsGrid.Children.Add(detailsColumn_namePriceDescription);
 
                     // Create a StackPanel-parent for the "Shopping Cart"-buttons
-                    var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel { Orientation = Orientation.Horizontal };
+                    var rightColumn_detailsPanel_shoppingCartButtons = new StackPanel {
+                        Orientation = Orientation.Vertical,
+                        Margin = new Thickness(5)
+                    };
                     {
                         // Create "Remove from Shopping Cart" button with "click"-event listener.
-                        (_rightColumn_DetailsRemoveFromCartButton = new Button
+                        _rightColumn_DetailsRemoveFromCartButton = new Button
                         {
-                            FontSize = 14,
-                            Content = "(-) Remove from shopping cart",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += _rightColumn_DetailsRemoveFromCartButton_Click;
+                            Padding = new Thickness(5),
+                            Content = new Label { Content = "(-) Remove from shopping cart", HorizontalAlignment = HorizontalAlignment.Left },
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            HorizontalContentAlignment = HorizontalAlignment.Left,
+
+                        };
+                        _rightColumn_DetailsRemoveFromCartButton.Click += RightColumn_DetailsRemoveFromCartButton_Click;
 
                         // Create "Add to Shopping Cart" button with "click"-event listener.
-                        (_rightColumn_detailsAddToCartButton = new Button
+                        _rightColumn_detailsAddToCartButton = new Button
                         {
-                            FontSize = 14,
-                            Content = "(+) Add to shopping cart",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                        }).Click += _rightColumn_DetailsAddToCartButton_Click;
+                            Padding = new Thickness(5),
+                            Content = new Label { Content = "(+) Add to shopping cart", HorizontalAlignment = HorizontalAlignment.Left },
+                            HorizontalAlignment = HorizontalAlignment.Stretch,
+                            HorizontalContentAlignment = HorizontalAlignment.Left,
+                        };
+                        _rightColumn_detailsAddToCartButton.Click += RightColumn_DetailsAddToCartButton_Click;
 
+                        _rightColumn_DetailsPrice = new Label { FontSize = 16 };
+                        rightColumn_detailsPanel_shoppingCartButtons.Children.Add(_rightColumn_DetailsPrice);
                         // Add buttons to their parent StackPanel and then add the StackPanel to the "details"-StackPanel
-                        rightColumn_detailsPanel.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
-                        rightColumn_detailsPanel.Children.Add(_rightColumn_detailsAddToCartButton);
-                        rightColumn_detailsPanel.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
+                        rightColumn_detailsPanel_shoppingCartButtons.Children.Add(_rightColumn_DetailsRemoveFromCartButton);
+                        rightColumn_detailsPanel_shoppingCartButtons.Children.Add(_rightColumn_detailsAddToCartButton);
+                        Grid.SetColumn(rightColumn_detailsPanel_shoppingCartButtons, 0);
+                        detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
                     }
-
-                    _rightColumnContentRoot.Children.Add(rightColumn_detailsPanel);
                 }
 
                 // Add the right-column to the "root"-Grid.
@@ -380,17 +391,16 @@ namespace StoreUser
 
         public static Grid CreateProductItem(Product product)
         {
-            // TODO(johancz): use the ProductItem_LayoutSettings-struct or the following lines
-            //int gridItemWidth = 200;
-            //int gridItemHeight = 200;
-            //int gridItemImageHeight = 175;
-            //int gridItemTextHeight = 25;
-
             var tooltip = new ToolTip
             {
-                //Placement = PlacementMode.Relative, // alt placement, doesn't require the MouseLeave-fix below.
                 Placement = PlacementMode.Mouse,
-                Content = $"{product.Name}\n{product.Description}\n"
+                MaxWidth = 800,
+                Content = new TextBlock
+                {
+                    Text = $"{product.Name}\n{product.Description}\n",
+                    TextWrapping = TextWrapping.Wrap,
+                }
+                    
             };
             var productGrid = new Grid
             {
@@ -399,8 +409,10 @@ namespace StoreUser
                 Width = ProductItem_LayoutSettings.gridItemWidth,
                 Height = ProductItem_LayoutSettings.gridItemHeight,
                 Margin = new Thickness(5),
-                ToolTip = tooltip
+                ToolTip = tooltip,
+                Background = Brushes.LightGray,
             };
+            productGrid.MouseUp += UserView.ProductItem_MouseUp;
             // This is required for the tooltip to appear at 'PlacementMode.Mouse' when hovering over another "productItem".
             // Otherwise the tooltip will "stick" to the old (this) "productItem" if the mouse is moved to the other "productItem" too quickly.
             productGrid.MouseLeave += (sender, e) =>
@@ -408,47 +420,37 @@ namespace StoreUser
                 tooltip.IsOpen = false;
             };
 
-#if DEBUG_SET_BACKGROUND_COLOR
-            productGrid.Background = Brushes.LightSlateGray; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
             productGrid.ColumnDefinitions.Add(new ColumnDefinition());
             productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(ProductItem_LayoutSettings.gridItemImageHeight, GridUnitType.Pixel) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(ProductItem_LayoutSettings.gridItemTextHeight, GridUnitType.Pixel) });
-            productGrid.MouseUp += UserView.ProductItem_MouseUp;
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-            // Image
-            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
-            productThumbnail.Stretch = Stretch.UniformToFill;
-            productThumbnail.VerticalAlignment = VerticalAlignment.Top;
-            Grid.SetColumnSpan(productThumbnail, 2);
-            productGrid.Children.Add(productThumbnail);
+            // productGrid children:
+            {
+                var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+                productThumbnail.Stretch = Stretch.UniformToFill;
+                productThumbnail.VerticalAlignment = VerticalAlignment.Center;
+                productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
+                Grid.SetColumnSpan(productThumbnail, 2);
+                productGrid.Children.Add(productThumbnail);
 
-            // Name and price
-            //var nameAndPricePanel = new StackPanel { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Top };
-            var nameLabel = new Label
-            {
-                Content = product.Name,
-#if DEBUG_SET_BACKGROUND_COLOR
-                Background = Brushes.LawnGreen // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-            };
-            var priceLabel = new Label
-            {
-                Content = $"{product.Price} kr",
-#if DEBUG_SET_BACKGROUND_COLOR
-                Background = Brushes.LightCoral // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-            };
-#if DEBUG_SET_BACKGROUND_COLOR
-            //nameAndPricePanel.Background = Brushes.LightGreen; // TODO(johancz): Only for Mark I debugging, remove before RELEASE.
-#endif
-            Grid.SetColumn(nameLabel, 0);
-            Grid.SetRow(nameLabel, 1);
-            productGrid.Children.Add(nameLabel);
-            Grid.SetColumn(priceLabel, 1);
-            Grid.SetRow(priceLabel, 1);
-            productGrid.Children.Add(priceLabel);
+                var nameLabel = new Label
+                {
+                    Content = product.Name,
+                    FontSize = 14,
+                };
+                Grid.SetColumn(nameLabel, 0);
+                Grid.SetRow(nameLabel, 1);
+                productGrid.Children.Add(nameLabel);
+
+                var priceLabel = new Label
+                {
+                    Content = $"{product.Price} kr",
+                };
+                Grid.SetColumn(priceLabel, 1);
+                Grid.SetRow(priceLabel, 1);
+                productGrid.Children.Add(priceLabel);
+            }
 
             return productGrid;
         }
@@ -459,7 +461,9 @@ namespace StoreUser
 
             _rightColumn_DetailsName.Content = product.Name;
             _rightColumn_DetailsPrice.Content = $"{product.Price} kr";
-            _rightColumn_DetailsDescription.Content = product.Description;
+            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond it's bounds.
+            _rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
+            _rightColumn_DetailsDescription.Text = product.Description;
             _rightColumn_DetailsRemoveFromCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
@@ -467,11 +471,11 @@ namespace StoreUser
             _rightColumnContentRoot.Visibility = Visibility.Visible;
         }
 
-        ////////////////////////////////////////////////////////
-        //////////////////// Event Handling ////////////////////
-        ////////////////////////////////////////////////////////
+        /******************************************************/
+        /******************* Event Handling *******************/
+        /******************************************************/
 
-        private static void shoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
+        private static void ShoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
         {
             Store.SaveShoppingCart();
         }
@@ -483,40 +487,26 @@ namespace StoreUser
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            // Resize the "root"-Grid-control so that it fills the "root"-Canvas-control.
             _rootGrid.Height = _root.ActualHeight;
             _rootGrid.Width = _root.ActualWidth;
+            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond it's bounds.
+            _rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
             UpdateDetailsColumn((Product)((Grid)sender).Tag);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void _rightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
+        private static void RightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
             Store.ShoppingCart.RemoveProduct((Product)((Button)sender).Tag); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
             _shoppingList_listView.ItemsSource = CreateShoppingCartData();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private static void _rightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
+        private static void RightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
             Store.ShoppingCart.AddProduct((Product)((Button)sender).Tag, 1); // Cast "sender" to a Button, and then cast its Tag-object to a Product.
