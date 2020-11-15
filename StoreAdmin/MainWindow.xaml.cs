@@ -57,7 +57,7 @@ namespace StoreAdmin
 
             var userViewTab = new TabItem { Header = "Store (User mode)", Content = _userView };
             var adminViewTab = new TabItem { Header = "Store (Admin mode)", Content = _adminView };
-            adminModeTab_manageProducts.Content = _wrapPanel;
+            adminModeTab_manageProducts.Content = _rootGrid;
 
             MainTabControl.Items.Add(userViewTab);
             MainTabControl.Items.Add(adminViewTab);

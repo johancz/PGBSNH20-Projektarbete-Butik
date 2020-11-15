@@ -27,9 +27,20 @@ namespace StoreAdmin
         }
         public static Grid CreateGrid()
         {
-            var rootGrid = new Grid();
+            var rootGrid = new Grid
+            {
+                ShowGridLines = true,
+                Margin = new Thickness(5),
+            };
+            _rootGrid = rootGrid;
+            WpfTools.ColumnsAndRows(rootGrid, 2, 0);
 
-            var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center, Width = 600 };
+            var scrollProducts = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+            scrollProducts.Background = Brushes.LightCyan;
+            WpfTools.AddToGrid(rootGrid, scrollProducts, 0, 0);
+
+            var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center, Width = 600};
+            scrollProducts.Content = productsPanel;
 
             foreach (Product product in Store.Products)
             {
@@ -40,11 +51,39 @@ namespace StoreAdmin
                     productsPanel.Children.Add(productItem);
                 }
             }
-            rootGrid.Children.Add(productsPanel);
 
             _productsPanel = productsPanel;
             _rootGrid = rootGrid;
-          
+
+            var shoppingCartScrollViewer = new ScrollViewer();
+            WpfTools.AddToGrid(_rootGrid, shoppingCartScrollViewer, 0, 1);
+            
+            var shoppingCartRootGrid = new Grid { ShowGridLines = true, Height = 500, Width = 500 };
+            shoppingCartScrollViewer.Content = shoppingCartRootGrid;
+
+            shoppingCartRootGrid.Background = Brushes.LightGoldenrodYellow;
+
+            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition());
+            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            var shoppingCart_toolbar = new Grid { ShowGridLines = true, Height = 50 };
+
+            shoppingCart_toolbar.Background = Brushes.LightSeaGreen;
+
+            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition());
+
+            var shoppingCart_itemCountLabel = new Label { Content = $"{Store.ShoppingCart.TotalSum} kr" };
+
+            Grid.SetColumn(shoppingCart_itemCountLabel, 0);
+            shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
+
+            var shoppingCart_saveButton = new Button { Content = "Save Shopping Cart" };
+
+            Grid.SetColumn(shoppingCart_saveButton, 1);
+            shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
+
             return _rootGrid;
         }
         public static Canvas Create()
