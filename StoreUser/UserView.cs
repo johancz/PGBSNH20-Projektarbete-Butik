@@ -118,7 +118,7 @@ namespace StoreUser
                             Padding = new Thickness(5),
                             Margin = new Thickness(5),
                         };
-                        shoppingCart_saveButton.Click += shoppingCart_saveButton_Click;
+                        shoppingCart_saveButton.Click += ShoppingCart_saveButton_Click;
                         // Add Button to toolbar
                         Grid.SetColumn(shoppingCart_saveButton, 1);
                         shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
@@ -483,6 +483,7 @@ namespace StoreUser
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
             Store.LoadShoppingCart(WinTemp.ShoppingCartCSV);
+            _shoppingList_listView.ItemsSource = UserView.CreateShoppingCartData();
         }
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
