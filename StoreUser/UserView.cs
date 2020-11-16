@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace StoreUser
 {
@@ -35,7 +36,7 @@ namespace StoreUser
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
 
-        private static Label _shoppingCart_itemCountLabel;
+        private static Grid _shoppingCart_summary;
 
         // TODO(johancz): Move to Settings-class?
         private struct ProductItem_LayoutSettings
@@ -64,189 +65,346 @@ namespace StoreUser
                 _leftColumnTabControl = new TabControl(); // TODO(johancz): convert to local variable
 
                 // Children of _leftColumnTabControl
-                //{
-                // "Browse Store" Tab
                 {
-                    var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
-                    var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
-
-                    foreach (Product product in Store.Products)
+                    // "Browse Store" Tab
                     {
-                        var productItem = UserView.CreateProductItem(product);
+                        var tabContent_browseStore = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
+                        var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center };
 
-                        if (productItem != null)
+                        foreach (Product product in Store.Products)
                         {
-                            productsPanel.Children.Add(productItem);
-                        }
-                    }
+                            var productItem = UserView.CreateProductItem(product);
 
-                    // Add the Products-WrapPanel to the ScrollViewer
-                    tabContent_browseStore.Content = productsPanel;
-
-                    // Create the TabItem and add it to the TabControl
-                    var tabItem_BrowseStore = new TabItem {
-                        Header = "Browse Store",
-                        FontSize = 16,
-                        Content = tabContent_browseStore };
-                    _leftColumnTabControl.Items.Add(tabItem_BrowseStore);
-                }
-
-                // "Shopping Cart" Tab
-                {
-                    GridView gridView;
-                    var shoppingCartRootGrid = new Grid();
-                    var shoppingCartScrollViewer = new ScrollViewer();
-                    shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-                    shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-
-                    // Shopping cart toolbar (with load and save buttons, total sum label)
-                    {
-                        var shoppingCart_toolbar = new Grid { };
-                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-                        shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-
-                        // Children of shoppingCart_toolbar
-                        {
-                            // TotalSum-Label
-                            _shoppingCart_itemCountLabel = new Label
+                            if (productItem != null)
                             {
-                                Name = "ShoppingCart_Summary",
-                                Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.\n{Store.ShoppingCart.TotalSum} kr"
-                            };
-                            // Add Label to toolbar
-                            Grid.SetColumn(_shoppingCart_itemCountLabel, 0);
-                            shoppingCart_toolbar.Children.Add(_shoppingCart_itemCountLabel);
-
-                            // Save-button
-                            var shoppingCart_saveButton = new Button
-                            {
-                                Content = "Save Shopping Cart",
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                Padding = new Thickness(5),
-                                Margin = new Thickness(5),
-                            };
-                            shoppingCart_saveButton.Click += ShoppingCart_saveButton_Click;
-                            // Add Button to toolbar
-                            Grid.SetColumn(shoppingCart_saveButton, 1);
-                            shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
-
-                            // Load-button
-                            var shoppingCart_loadButton = new Button
-                            {
-                                Content = "Load Shopping Cart",
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                Padding = new Thickness(5),
-                                Margin = new Thickness(5),
-                            };
-                            shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
-                            // Add Button to toolbar
-                            Grid.SetColumn(shoppingCart_loadButton, 2);
-                            shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
+                                productsPanel.Children.Add(productItem);
+                            }
                         }
 
-                        // Add the toolbar to the Grid
-                        shoppingCartRootGrid.Children.Add(shoppingCart_toolbar);
+                        // Add the Products-WrapPanel to the ScrollViewer
+                        tabContent_browseStore.Content = productsPanel;
+
+                        // Create the TabItem and add it to the TabControl
+                        var tabItem_BrowseStore = new TabItem
+                        {
+                            Header = "Browse Store",
+                            FontSize = 16,
+                            Content = tabContent_browseStore
+                        };
+                        _leftColumnTabControl.Items.Add(tabItem_BrowseStore);
                     }
 
-                    // Shopping cart items (StackPanel)
+                    // "Shopping Cart" Tab
                     {
-                        var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
+                        GridView gridView;
+                        var shoppingCartRootGrid = new Grid();
+                        var shoppingCartScrollViewer = new ScrollViewer();
+                        shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                        shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-
-                        var buttonFactory_buttonRemove1 = new FrameworkElementFactory(typeof(Button));
-                        buttonFactory_buttonRemove1.SetBinding(Button.ContentProperty, new Binding("buttonRemove1"));
-                        buttonFactory_buttonRemove1.SetBinding(Button.TagProperty, new Binding("product"));
-                        buttonFactory_buttonRemove1.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartRemoveProduct_Click));
-
-                        var add1_buttonFactory = new FrameworkElementFactory(typeof(Button));
-                        add1_buttonFactory.SetBinding(Button.ContentProperty, new Binding("buttonAdd1"));
-                        add1_buttonFactory.SetBinding(Button.TagProperty, new Binding("product"));
-                        add1_buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartAddProduct_Click));
-
-                        var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
-                        stackPanelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-                        stackPanelFactory.AppendChild(buttonFactory_buttonRemove1);
-                        stackPanelFactory.AppendChild(add1_buttonFactory);
-
-                        _shoppingList_listView = new ListView();
-                        _shoppingList_listView.SelectionChanged += _shoppingList_listView_SelectionChanged;
-                        UpdateShoppingCartView();
-
-                        gridView = new GridView { AllowsColumnReorder = false };
-                        var style = new Style { TargetType = typeof(GridViewColumnHeader) };
-                        style.Setters.Add(new Setter(ListViewItem.IsEnabledProperty, false));
-                        var t = new Trigger { Property = ListViewItem.IsEnabledProperty, Value = false };
-                        t.Setters.Add(new Setter(TextElement.ForegroundProperty, Brushes.Black));
-                        style.Triggers.Add(t);
-                        gridView.ColumnHeaderContainerStyle = style;
-                        gridView.Columns.Add(new GridViewColumn
+                        // Shopping cart toolbar (with load and save buttons, total sum label)
                         {
-                            DisplayMemberBinding = new Binding("product.Name"),
-                            Header = "Produkt"
-                        });
-                        gridView.Columns.Add(new GridViewColumn
-                        {
-                            DisplayMemberBinding = new Binding("productPrice"),
-                            Header = "Price"
-                        });
-                        gridView.Columns.Add(new GridViewColumn
-                        {
-                            DisplayMemberBinding = new Binding("productCount"),
-                            Header = "# of items"
-                        });
-                        gridView.Columns.Add(new GridViewColumn
-                        {
-                            DisplayMemberBinding = new Binding("productTotalPrice"),
-                            Header = "Total Price"
-                        });
-                        gridView.Columns.Add(new GridViewColumn
-                        {
-                            CellTemplate = new DataTemplate { VisualTree = stackPanelFactory },
-                            Header = "+/- items"
-                        });
-                        _shoppingList_listView.View = gridView;
+                            var shoppingCart_toolbar = new Grid { };
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                            shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-                        // TODO(johancz): ifall vi byter till en dummare control.
-                        //foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
-                        //{
-                        //    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
-                        //    var labelName = new Label { Content = product.Key.Name };
-                        //    var labelCount = new Label { Content = product.Value };
-                        //    var labelTotalPrice = new Label { Content = product.Value * product.Key.Price };
-                        //    stackPanel.Children.Add(labelName);
-                        //    stackPanel.Children.Add(labelCount);
-                        //    stackPanel.Children.Add(labelTotalPrice);
+                            // Children of shoppingCart_toolbar
+                            {
+                                // TotalSum-Label
+                                //_shoppingCart_summary = new StackPanel { Orientation = Orientation.Vertical };
+                                _shoppingCart_summary = new Grid();
+                                _shoppingCart_summary.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                                _shoppingCart_summary.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                                _shoppingCart_summary.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                                _shoppingCart_summary.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-                        //    //var listBoxItem = new ListBoxItem();
-                        //    //listBoxItem.Content = stackPanel;
-                        //    //listBox.Items.Add(listBoxItem);
 
-                        //    var listViewItem = new ListViewItem();
-                        //    listViewItem.Content = stackPanel;
-                        //    listView.Items.Add(listViewItem);
-                        //}
-                        shoppingCartScrollViewer.Content = _shoppingList_listView;
+                                // _shopppingCart_summary children:
+                                TextBlock activeDiscount;
+                                {
+                                    var shoppingCart_summaryItemCount = new Label
+                                    {
+                                        Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.",
+                                        Padding = new Thickness(5),
+                                        HorizontalAlignment = HorizontalAlignment.Left,
+                                    };
+                                    Grid.SetColumnSpan(shoppingCart_summaryItemCount, 2);
+                                    _shoppingCart_summary.Children.Add(shoppingCart_summaryItemCount);
+
+                                    var shoppingCart_summaryPriceTotal = new TextBlock
+                                    {
+                                        TextDecorations = TextDecorations.Strikethrough,
+                                        Text = $"{Store.ShoppingCart.TotalSum} {Store.Currency.Symbol}",
+                                        Padding = new Thickness(5),
+                                    };
+                                    Grid.SetRow(shoppingCart_summaryPriceTotal, 1);
+                                    _shoppingCart_summary.Children.Add(shoppingCart_summaryPriceTotal);
+
+                                    // Active discount Label
+                                    activeDiscount = new TextBlock
+                                    {
+                                        Visibility = Visibility.Collapsed,
+                                        Text = $"{Store.ShoppingCart.FinalSum} {Store.Currency.Symbol}",
+                                        Padding = new Thickness(5),
+                                    };
+                                    Grid.SetRow(activeDiscount, 1);
+                                    Grid.SetColumn(activeDiscount, 1);
+                                    _shoppingCart_summary.Children.Add(activeDiscount);
+                                }
+                                Grid.SetColumn(_shoppingCart_summary, 0);
+                                shoppingCart_toolbar.Children.Add(_shoppingCart_summary);
+
+                                var discountCodeSubmit = new Button
+                                {
+                                    Content = "+ Add discount code",
+                                    Background = Brushes.LightGreen,
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Padding = new Thickness(5),
+                                    Margin = new Thickness(5),
+                                };
+                                var discountCodeInput = new TextBox
+                                {
+                                    MinWidth = 200,
+                                    Text = "Enter your discount code here...",
+                                    // Placeholder text
+                                    Tag = "Enter your discount code here...",
+                                    TextWrapping = TextWrapping.NoWrap,
+                                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Padding = new Thickness(5),
+                                    Margin = new Thickness(5),
+
+                                };
+                                void discountSubmitEventHandler(object s, RoutedEventArgs e) // TODO: move to namespace
+                                {
+                                    if ((string)discountCodeSubmit.Content == "+ Add discount code")
+                                    {
+                                        discountCodeSubmit.IsEnabled = false;
+                                        bool success = Store.AddDiscountCode(discountCodeInput.Text);
+
+                                        if (success)
+                                        {
+                                            discountCodeInput.IsEnabled = false;
+                                            discountCodeInput.BorderBrush = Brushes.Green;
+                                            discountCodeInput.Background = Brushes.LightGreen;
+                                            activeDiscount.Visibility = Visibility.Visible;
+                                            discountCodeSubmit.Content = "- Remove discount code";
+                                            discountCodeSubmit.Background = Brushes.LightPink;
+                                            UpdateShoppingCartView();
+                                        }
+                                        else
+                                        {
+                                            discountCodeInput.BorderBrush = Brushes.Red;
+                                            discountCodeInput.Background = Brushes.LightPink;
+                                        }
+
+                                        discountCodeSubmit.IsEnabled = true;
+                                    }
+                                    else if ((string)discountCodeSubmit.Content == "- Remove discount code")
+                                    {
+                                        Store.RemoveDiscountCode();
+                                        discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+                                        discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+                                        discountCodeInput.IsEnabled = true;
+                                        discountCodeInput.Text = (string)discountCodeInput.Tag;
+                                        activeDiscount.Visibility = Visibility.Collapsed;
+                                        discountCodeInput.IsEnabled = true;
+                                        discountCodeSubmit.Content = "+ Add discount code";
+                                        discountCodeSubmit.Background = Brushes.LightGreen;
+                                        UpdateShoppingCartView();
+                                    }
+                                };
+
+                                // Placeholder text handling for 'discountCodeInput'
+                                {
+                                    string placeholderText = (string)discountCodeInput.Tag;
+
+                                    discountCodeInput.GotFocus += (object sender, RoutedEventArgs e) =>
+                                    {
+                                        if (discountCodeInput.Text == placeholderText)
+                                        {
+                                            discountCodeInput.Text = "";
+                                        }
+                                    };
+                                    discountCodeInput.LostFocus += (object sender, RoutedEventArgs e) =>
+                                    {
+                                        if (discountCodeInput.Text == "")
+                                        {
+                                            discountCodeInput.Text = placeholderText;
+                                            discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+                                            discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+                                        }
+                                    };
+                                    discountCodeInput.TextChanged += (object sender, TextChangedEventArgs e) =>
+                                    {
+                                        if (discountCodeInput.Text == "" || discountCodeInput.Text == placeholderText)
+                                        {
+                                            discountCodeSubmit.IsEnabled = false;
+                                            discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+                                            discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+                                        }
+                                        else
+                                        {
+                                            discountCodeSubmit.IsEnabled = true;
+                                        }
+                                    };
+                                }
+                                discountCodeInput.KeyUp += (s, e) =>
+                                {
+                                    if (e.Key == Key.Enter)
+                                    {
+                                        discountSubmitEventHandler(s, e);
+                                    }
+                                };
+                                Grid.SetColumn(discountCodeInput, 2);
+                                shoppingCart_toolbar.Children.Add(discountCodeInput);
+
+                                discountCodeSubmit.Click += discountSubmitEventHandler;
+                                Grid.SetColumn(discountCodeSubmit, 3);
+                                shoppingCart_toolbar.Children.Add(discountCodeSubmit);
+
+                                var gridSplitter = new GridSplitter
+                                {
+                                    Width = 1,
+                                    Background = Brushes.Gray,
+                                    IsEnabled = false,
+                                    Margin = new Thickness(5),
+                                };
+                                Grid.SetColumn(gridSplitter, 4);
+                                shoppingCart_toolbar.Children.Add(gridSplitter);
+
+                                var shoppingCart_saveButton = new Button
+                                {
+                                    Content = "Save Shopping Cart",
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Padding = new Thickness(5),
+                                    Margin = new Thickness(5),
+                                };
+                                shoppingCart_saveButton.Click += ShoppingCart_saveButton_Click;
+                                Grid.SetColumn(shoppingCart_saveButton, 5);
+                                shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
+
+                                var shoppingCart_loadButton = new Button
+                                {
+                                    Content = "Load Shopping Cart",
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Padding = new Thickness(5),
+                                    Margin = new Thickness(5),
+                                };
+                                shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
+                                Grid.SetColumn(shoppingCart_loadButton, 6);
+                                shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
+                            }
+
+                            // Add the toolbar to the Grid
+                            shoppingCartRootGrid.Children.Add(shoppingCart_toolbar);
+                        }
+
+                        // Shopping cart items (StackPanel)
+                        {
+                            var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
+
+
+                            var buttonFactory_buttonRemove1 = new FrameworkElementFactory(typeof(Button));
+                            buttonFactory_buttonRemove1.SetBinding(Button.ContentProperty, new Binding("buttonRemove1"));
+                            buttonFactory_buttonRemove1.SetBinding(Button.TagProperty, new Binding("product"));
+                            buttonFactory_buttonRemove1.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartRemoveProduct_Click));
+
+                            var add1_buttonFactory = new FrameworkElementFactory(typeof(Button));
+                            add1_buttonFactory.SetBinding(Button.ContentProperty, new Binding("buttonAdd1"));
+                            add1_buttonFactory.SetBinding(Button.TagProperty, new Binding("product"));
+                            add1_buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartAddProduct_Click));
+
+                            var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
+                            stackPanelFactory.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+                            stackPanelFactory.AppendChild(buttonFactory_buttonRemove1);
+                            stackPanelFactory.AppendChild(add1_buttonFactory);
+
+                            _shoppingList_listView = new ListView();
+                            _shoppingList_listView.SelectionChanged += _shoppingList_listView_SelectionChanged;
+                            UpdateShoppingCartView();
+
+                            gridView = new GridView { AllowsColumnReorder = false };
+                            var style = new Style { TargetType = typeof(GridViewColumnHeader) };
+                            style.Setters.Add(new Setter(ListViewItem.IsEnabledProperty, false));
+                            var t = new Trigger { Property = ListViewItem.IsEnabledProperty, Value = false };
+                            t.Setters.Add(new Setter(TextElement.ForegroundProperty, Brushes.Black));
+                            style.Triggers.Add(t);
+                            gridView.ColumnHeaderContainerStyle = style;
+                            gridView.Columns.Add(new GridViewColumn
+                            {
+                                DisplayMemberBinding = new Binding("product.Name"),
+                                Header = "Produkt"
+                            });
+                            gridView.Columns.Add(new GridViewColumn
+                            {
+                                DisplayMemberBinding = new Binding("productPrice"),
+                                Header = "Price"
+                            });
+                            gridView.Columns.Add(new GridViewColumn
+                            {
+                                DisplayMemberBinding = new Binding("productCount"),
+                                Header = "# of items"
+                            });
+                            gridView.Columns.Add(new GridViewColumn
+                            {
+                                DisplayMemberBinding = new Binding("productTotalPrice"),
+                                Header = "Total Price"
+                            });
+                            gridView.Columns.Add(new GridViewColumn
+                            {
+                                CellTemplate = new DataTemplate { VisualTree = stackPanelFactory },
+                                Header = "+/- items"
+                            });
+                            _shoppingList_listView.View = gridView;
+
+                            // TODO(johancz): ifall vi byter till en dummare control.
+                            //foreach (KeyValuePair<Product, int> product in Store.ShoppingCart.Products)
+                            //{
+                            //    var stackPanel = new StackPanel { Orientation = Orientation.Horizontal };
+                            //    var labelName = new Label { Content = product.Key.Name };
+                            //    var labelCount = new Label { Content = product.Value };
+                            //    var labelTotalPrice = new Label { Content = product.Value * product.Key.Price };
+                            //    stackPanel.Children.Add(labelName);
+                            //    stackPanel.Children.Add(labelCount);
+                            //    stackPanel.Children.Add(labelTotalPrice);
+
+                            //    //var listBoxItem = new ListBoxItem();
+                            //    //listBoxItem.Content = stackPanel;
+                            //    //listBox.Items.Add(listBoxItem);
+
+                            //    var listViewItem = new ListViewItem();
+                            //    listViewItem.Content = stackPanel;
+                            //    listView.Items.Add(listViewItem);
+                            //}
+                            shoppingCartScrollViewer.Content = _shoppingList_listView;
+                        }
+
+                        Grid.SetRow(shoppingCartScrollViewer, 1);
+                        shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
+
+                        var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Store.ShoppingCart.TotalSum} kr)";
+                        _shoppingCartTab = new TabItem
+                        {
+                            Name = "UserView_ShoppingCartTab",
+                            Header = new Label
+                            {
+                                Content = "My Shopping Cart " + tabLabel,
+                                FontSize = 16
+                            },
+                            Content = shoppingCartRootGrid
+                        };
+                        _leftColumnTabControl.Items.Add(_shoppingCartTab);
                     }
-
-                    Grid.SetRow(shoppingCartScrollViewer, 1);
-                    shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
-
-                    var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Store.ShoppingCart.TotalSum} kr)";
-                    _shoppingCartTab = new TabItem
-                    {
-                        Name = "UserView_ShoppingCartTab",
-                        Header = new Label {
-                            Content = "My Shopping Cart " + tabLabel,
-                            FontSize = 16
-                        },
-                        Content = shoppingCartRootGrid
-                    };
-                    _leftColumnTabControl.Items.Add(_shoppingCartTab);
                 }
-                //}
 
                 Grid.SetColumn(_leftColumnTabControl, 0);
                 _rootGrid.Children.Add(_leftColumnTabControl);
@@ -436,9 +594,9 @@ namespace StoreUser
             {
                 dynamic productRow = new ExpandoObject();
                 productRow.product = product.Key;
-                productRow.productPrice = product.Key.Price + product.Key.Currency.Symbol;
+                productRow.productPrice = product.Key.Price + Store.Currency.Symbol;
                 productRow.productCount = product.Value;
-                productRow.productTotalPrice = product.Key.Price * product.Value + product.Key.Currency.Symbol;
+                productRow.productTotalPrice = product.Key.Price * product.Value + Store.Currency.Symbol;
                 productRow.buttonRemove1 = " - ";
                 productRow.buttonAdd1 = " + ";
 
@@ -446,7 +604,14 @@ namespace StoreUser
             });
 
             _shoppingList_listView.ItemsSource = combinedData;
-            _shoppingCart_itemCountLabel.Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.\n{Store.ShoppingCart.TotalSum} kr";
+
+            // Update Shooping Cart Toolbar values (item count, total price & total price with discount if activated):
+            ((Label)_shoppingCart_summary.Children[0]).Content = $"Items: {Store.ShoppingCart.Products.Sum(p => p.Value)}";
+            ((TextBlock)_shoppingCart_summary.Children[1]).Text = $"Total: {Store.ShoppingCart.TotalSum} {Store.Currency.Symbol}";
+            ((TextBlock)_shoppingCart_summary.Children[2]).Text = $"Total: {Store.ShoppingCart.FinalSum} {Store.Currency.Symbol}";
+            ((TextBlock)_shoppingCart_summary.Children[1]).TextDecorations = Store.ShoppingCart.ActiveDiscountCode == null
+                                                                             ? null
+                                                                             : TextDecorations.Strikethrough;
         }
 
         private static void UpdateDetailsColumn(Product product)
@@ -468,7 +633,7 @@ namespace StoreUser
         private static void UpdateShoppingCartTabHeader()
         {
             int itemCount = Store.ShoppingCart.Products.Sum(p => p.Value);
-            ((Label)_shoppingCartTab.Header).Content = $"My Shopping Cart ({itemCount} items. {Store.ShoppingCart.TotalSum} kr)";
+            ((Label)_shoppingCartTab.Header).Content = $"My Shopping Cart ({itemCount} items. {Store.ShoppingCart.FinalSum} kr)";
         }
 
         /******************************************************/

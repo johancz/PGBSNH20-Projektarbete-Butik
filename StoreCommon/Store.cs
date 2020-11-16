@@ -7,6 +7,8 @@ namespace StoreCommon
 {
     public static class Store
     {
+        public static (string Code, string Symbol) Currency { get; set; }
+
         public static List<Product> Products { get; set; } = new List<Product>();
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
@@ -34,6 +36,7 @@ namespace StoreCommon
             }
             Products = products;
         }
+
         public static void LoadProducts(string pathAndFileName, out List<Product> products)
         {
             products = new List<Product>();
@@ -55,10 +58,11 @@ namespace StoreCommon
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);
             }
-            
         }
+
         public static void Init()
         {
+            Store.Currency = (Code: "SEK", Symbol: "kr");
             LoadProducts(WinTemp.ProductCSV);
             LoadDiscountCodes(WinTemp.DiscountCSV);
             LoadShoppingCart(WinTemp.ShoppingCartCSV);
@@ -123,6 +127,24 @@ namespace StoreCommon
             }
 
             DiscountCodes = discountCodes;
+        }
+
+        public static bool AddDiscountCode(string text)
+        {
+            var discountCode = DiscountCodes.Find(dc => dc.Code == text.Trim());
+
+            if (discountCode == null)
+            {
+                return false;
+            }
+
+            ShoppingCart.SetDiscountCode(discountCode);
+            return true;
+        }
+
+        public static void RemoveDiscountCode()
+        {
+            ShoppingCart.RemoveDiscountCode();
         }
     }
 }
