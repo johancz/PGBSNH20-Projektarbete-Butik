@@ -4,9 +4,9 @@ namespace StoreCommon
 {
     public static class AppFolder
     {
-        private static readonly string Name = "Fight Club & Veggies_JC.RA";
-        private static readonly string StoreFolder = Path.Combine(Path.GetTempPath(), Name);
-        public static readonly string Images = Path.Combine(StoreFolder, "Images");
+        private static readonly string ProjectName = "Fight Club & Veggies_JC.RA";
+        private static readonly string RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
+        public static readonly string ImagesPath = Path.Combine(RootFolderPath, "Images");
 
         private static readonly string InputProductsCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv");
         private static readonly string InputDiscountCodesCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleDiscountCodes.csv");
@@ -19,16 +19,16 @@ namespace StoreCommon
 
         static AppFolder()
         {
-            string productCSV = Path.Combine(StoreFolder, "Products.csv");
-            string discountCSV = Path.Combine(StoreFolder, "DiscountCodes.csv");
-            string shoppingCartCSV = Path.Combine(StoreFolder, "ShoppingCart.csv");
+            string productCSV = Path.Combine(RootFolderPath, "Products.csv");
+            string discountCSV = Path.Combine(RootFolderPath, "DiscountCodes.csv");
+            string shoppingCartCSV = Path.Combine(RootFolderPath, "ShoppingCart.csv");
 
             ProductCSV = productCSV;
             DiscountCSV = discountCSV;
             ShoppingCartCSV = shoppingCartCSV;
 
-            var storeFolder = new DirectoryInfo(StoreFolder);
-            var imageFolder = new DirectoryInfo(Images);
+            var storeFolder = new DirectoryInfo(RootFolderPath);
+            var imageFolder = new DirectoryInfo(ImagesPath);
             storeFolder.Create();
             imageFolder.Create();
 
@@ -50,7 +50,7 @@ namespace StoreCommon
                 foreach (var image in images)
                 {
                     string name = image.Split('\\')[^1];
-                    File.Copy(image, Path.Combine(Images, name));
+                    File.Copy(image, Path.Combine(ImagesPath, name));
                 }
             }
 
