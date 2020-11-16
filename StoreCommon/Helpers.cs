@@ -14,12 +14,18 @@ namespace StoreCommon
         public static string StoreDataImagesPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
         // TODO(johancz): Temporary output path, this should use the system's temp-folder.
         public static string StoreDataTemporaryOutputPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "TemporaryOutput");
-
+        public static void BackgroundImage(Control element, string uriRelative)
+        {
+            ImageSource source = new BitmapImage(new Uri(uriRelative, UriKind.Relative));
+            ImageBrush imageBrush = new ImageBrush { ImageSource = source };
+            ImageBrush imageBrushTitle = new ImageBrush { ImageSource = source };
+            element.Background = imageBrush;
+        }
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try
             {
-                var uri = new Uri(Path.Combine(WinTemp.Images, uriString), UriKind.Absolute);
+                var uri = new Uri(Path.Combine(AppFolder.ImagesPath, uriString), UriKind.Absolute);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;

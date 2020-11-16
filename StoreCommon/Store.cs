@@ -37,6 +37,20 @@ namespace StoreCommon
             Products = products;
         }
 
+        public static void SaveToText()
+        {
+            string productText = "";
+            foreach (var product in Products)
+            {
+                productText += String.Join('#', new[] {
+                    product.Name,
+                    product.Uri,
+                    product.Price.ToString(),
+                    product.Description + "#\n\n"
+                });
+            }
+            File.WriteAllText(AppFolder.ProductCSV, productText);
+        }
         public static void LoadProducts(string pathAndFileName, out List<Product> products)
         {
             products = new List<Product>();
@@ -63,9 +77,9 @@ namespace StoreCommon
         public static void Init()
         {
             Store.Currency = (Code: "SEK", Symbol: "kr");
-            LoadProducts(WinTemp.ProductCSV);
-            LoadDiscountCodes(WinTemp.DiscountCSV);
-            LoadShoppingCart(WinTemp.ShoppingCartCSV);
+            LoadProducts(AppFolder.ProductCSV);
+            LoadDiscountCodes(AppFolder.DiscountCSV);
+            LoadShoppingCart(AppFolder.ShoppingCartCSV);
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
@@ -81,7 +95,7 @@ namespace StoreCommon
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(WinTemp.ShoppingCartCSV);
+            ShoppingCart.SaveToFile(AppFolder.ShoppingCartCSV);
         }
 
         public static void LoadDiscountCodes(string path)
