@@ -1,6 +1,4 @@
 ﻿using StoreCommon;
-using System;
-using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Windows;
@@ -26,6 +24,7 @@ namespace StoreUser
         private static ListView _shoppingList_listView;
 
         // Right Column - Details column
+        private static Product _selectedProduct;
         // TODO(johancz): can this be removed? Its only use: "_rightColumnContentRoot.Visibility = Visibility.Visible;"
         // TODO(johancz): Add another "_rightColumnContentRoot" showing a placeholder for when a product is not selected.
         private static Grid _rightColumnContentRoot;
@@ -35,6 +34,8 @@ namespace StoreUser
         private static TextBlock _rightColumn_DetailsDescription;
         private static Button _rightColumn_DetailsRemoveFromCartButton;
         private static Button _rightColumn_detailsAddToCartButton;
+
+        private static Label _shoppingCart_itemCountLabel;
 
         // TODO(johancz): Move to Settings-class?
         private struct ProductItem_LayoutSettings
@@ -83,7 +84,10 @@ namespace StoreUser
                     tabContent_browseStore.Content = productsPanel;
 
                     // Create the TabItem and add it to the TabControl
-                    var tabItem_BrowseStore = new TabItem { Header = "Browse Store", Content = tabContent_browseStore };
+                    var tabItem_BrowseStore = new TabItem {
+                        Header = "Browse Store",
+                        FontSize = 16,
+                        Content = tabContent_browseStore };
                     _leftColumnTabControl.Items.Add(tabItem_BrowseStore);
                 }
 
@@ -102,42 +106,46 @@ namespace StoreUser
                         shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                         shoppingCart_toolbar.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-                        // TotalSum-Label
-                        var shoppingCart_itemCountLabel = new Label
+                        // Children of shoppingCart_toolbar
                         {
-                            Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.\n{Store.ShoppingCart.TotalSum} kr"
-                        };
-                        // Add Label to toolbar
-                        Grid.SetColumn(shoppingCart_itemCountLabel, 0);
-                        shoppingCart_toolbar.Children.Add(shoppingCart_itemCountLabel);
+                            // TotalSum-Label
+                            _shoppingCart_itemCountLabel = new Label
+                            {
+                                Name = "ShoppingCart_Summary",
+                                Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.\n{Store.ShoppingCart.TotalSum} kr"
+                            };
+                            // Add Label to toolbar
+                            Grid.SetColumn(_shoppingCart_itemCountLabel, 0);
+                            shoppingCart_toolbar.Children.Add(_shoppingCart_itemCountLabel);
 
-                        // Save-button
-                        var shoppingCart_saveButton = new Button
-                        {
-                            Content = "Save Shopping Cart",
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Padding = new Thickness(5),
-                            Margin = new Thickness(5),
-                        };
-                        shoppingCart_saveButton.Click += ShoppingCart_saveButton_Click;
-                        // Add Button to toolbar
-                        Grid.SetColumn(shoppingCart_saveButton, 1);
-                        shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
+                            // Save-button
+                            var shoppingCart_saveButton = new Button
+                            {
+                                Content = "Save Shopping Cart",
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Padding = new Thickness(5),
+                                Margin = new Thickness(5),
+                            };
+                            shoppingCart_saveButton.Click += ShoppingCart_saveButton_Click;
+                            // Add Button to toolbar
+                            Grid.SetColumn(shoppingCart_saveButton, 1);
+                            shoppingCart_toolbar.Children.Add(shoppingCart_saveButton);
 
-                        // Load-button
-                        var shoppingCart_loadButton = new Button
-                        {
-                            Content = "Load Shopping Cart",
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Padding = new Thickness(5),
-                            Margin = new Thickness(5),
-                        };
-                        shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
-                        // Add Button to toolbar
-                        Grid.SetColumn(shoppingCart_loadButton, 2);
-                        shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
+                            // Load-button
+                            var shoppingCart_loadButton = new Button
+                            {
+                                Content = "Load Shopping Cart",
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Padding = new Thickness(5),
+                                Margin = new Thickness(5),
+                            };
+                            shoppingCart_loadButton.Click += ShoppingCart_loadButton_Click;
+                            // Add Button to toolbar
+                            Grid.SetColumn(shoppingCart_loadButton, 2);
+                            shoppingCart_toolbar.Children.Add(shoppingCart_loadButton);
+                        }
 
                         // Add the toolbar to the Grid
                         shoppingCartRootGrid.Children.Add(shoppingCart_toolbar);
@@ -226,10 +234,14 @@ namespace StoreUser
                     Grid.SetRow(shoppingCartScrollViewer, 1);
                     shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
+                    var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Store.ShoppingCart.TotalSum} kr)";
                     _shoppingCartTab = new TabItem
                     {
                         Name = "UserView_ShoppingCartTab",
-                        Header = new Label { Content = "My Shopping Cart", FontSize = 16 },
+                        Header = new Label {
+                            Content = "My Shopping Cart " + tabLabel,
+                            FontSize = 16
+                        },
                         Content = shoppingCartRootGrid
                     };
                     _leftColumnTabControl.Items.Add(_shoppingCartTab);
@@ -352,37 +364,6 @@ namespace StoreUser
         /******************* Main Controls ********************/
         /******************************************************/
 
-        //private static TabItem CreateBrowseStoreTab(string header)
-        //{
-        //}
-
-        //private static TabItem CreateShoppingCartTab(string header)
-        //{
-        //}
-
-        //private static CreateStackPanel RightColumn()
-        //{
-        //}
-
-        private static void UpdateShoppingCartView()
-        {
-            var combinedData = Store.ShoppingCart.Products.Select(product =>
-            {
-                dynamic productRow = new ExpandoObject();
-                productRow.product = product.Key;
-                productRow.productName = product.Key.Name;
-                productRow.productPrice = product.Key.Price + product.Key.Currency.Symbol;
-                productRow.productCount = product.Value;
-                productRow.productTotalPrice = product.Key.Price * product.Value + product.Key.Currency.Symbol;
-                productRow.buttonRemove1 = new { Content = " - ", Tag = product.Key };
-                productRow.buttonAdd1 = new { Content = " + ", Tag = product.Key };
-
-                return productRow;
-            });
-
-            _shoppingList_listView.ItemsSource = combinedData;
-        }
-
         public static Grid CreateProductItem(Product product)
         {
             var tooltip = new ToolTip
@@ -449,6 +430,26 @@ namespace StoreUser
             return productGrid;
         }
 
+        private static void UpdateShoppingCartView()
+        {
+            var combinedData = Store.ShoppingCart.Products.Select(product =>
+            {
+                dynamic productRow = new ExpandoObject();
+                productRow.product = product.Key;
+                productRow.productName = product.Key.Name;
+                productRow.productPrice = product.Key.Price + product.Key.Currency.Symbol;
+                productRow.productCount = product.Value;
+                productRow.productTotalPrice = product.Key.Price * product.Value + product.Key.Currency.Symbol;
+                productRow.buttonRemove1 = new { Content = " - ", Tag = product.Key };
+                productRow.buttonAdd1 = new { Content = " + ", Tag = product.Key };
+
+                return productRow;
+            });
+
+            _shoppingList_listView.ItemsSource = combinedData;
+            _shoppingCart_itemCountLabel.Content = $"{Store.ShoppingCart.Products.Sum(p => p.Value)} items.\n{Store.ShoppingCart.TotalSum} kr";
+        }
+
         private static void UpdateDetailsColumn(Product product)
         {
             _rightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
@@ -460,16 +461,15 @@ namespace StoreUser
             _rightColumn_DetailsDescription.Text = product.Description;
             _rightColumn_DetailsRemoveFromCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Tag = product;
-            if (Store.ShoppingCart.Products.ContainsKey(product))
-            {
-                _rightColumn_DetailsRemoveFromCartButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                _rightColumn_DetailsRemoveFromCartButton.Visibility = Visibility.Hidden;
-            }
+            _rightColumn_DetailsRemoveFromCartButton.Visibility = Store.ShoppingCart.Products.ContainsKey(product)
+                                                                  ? Visibility.Visible
+                                                                  : Visibility.Hidden;
+        }
 
-            //_rightColumnContentRoot.Visibility = Visibility.Visible;
+        private static void UpdateShoppingCartTabHeader()
+        {
+            int itemCount = Store.ShoppingCart.Products.Sum(p => p.Value);
+            ((Label)_shoppingCartTab.Header).Content = $"My Shopping Cart ({itemCount} items. {Store.ShoppingCart.TotalSum} kr)";
         }
 
         /******************************************************/
@@ -487,7 +487,9 @@ namespace StoreUser
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
-            UpdateDetailsColumn((Product)((Grid)sender).Tag);
+            var product = (Product)((Grid)sender).Tag;
+            _selectedProduct = product;
+            UpdateDetailsColumn(product);
             _rightColumnContentRoot.Visibility = Visibility.Visible;
         }
 
@@ -498,6 +500,7 @@ namespace StoreUser
             Store.ShoppingCart.RemoveProduct(product);
             UpdateShoppingCartView();
             UpdateDetailsColumn(product);
+            UpdateShoppingCartTabHeader();
         }
 
         private static void RightColumn_DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
@@ -507,6 +510,7 @@ namespace StoreUser
             Store.ShoppingCart.AddProduct(product, 1);
             UpdateShoppingCartView();
             UpdateDetailsColumn(product);
+            UpdateShoppingCartTabHeader();
         }
 
         static void UserView_ShoppingCartRemoveProduct_Click(object sender, RoutedEventArgs e)
@@ -516,15 +520,18 @@ namespace StoreUser
             Store.ShoppingCart.RemoveProduct(product);
             UpdateShoppingCartView();
             UpdateDetailsColumn(product);
+            UpdateShoppingCartTabHeader();
         }
 
         static void UserView_ShoppingCartAddProduct_Click(object sender, RoutedEventArgs e)
         {
             // TODO(johancz): Error/Exception-handling
             var product = (Product)((Button)sender).Tag;
+            _selectedProduct = product;
             Store.ShoppingCart.AddProduct(product, 1);
             UpdateShoppingCartView();
             UpdateDetailsColumn(product);
+            UpdateShoppingCartTabHeader();
         }
 
         private static void ShoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
@@ -536,6 +543,8 @@ namespace StoreUser
         {
             Store.LoadShoppingCart(WinTemp.ShoppingCartCSV);
             UserView.UpdateShoppingCartView();
+            UpdateDetailsColumn(_selectedProduct);
+            UpdateShoppingCartTabHeader();
         }
 
         private static void _shoppingList_listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -544,7 +553,9 @@ namespace StoreUser
             if (listViewItemData != null)
             {
                 var product = (Product)listViewItemData.ToList()[0].Value;
-                UpdateDetailsColumn(product); // TODO: bug if clicking button in item
+                _selectedProduct = product;
+                UpdateDetailsColumn(product);
+                UpdateShoppingCartTabHeader();
                 _rightColumnContentRoot.Visibility = Visibility.Visible;
             }
         }
