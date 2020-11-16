@@ -2,9 +2,9 @@
 
 namespace StoreCommon
 {
-    public static class WinTemp
+    public static class AppFolder
     {
-        private static readonly string Name = "Merch & Veggies inc";
+        private static readonly string Name = "Fight Club & Veggies_JC.RA";
         private static readonly string StoreFolder = Path.Combine(Path.GetTempPath(), Name);
         public static readonly string Images = Path.Combine(StoreFolder, "Images");
 
@@ -17,7 +17,7 @@ namespace StoreCommon
         public static readonly string DiscountCSV;
         public static readonly string ShoppingCartCSV;
 
-        static WinTemp()
+        static AppFolder()
         {
             string productCSV = Path.Combine(StoreFolder, "Products.csv");
             string discountCSV = Path.Combine(StoreFolder, "DiscountCodes.csv");
@@ -31,7 +31,7 @@ namespace StoreCommon
             var imageFolder = new DirectoryInfo(Images);
             storeFolder.Create();
             imageFolder.Create();
-            
+
             if (!File.Exists(productCSV))
             {
                 File.Copy(InputProductsCSV, productCSV);
