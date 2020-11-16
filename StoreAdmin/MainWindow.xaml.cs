@@ -21,9 +21,34 @@ namespace StoreAdmin
         public MainWindow()
         {
             InitializeComponent();
-            Start();
+            //Start();
+            UnderConstructionStart();
         }
+        public void UnderConstructionStart()
+        {
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            Store.Init();
 
+            var AdminApp = new HybridAppWindow(this, "Administrator View", Brushes.LightBlue);
+            var editProductsPage = new HybridPage(AdminApp.tabControl, "Edit Products", Brushes.Aquamarine);
+            var editPanel = new DetailsPanel(editProductsPage.grid, Brushes.Red, "edit panel");
+            editPanel.AddAdminButtonPanel();
+
+            var newProduct = new HybridPage(AdminApp.tabControl, "New Product", Brushes.Aquamarine);
+            var newProductPanel = new DetailsPanel(newProduct.grid, Brushes.Red, "edit panel");
+            newProductPanel.NewProductContent();
+            newProductPanel.AddNewProductButtonPanel();
+
+            var discountCodePage = new HybridPage(AdminApp.tabControl, "Edit Discount Codes", Brushes.Aquamarine);
+
+            var productBrowser = new Browser(editProductsPage.grid);
+
+            foreach (var product in Store.Products)
+            {
+                var newProductItem = new BrowserItem(productBrowser.BrowserWrapPanel, product);
+            }
+
+        }
         private void Start()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;

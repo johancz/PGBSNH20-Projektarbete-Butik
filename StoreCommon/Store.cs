@@ -54,14 +54,13 @@ namespace StoreCommon
 
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);
-            }
-            
+            }            
         }
         public static void Init()
         {
-            LoadProducts(WinTemp.ProductCSV);
-            LoadDiscountCodes(WinTemp.DiscountCSV);
-            LoadShoppingCart(WinTemp.ShoppingCartCSV);
+            LoadProducts(AppFolder.ProductCSV);
+            LoadDiscountCodes(AppFolder.DiscountCSV);
+            LoadShoppingCart(AppFolder.ShoppingCartCSV);
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
@@ -77,7 +76,7 @@ namespace StoreCommon
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(WinTemp.ShoppingCartCSV);
+            ShoppingCart.SaveToFile(AppFolder.ShoppingCartCSV);
         }
 
         public static void LoadDiscountCodes(string path)

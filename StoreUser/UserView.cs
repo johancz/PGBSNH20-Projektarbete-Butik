@@ -319,7 +319,7 @@ namespace StoreUser
             _rightColumn_DetailsRemoveFromCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Tag = product;
             _rightColumn_detailsAddToCartButton.Visibility = Visibility.Visible;
-
+            
             _rightColumnContentRoot.Visibility = Visibility.Visible;
         }
 
@@ -334,7 +334,7 @@ namespace StoreUser
 
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
-            Store.LoadShoppingCart(WinTemp.ShoppingCartCSV);
+            Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
         }
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
