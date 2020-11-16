@@ -157,13 +157,13 @@ namespace StoreUser
 
 
                         var buttonFactory_buttonRemove1 = new FrameworkElementFactory(typeof(Button));
-                        buttonFactory_buttonRemove1.SetBinding(Button.ContentProperty, new Binding("buttonRemove1.Content"));
-                        buttonFactory_buttonRemove1.SetBinding(Button.TagProperty, new Binding("buttonRemove1.Tag"));
+                        buttonFactory_buttonRemove1.SetBinding(Button.ContentProperty, new Binding("buttonRemove1"));
+                        buttonFactory_buttonRemove1.SetBinding(Button.TagProperty, new Binding("product"));
                         buttonFactory_buttonRemove1.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartRemoveProduct_Click));
 
                         var add1_buttonFactory = new FrameworkElementFactory(typeof(Button));
-                        add1_buttonFactory.SetBinding(Button.ContentProperty, new Binding("buttonAdd1.Content"));
-                        add1_buttonFactory.SetBinding(Button.TagProperty, new Binding("buttonAdd1.Tag"));
+                        add1_buttonFactory.SetBinding(Button.ContentProperty, new Binding("buttonAdd1"));
+                        add1_buttonFactory.SetBinding(Button.TagProperty, new Binding("product"));
                         add1_buttonFactory.AddHandler(Button.ClickEvent, new RoutedEventHandler(UserView_ShoppingCartAddProduct_Click));
 
                         var stackPanelFactory = new FrameworkElementFactory(typeof(StackPanel));
@@ -184,7 +184,7 @@ namespace StoreUser
                         gridView.ColumnHeaderContainerStyle = style;
                         gridView.Columns.Add(new GridViewColumn
                         {
-                            DisplayMemberBinding = new Binding("productName"),
+                            DisplayMemberBinding = new Binding("product.Name"),
                             Header = "Produkt"
                         });
                         gridView.Columns.Add(new GridViewColumn
@@ -436,12 +436,11 @@ namespace StoreUser
             {
                 dynamic productRow = new ExpandoObject();
                 productRow.product = product.Key;
-                productRow.productName = product.Key.Name;
                 productRow.productPrice = product.Key.Price + product.Key.Currency.Symbol;
                 productRow.productCount = product.Value;
                 productRow.productTotalPrice = product.Key.Price * product.Value + product.Key.Currency.Symbol;
-                productRow.buttonRemove1 = new { Content = " - ", Tag = product.Key };
-                productRow.buttonAdd1 = new { Content = " + ", Tag = product.Key };
+                productRow.buttonRemove1 = " - ";
+                productRow.buttonAdd1 = " + ";
 
                 return productRow;
             });
