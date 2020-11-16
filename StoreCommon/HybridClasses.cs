@@ -12,7 +12,7 @@ namespace StoreCommon
     {
         public static List<Page> Pages = new List<Page>();
         public static List<DetailsPanel> detailsPanels = new List<DetailsPanel>();
-        public static List<BrowserItem> browserItems = new List<BrowserItem>();
+        public static List<BrowserItem> BrowserItems = new List<BrowserItem>();
         public static List<FrameworkElement> Elements = new List<FrameworkElement>();
 
         public static Product SelectedProduct;
@@ -34,24 +34,27 @@ namespace StoreCommon
         public Grid ItemGrid;
         public Product _product;
         public BrowserItem(WrapPanel parent, Product product)
-        { 
+        {
             Parent = parent;
             _product = product;
-
+            BrowserItems.Add(this);
+        }
+        public void LoadProductContent()
+        { 
             var tooltip = new ToolTip
             {
                 Placement = PlacementMode.Mouse,
                 MaxWidth = 800,
                 Content = new TextBlock
                 {
-                    Text = $"{product.Name}\n{product.Description}\n",
+                    Text = $"{_product.Name}\n{_product.Description}\n",
                     TextWrapping = TextWrapping.Wrap,
                 }
             };
 
             var itemGrid = new Grid
             {
-                Tag = product,
+                Tag = _product,
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = ProductItem_LayoutSettings.gridItemWidth,
                 Height = ProductItem_LayoutSettings.gridItemHeight,
@@ -68,7 +71,7 @@ namespace StoreCommon
             ItemGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             ItemGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+            var productThumbnail = Helpers.CreateNewImage(_product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
             productThumbnail.Stretch = Stretch.UniformToFill;
             productThumbnail.VerticalAlignment = VerticalAlignment.Center;
             productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
@@ -77,7 +80,7 @@ namespace StoreCommon
 
             var nameLabel = new Label
             {
-                Content = product.Name,
+                Content = _product.Name,
                 FontSize = 14,
             };
             Grid.SetColumn(nameLabel, 0);
@@ -86,15 +89,23 @@ namespace StoreCommon
 
             var priceLabel = new Label
             {
-                Content = $"{product.Price} kr",
+                Content = $"{_product.Price} kr",
             };
             Grid.SetColumn(priceLabel, 1);
             Grid.SetRow(priceLabel, 1);
             ItemGrid.Children.Add(priceLabel);
 
             Elements.Add(ItemGrid);
-            browserItems.Add(this);
+            BrowserItems.Add(this);
             ItemGrid.MouseUp += ItemGrid_MouseUp;
+        }
+        public void RefreshProductContent()
+        {
+            var thumbNail = (Image)(ItemGrid.Children[0]);
+            var nameLabel = (Label)(ItemGrid.Children[1]);
+            nameLabel.Content = _product.Name;
+            var priceLabel = (Label)(ItemGrid.Children[2]);
+            priceLabel.Content = $"{_product.Price} kr";
         }
         public void ItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
         {

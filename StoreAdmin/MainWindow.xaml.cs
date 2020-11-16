@@ -46,6 +46,7 @@ namespace StoreAdmin
             foreach (var product in Store.Products)
             {
                 var newProductItem = new BrowserItem(productBrowser.BrowserWrapPanel, product);
+                newProductItem.LoadProductContent();
             }
 
         }

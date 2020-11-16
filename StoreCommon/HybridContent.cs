@@ -69,7 +69,8 @@ namespace StoreCommon
                 Tag = "rightcolumn detailsdescription",
                 TextWrapping = TextWrapping.Wrap,
                 Background = Brushes.Transparent,
-                IsReadOnly = true
+                IsReadOnly = true,
+                AcceptsReturn = true
             };
             Elements.Add(_rightColumn_DetailsDescription);
             // Create the product description Label
@@ -88,10 +89,6 @@ namespace StoreCommon
             // Add the right-column to the "root"-Grid.
             Grid.SetColumn(_rightColumnContentRoot, 1);
             Parent.Children.Add(_rightColumnContentRoot);
-        }
-        public void EditProductContent()
-        {
-
         }
         public void NewProductContent()
         {
@@ -204,7 +201,6 @@ namespace StoreCommon
             Grid.SetColumn(rightColumn_detailsPanel_AdminButtons, 0);
             _detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_AdminButtons);
         }
-
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
@@ -217,6 +213,8 @@ namespace StoreCommon
             _rightColumn_DetailsName.IsReadOnly = true;
             _rightColumn_DetailsName.Background = Brushes.Transparent;
             Store.SaveToText();
+            var browserItem = BrowserItems.Find(x => x._product == SelectedProduct);
+            browserItem.RefreshProductContent();           
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
