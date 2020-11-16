@@ -215,7 +215,8 @@ namespace StoreCommon
 
             SelectedProduct.Name = _rightColumn_DetailsName.Text;
             _rightColumn_DetailsName.IsReadOnly = true;
-            _rightColumn_DetailsName.Background = Brushes.Transparent;   
+            _rightColumn_DetailsName.Background = Brushes.Transparent;
+            Store.SaveToText();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)

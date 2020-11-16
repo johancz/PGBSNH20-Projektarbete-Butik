@@ -33,7 +33,7 @@ namespace StoreCommon
         public WrapPanel Parent;
         public Grid ItemGrid;
         public Product _product;
-        public BrowserItem(WrapPanel parent, Product product, int? index = null)
+        public BrowserItem(WrapPanel parent, Product product)
         { 
             Parent = parent;
             _product = product;
@@ -60,15 +60,8 @@ namespace StoreCommon
                 Background = Brushes.LightGray,
             };
 
+            Parent.Children.Add(itemGrid);
             ItemGrid = itemGrid;
-            if (index == null)
-            {
-                Parent.Children.Add(itemGrid);
-            }
-            else
-            {
-                Parent.Children.Insert((int)index, itemGrid);
-            }
 
             ItemGrid.ColumnDefinitions.Add(new ColumnDefinition());
             ItemGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });

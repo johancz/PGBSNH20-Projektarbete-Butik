@@ -34,6 +34,15 @@ namespace StoreCommon
             }
             Products = products;
         }
+        public static void SaveToText()
+        {
+            string productText = "";
+            foreach (var product in Products)
+            {
+                productText += String.Join('#', new[] { product.Name, product.Uri, product.Price.ToString(), product.Description + "#\n\n" });
+            }
+            File.WriteAllText(AppFolder.ProductCSV, productText);
+        }
         public static void LoadProducts(string pathAndFileName, out List<Product> products)
         {
             products = new List<Product>();
