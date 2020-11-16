@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace StoreCommon.Tests
 {
@@ -136,13 +137,11 @@ namespace StoreCommon.Tests
                 new DiscountCode(code: "Half-Off", percentage: 0.5),
             };
 
-            var expectedCodes = expectedDiscountCodes.Select(discountCode => discountCode.Code).ToArray();
-            var expectedPercentages = expectedDiscountCodes.Select(discountCode => discountCode.Percentage).ToArray();
-            var actualCodes = Store.DiscountCodes.Select(discountCode => discountCode.Code).ToArray();
-            var actualPercentages = Store.DiscountCodes.Select(discountCode => discountCode.Percentage).ToArray();
+            var expected = expectedDiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
+            var actual = Store.DiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
 
-            CollectionAssert.AreEqual(expectedCodes, actualCodes);
-            CollectionAssert.AreEqual(expectedPercentages, actualPercentages);
+
+            CollectionAssert.AreEqual(expected, actual);
         }
     }
 }

@@ -74,35 +74,6 @@ namespace StoreCommon
             ActiveDiscountCode = null;
         }
 
-        // TODO(johancz): Here or in Shop-class?
-        /// <summary>
-        /// Save this ProductList to file.
-        /// </summary>
-        /// <param name="pathAndFileName">Filename (including file-extension) of file the list should be saved to.</param>
-        /// <returns>bool: true if the file was saved successfully, false if it couldn't be saved.</returns>
-        public bool SaveToFile(string path, string fileName)
-        {
-            if (Products.Count == 0)
-            {
-                // TODO(johancz): visa ett meddelande om kunden försöker spara en tom lista? eller det kanske är bättre att disabla/gömma knappen
-                // The ProductList is empty, do nothing.
-                return false;
-            }
-
-            string[] fileContents = Products.Select(productItem => productItem.Key.Name + ";" + productItem.Value).ToArray();
-
-            try
-            {
-                Directory.CreateDirectory(path);
-                File.WriteAllLines(Path.Combine(path, fileName), fileContents);
-                return true;
-            }
-            catch (Exception)
-            {
-                // TODO(johancz): exception handling
-                return false;
-            }
-        }
         public bool SaveToFile(string path)
         {
             if (Products.Count == 0)
@@ -117,13 +88,22 @@ namespace StoreCommon
             try
             {
                 Directory.CreateDirectory(path);
-                File.WriteAllLines(path, fileContents);
-                return true;
             }
             catch (Exception)
             {
                 // TODO(johancz): exception handling
-                return false;
+                System.Diagnostics.Debug.WriteLine("Could not create the Directory, it already exists");
+            }
+
+            try
+            {
+                File.WriteAllLines(path, fileContents);
+                return true;
+            }
+            catch (Exception e)
+            {
+                // TODO(johancz): exception handling
+                throw e;
             }
         }
         /// <summary>
