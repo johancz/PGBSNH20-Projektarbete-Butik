@@ -534,7 +534,7 @@ namespace StoreUser
 
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
-            Store.LoadShoppingCart(WinTemp.ShoppingCartCSV);
+            Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
             UserView.UpdateShoppingCartView();
         }
 
