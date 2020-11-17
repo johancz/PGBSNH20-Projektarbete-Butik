@@ -20,7 +20,7 @@ namespace StoreCommon
         {
             Tag = tag;
             Parent = parent;
-            detailsPanels.Add(this);
+            detailsPanel = this;
 
             _rightColumnContentRoot = new Grid { ShowGridLines = true, Background = brush };
    
@@ -147,7 +147,7 @@ namespace StoreCommon
 
             var editButton = new Button
             {
-                Tag = "Edit",
+                Tag = "edit",
                 Padding = new Thickness(5),
                 Content = new Label { Content = "Edit", HorizontalAlignment = HorizontalAlignment.Left },
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -170,7 +170,7 @@ namespace StoreCommon
 
             var removeButton = new Button
             {
-                Tag = "Remove",
+                Tag = "remove",
                 Padding = new Thickness(5),
                 Content = new Label { Content = "Remove", HorizontalAlignment = HorizontalAlignment.Left },
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -180,13 +180,14 @@ namespace StoreCommon
 
             var changeImageButton = new Button
             {
-                Tag = "Change Image",
+                Tag = "change image",
                 Padding = new Thickness(5),
                 Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left },
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left,
             };
             Elements.Add(changeImageButton);
+            changeImageButton.Click += ChangeImageButton_Click;
 
             var cancelButton = new Button
             {
@@ -199,14 +200,20 @@ namespace StoreCommon
             Elements.Add(cancelButton);
 
             rightColumn_detailsPanel_AdminButtons.Children.Add(cancelButton);
+            rightColumn_detailsPanel_AdminButtons.Children.Add(changeImageButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(editButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(removeButton);
-            rightColumn_detailsPanel_AdminButtons.Children.Add(changeImageButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(saveChangesButton);
 
             Grid.SetColumn(rightColumn_detailsPanel_AdminButtons, 0);
             _detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_AdminButtons);
         }
+
+        private void ChangeImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            _browser.SwitchContent();
+        }
+
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
@@ -219,7 +226,7 @@ namespace StoreCommon
             _rightColumn_DetailsName.IsReadOnly = true;
             _rightColumn_DetailsName.Background = Brushes.Transparent;
             Store.SaveToText();
-            var browserItem = BrowserItems.Find(x => x._product == SelectedProduct);
+            var browserItem = ProductBrowserItems.Find(x => x.ItemGrid.Tag == SelectedProduct);
             browserItem.RefreshProductContent();           
         }
 
@@ -231,7 +238,10 @@ namespace StoreCommon
             _rightColumn_DetailsName.IsReadOnly = false;
             _rightColumn_DetailsName.Background = Brushes.White;
         }
-
+        public void UpdateImage()
+        {
+           
+        }
         public void Update()
         {
             var product = SelectedProduct;
