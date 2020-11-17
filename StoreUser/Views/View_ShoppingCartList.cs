@@ -15,9 +15,7 @@ namespace StoreUser.Views
 {
     public static class View_ShoppingCartList
     {
-        private static ListView _root; // _shoppingList_listView
-
-        internal static ListView _shoppingList_listView; // _root?
+        private static ListView _root;
         internal static GridView _gridView;
 
         public static ListView Init()
@@ -25,15 +23,11 @@ namespace StoreUser.Views
             CreateGUI();
             UpdateData();
             UpdateGUI();
-            //return _root;
-            return _shoppingList_listView;
+            return _root;
         }
 
         public static void CreateGUI()
         {
-            //var shoppingCartPanel = new StackPanel { Orientation = Orientation.Vertical };
-
-
             var buttonFactory_buttonRemove1 = new FrameworkElementFactory(typeof(Button));
             buttonFactory_buttonRemove1.SetBinding(Button.ContentProperty, new Binding("buttonRemove1"));
             buttonFactory_buttonRemove1.SetBinding(Button.TagProperty, new Binding("product"));
@@ -49,8 +43,8 @@ namespace StoreUser.Views
             stackPanelFactory.AppendChild(buttonFactory_buttonRemove1);
             stackPanelFactory.AppendChild(add1_buttonFactory);
 
-            _shoppingList_listView = new ListView(); // _root
-            _shoppingList_listView.SelectionChanged += EventHandler._shoppingList_listView_SelectionChanged;
+            _root = new ListView(); // _root
+            _root.SelectionChanged += EventHandler._root_SelectionChanged;
             UpdateShoppingCartView();
 
             _gridView = new GridView { AllowsColumnReorder = false };
@@ -85,7 +79,7 @@ namespace StoreUser.Views
                 CellTemplate = new DataTemplate { VisualTree = stackPanelFactory },
                 Header = "+/- items"
             });
-            _shoppingList_listView.View = _gridView;
+            _root.View = _gridView;
 
             //////////////////// TODO(johancz): ifall vi byter till en dummare control.
             // 
@@ -134,7 +128,7 @@ namespace StoreUser.Views
                 return productRow;
             });
 
-            _shoppingList_listView.ItemsSource = combinedData;
+            _root.ItemsSource = combinedData;
         }
 
         private static class EventHandler
@@ -156,9 +150,9 @@ namespace StoreUser.Views
                 UserView.UpdateGUI();
             }
 
-            internal static void _shoppingList_listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            internal static void _root_SelectionChanged(object sender, SelectionChangedEventArgs e)
             {
-                ExpandoObject listViewItemData = ((ExpandoObject)_shoppingList_listView.SelectedItem);
+                ExpandoObject listViewItemData = ((ExpandoObject)_root.SelectedItem);
                 if (listViewItemData != null)
                 {
                     var product = (Product)listViewItemData.ToList()[0].Value;

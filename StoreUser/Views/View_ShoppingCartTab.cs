@@ -15,20 +15,16 @@ namespace StoreUser.Views
     {
         private static TabItem _root;
 
-        private static TabItem _shoppingCartTab; // _root?
-
         public static TabItem Init()
         {
             CreateGUI();
             UpdateData();
             UpdateGUI();
-            //return _root;
-            return _shoppingCartTab;
+            return _root;
         }
 
         public static void CreateGUI()
         {
-            GridView gridView;
             var shoppingCartRootGrid = new Grid();
             var shoppingCartScrollViewer = new ScrollViewer();
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
@@ -48,9 +44,9 @@ namespace StoreUser.Views
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
             var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Store.ShoppingCart.TotalSum} kr)";
-            _shoppingCartTab = new TabItem
+            _root = new TabItem
             {
-                Name = "UserView_ShoppingCartTab",
+                Name = "UserView_root",
                 Header = new Label
                 {
                     Content = "My Shopping Cart " + tabLabel,
@@ -67,7 +63,7 @@ namespace StoreUser.Views
         internal static void UpdateShoppingCartTabHeader()
         {
             int itemCount = Store.ShoppingCart.Products.Sum(p => p.Value);
-            ((Label)_shoppingCartTab.Header).Content = $"My Shopping Cart ({itemCount} items. {Store.ShoppingCart.FinalSum} kr)";
+            ((Label)_root.Header).Content = $"My Shopping Cart ({itemCount} items. {Store.ShoppingCart.FinalSum} kr)";
         }
 
         private static void UpdateData()

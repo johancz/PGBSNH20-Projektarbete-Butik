@@ -14,7 +14,6 @@ namespace StoreUser.Views
     public static class View_DetailsPanel
     {
         private static Grid _root;
-        internal static Grid _rightColumnContentRoot; // _root?
 
         private static Image _rightColumn_DetailsImage;
         private static Label _rightColumn_DetailsName;
@@ -28,25 +27,24 @@ namespace StoreUser.Views
             CreateGUI();
             UpdateData();
             UpdateGUI();
-            //return _root;
-            return _rightColumnContentRoot;
+            return _root;
         }
 
         public static void CreateGUI()
         {
             //  Right Column Content Root: Grid
-            _rightColumnContentRoot = new Grid
+            _root = new Grid
             {
                 ShowGridLines = true,
                 Visibility = Visibility.Hidden,
             };
 
-            _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             // Needs to be GridUnitType.Star for MaxWidth to work on the TextBlock containing the product's description.
-            _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             // Create and add a Product.Image to the right column's root (StackPanel)
-            _rightColumnContentRoot.Children.Add(_rightColumn_DetailsImage = new Image());
+            _root.Children.Add(_rightColumn_DetailsImage = new Image());
 
             // Details Column: name, price, description and shopping cart buttons.
             {
@@ -55,7 +53,7 @@ namespace StoreUser.Views
                 detailsColumn_detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
                 Grid.SetRow(detailsColumn_detailsGrid, 1);
-                _rightColumnContentRoot.Children.Add(detailsColumn_detailsGrid);
+                _root.Children.Add(detailsColumn_detailsGrid);
 
                 var detailsColumn_namePriceDescription = new Grid { ShowGridLines = true };
                 detailsColumn_namePriceDescription.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
@@ -133,6 +131,7 @@ namespace StoreUser.Views
         public static void UpdateGUI()
         {
         }
+
         internal static void UpdateDetailsColumn(Product product)
         {
             _rightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
@@ -160,7 +159,6 @@ namespace StoreUser.Views
 
         internal static class EventHandler
         {
-
             internal static void RightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
             {
                 // TODO(johancz): Error/Exception-handling

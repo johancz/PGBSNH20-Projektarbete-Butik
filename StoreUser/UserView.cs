@@ -204,7 +204,7 @@ namespace StoreUser
             var product = (Product)((Grid)sender).Tag;
             _selectedProduct = product;
             View_DetailsPanel.UpdateDetailsColumn(product);
-            View_DetailsPanel._rightColumnContentRoot.Visibility = Visibility.Visible;
+            DetailsPanel.Visibility = Visibility.Visible;
         }
     }
 }
