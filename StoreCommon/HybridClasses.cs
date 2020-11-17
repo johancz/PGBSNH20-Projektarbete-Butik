@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
@@ -16,7 +17,7 @@ namespace StoreCommon
         public static List<BrowserItem> ImageBrowserItems = new List<BrowserItem>();
         public static List<FrameworkElement> Elements = new List<FrameworkElement>();
         public static bool AddImage = false;
-
+        public static Image? SelectedImage = new Image();
         public static Product SelectedProduct;
         public static object GetElement(string _tag)
         {
@@ -60,15 +61,15 @@ namespace StoreCommon
             ItemGrid.Children.Add(productThumbnail);
             ImageBrowserItems.Add(this);
 
-            ItemGrid.MouseUp += ImageItemGrid_MouseUp1;
+            ItemGrid.MouseUp += ImageItemGrid_MouseUp;
         }
 
-        private void ImageItemGrid_MouseUp1(object sender, MouseButtonEventArgs e)
+        private void ImageItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             var itemGrid = (Grid)sender;
             var itemImage = (Image)(itemGrid.Children[0]);
+            SelectedImage = itemImage;
             var source = itemImage.Source;
-
             var displayImage = ((Image)GetElement("rightcolumn detailsimage"));
             displayImage.Source = source;
         }
@@ -87,6 +88,7 @@ namespace StoreCommon
 
             var tooltip = new ToolTip
             {
+
                 Placement = PlacementMode.Mouse,
                 MaxWidth = 800,
                 Content = new TextBlock
@@ -126,14 +128,18 @@ namespace StoreCommon
         public void RefreshProductContent()
         {
             var product = ((Product)(ItemGrid.Tag));
-            var thumbNail = ImageThumbnail;
             var nameLabel = (Label)(ItemGrid.Children[1]);
+            if (SelectedImage != null)
+            {
+                ImageThumbnail.Source = SelectedImage.Source;
+            }
             nameLabel.Content = product.Name;
             var priceLabel = (Label)(ItemGrid.Children[2]);
             priceLabel.Content = $"{product.Price} kr";
         }
         public void ProductItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            SelectedImage = null;
             SelectedProduct = (Product)(ItemGrid.Tag);
             detailsPanel.Update();
         }
@@ -185,6 +191,7 @@ namespace StoreCommon
         }
         public void SwitchContent()
         {
+            var newButton = (Button)GetElement("new product");
             var changeButton = (Button)GetElement("change image");
             var editButton = (Button)GetElement("edit");
             var removeButton = (Button)GetElement("remove");
@@ -207,6 +214,7 @@ namespace StoreCommon
                 buttonParent.Children.Remove(editButton);
                 buttonParent.Children.Remove(removeButton);
                 buttonParent.Children.Remove(saveButton);
+                buttonParent.Children.Remove(newButton);
             }
             else
             {
@@ -224,6 +232,7 @@ namespace StoreCommon
                 buttonParent.Children.Add(editButton);
                 buttonParent.Children.Add(removeButton);
                 buttonParent.Children.Add(saveButton);
+                buttonParent.Children.Add(newButton);
             }
         }
         public void LoadBrowserImages()

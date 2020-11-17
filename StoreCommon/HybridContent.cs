@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
@@ -15,6 +16,7 @@ namespace StoreCommon
         private Grid _detailsColumn_detailsGrid;
         private TextBox _rightColumn_DetailsName;
         private TextBox _rightColumn_DetailsDescription;
+        private Image _rightColumn_DetailsImage;
         private StackPanel _rightColumn_detailsPanel_nameAndPrice;
         public DetailsPanel(Grid parent, Brush brush, string tag)
         {
@@ -28,6 +30,7 @@ namespace StoreCommon
             _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             // Create and add a Product.Image to the right column's root (StackPanel)
             var rightColumn_DetailsImage = new Image { Tag = "rightcolumn detailsimage" };
+            _rightColumn_DetailsImage = rightColumn_DetailsImage;
 
             Elements.Add(rightColumn_DetailsImage);
 
@@ -199,11 +202,22 @@ namespace StoreCommon
             };
             Elements.Add(cancelButton);
 
+            var newProductButton = new Button
+            {
+                Tag = "new product",
+                Padding = new Thickness(5),
+                Content = new Label { Content = "New Product", HorizontalAlignment = HorizontalAlignment.Left },
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+            };
+            Elements.Add(newProductButton);
+
             rightColumn_detailsPanel_AdminButtons.Children.Add(cancelButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(changeImageButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(editButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(removeButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(saveChangesButton);
+            rightColumn_detailsPanel_AdminButtons.Children.Add(newProductButton);
 
             Grid.SetColumn(rightColumn_detailsPanel_AdminButtons, 0);
             _detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_AdminButtons);
@@ -217,16 +231,16 @@ namespace StoreCommon
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
-
-            SelectedProduct.Description = textbox.Text;
             textbox.IsReadOnly = true;
             textbox.Background = Brushes.Transparent;
+            SelectedProduct.Description = textbox.Text;
 
             SelectedProduct.Name = _rightColumn_DetailsName.Text;
             _rightColumn_DetailsName.IsReadOnly = true;
             _rightColumn_DetailsName.Background = Brushes.Transparent;
             Store.SaveToText();
             var browserItem = ProductBrowserItems.Find(x => x.ItemGrid.Tag == SelectedProduct);
+
             browserItem.RefreshProductContent();           
         }
 
@@ -238,10 +252,7 @@ namespace StoreCommon
             _rightColumn_DetailsName.IsReadOnly = false;
             _rightColumn_DetailsName.Background = Brushes.White;
         }
-        public void UpdateImage()
-        {
-           
-        }
+  
         public void Update()
         {
             var product = SelectedProduct;
