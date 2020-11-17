@@ -10,10 +10,12 @@ namespace StoreCommon
 {
     public abstract class CommonFrameWork
     {
-        public static List<Page> Pages = new List<Page>();
-        public static List<DetailsPanel> detailsPanels = new List<DetailsPanel>();
-        public static List<BrowserItem> browserItems = new List<BrowserItem>();
+        public static DetailsPanel detailsPanel;
+        public static Browser _browser;
+        public static List<BrowserItem> ProductBrowserItems = new List<BrowserItem>();
+        public static List<BrowserItem> ImageBrowserItems = new List<BrowserItem>();
         public static List<FrameworkElement> Elements = new List<FrameworkElement>();
+        public static bool AddImage = false;
 
         public static Product SelectedProduct;
         public static object GetElement(string _tag)
@@ -31,12 +33,57 @@ namespace StoreCommon
     public class BrowserItem : CommonFrameWork
     {
         public WrapPanel Parent;
-        public Grid ItemGrid;
-        public Product _product;
-        public BrowserItem(WrapPanel parent, Product product)
-        { 
-            Parent = parent;
-            _product = product;
+        public Grid ItemGrid; 
+        public Image ImageThumbnail;
+        public BrowserItem(WrapPanel parent)
+        {
+            Parent = parent;          
+
+            var itemGrid = new Grid
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                Width = ProductItem_LayoutSettings.gridItemWidth,
+                Height = ProductItem_LayoutSettings.gridItemHeight,
+                Margin = new Thickness(5),
+                Background = Brushes.LightGray,
+            };
+
+            ItemGrid = itemGrid;
+        }
+        public void LoadImageBrowserItem(string filePath)
+        {
+            var productThumbnail = Helpers.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
+            ImageThumbnail = productThumbnail;
+            productThumbnail.Stretch = Stretch.UniformToFill;
+            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
+            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
+            ItemGrid.Children.Add(productThumbnail);
+            ImageBrowserItems.Add(this);
+
+            ItemGrid.MouseUp += ImageItemGrid_MouseUp1;
+        }
+
+        private void ImageItemGrid_MouseUp1(object sender, MouseButtonEventArgs e)
+        {
+            var itemGrid = (Grid)sender;
+            var itemImage = (Image)(itemGrid.Children[0]);
+            var source = itemImage.Source;
+
+            var displayImage = ((Image)GetElement("rightcolumn detailsimage"));
+            displayImage.Source = source;
+        }
+
+        public void LoadProductBrowserItem(Product product)
+        {
+            Parent.Children.Add(ItemGrid);
+            ItemGrid.Tag = product;
+            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+            ImageThumbnail = productThumbnail;
+            productThumbnail.Stretch = Stretch.UniformToFill;
+            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
+            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
+            ItemGrid.Children.Add(productThumbnail);
+            Grid.SetColumnSpan(ImageThumbnail, 2);
 
             var tooltip = new ToolTip
             {
@@ -48,32 +95,12 @@ namespace StoreCommon
                     TextWrapping = TextWrapping.Wrap,
                 }
             };
-
-            var itemGrid = new Grid
-            {
-                Tag = product,
-                VerticalAlignment = VerticalAlignment.Top,
-                Width = ProductItem_LayoutSettings.gridItemWidth,
-                Height = ProductItem_LayoutSettings.gridItemHeight,
-                Margin = new Thickness(5),
-                ToolTip = tooltip,
-                Background = Brushes.LightGray,
-            };
-
-            Parent.Children.Add(itemGrid);
-            ItemGrid = itemGrid;
+            ItemGrid.ToolTip = tooltip;
 
             ItemGrid.ColumnDefinitions.Add(new ColumnDefinition());
             ItemGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             ItemGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            ItemGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-
-            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
-            productThumbnail.Stretch = Stretch.UniformToFill;
-            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
-            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
-            Grid.SetColumnSpan(productThumbnail, 2);
-            ItemGrid.Children.Add(productThumbnail);
+            ItemGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });            
 
             var nameLabel = new Label
             {
@@ -93,13 +120,22 @@ namespace StoreCommon
             ItemGrid.Children.Add(priceLabel);
 
             Elements.Add(ItemGrid);
-            browserItems.Add(this);
-            ItemGrid.MouseUp += ItemGrid_MouseUp;
+            ProductBrowserItems.Add(this);
+            ItemGrid.MouseUp += ProductItemGrid_MouseUp;
+        }        
+        public void RefreshProductContent()
+        {
+            var product = ((Product)(ItemGrid.Tag));
+            var thumbNail = ImageThumbnail;
+            var nameLabel = (Label)(ItemGrid.Children[1]);
+            nameLabel.Content = product.Name;
+            var priceLabel = (Label)(ItemGrid.Children[2]);
+            priceLabel.Content = $"{product.Price} kr";
         }
-        public void ItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        public void ProductItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             SelectedProduct = (Product)(ItemGrid.Tag);
-            detailsPanels.Find(x => x.Tag == "edit panel").Update();
+            detailsPanel.Update();
         }
 
         internal struct ProductItem_LayoutSettings
@@ -114,10 +150,11 @@ namespace StoreCommon
         public WrapPanel BrowserWrapPanel;
         public Grid Parent;
         public ScrollViewer ThisScrollViewer;
-        public SizeChangedEventHandler sizeChangedEventHandler;
+       
         public Browser(Grid parent)
         {
             Parent = parent;           
+            _browser = this;
 
             var scrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             ThisScrollViewer = scrollViewer;
@@ -138,7 +175,65 @@ namespace StoreCommon
             BrowserWrapPanel = productPanel;
             scrollViewer.SizeChanged += ScrollViewer_SizeChanged;
         }
+        public void LoadBrowserItems()
+        {
+            foreach (var product in Store.Products)
+            {
+                var newProductItem = new BrowserItem(BrowserWrapPanel);
+                newProductItem.LoadProductBrowserItem(product);
+            }
+        }
+        public void SwitchContent()
+        {
+            var changeButton = (Button)GetElement("change image");
+            var editButton = (Button)GetElement("edit");
+            var removeButton = (Button)GetElement("remove");
+            var saveButton = (Button)GetElement("save changes");
+            var buttonParent = (StackPanel)(changeButton.Parent);
+            changeButton.Width = changeButton.ActualWidth;
 
+            if (!AddImage)
+            {
+                AddImage = true;
+                foreach (var productItem in ProductBrowserItems)
+                {
+                    BrowserWrapPanel.Children.Remove(productItem.ItemGrid);
+                }
+                foreach (var imageItem in ImageBrowserItems)
+                {
+                    BrowserWrapPanel.Children.Add(imageItem.ItemGrid);
+                }
+                changeButton.Content = new Label { Content = "Select Image", HorizontalAlignment = HorizontalAlignment.Left };
+                buttonParent.Children.Remove(editButton);
+                buttonParent.Children.Remove(removeButton);
+                buttonParent.Children.Remove(saveButton);
+            }
+            else
+            {
+                AddImage = false;
+
+                foreach (var productItem in ProductBrowserItems)
+                {
+                    BrowserWrapPanel.Children.Add(productItem.ItemGrid);
+                }
+                foreach (var imageItem in ImageBrowserItems)
+                {
+                    BrowserWrapPanel.Children.Remove(imageItem.ItemGrid);
+                }
+                changeButton.Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left };
+                buttonParent.Children.Add(editButton);
+                buttonParent.Children.Add(removeButton);
+                buttonParent.Children.Add(saveButton);
+            }
+        }
+        public void LoadBrowserImages()
+        {
+            foreach (var filePath in Store.ImageItemFilePaths)
+            {
+                var newProductItem = new BrowserItem(BrowserWrapPanel);
+                newProductItem.LoadImageBrowserItem(filePath);
+            }
+        }
         private void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             BrowserWrapPanel.Width = ThisScrollViewer.ActualWidth;   

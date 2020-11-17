@@ -20,7 +20,7 @@ namespace StoreCommon
         {
             Tag = tag;
             Parent = parent;
-            detailsPanels.Add(this);
+            detailsPanel = this;
 
             _rightColumnContentRoot = new Grid { ShowGridLines = true, Background = brush };
    
@@ -53,6 +53,7 @@ namespace StoreCommon
                 Margin = new Thickness(5),
             };
             _rightColumnContentRoot.Visibility = Visibility.Hidden;
+
             _rightColumn_DetailsName = new TextBox
             {
                 FontSize = 16,
@@ -63,13 +64,25 @@ namespace StoreCommon
             _rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
             Grid.SetRow(_rightColumn_detailsPanel_nameAndPrice, 0);
             detailsColumn_namePriceDescription.Children.Add(_rightColumn_detailsPanel_nameAndPrice);
+            
+            var rightColumn_DetailsPrice = new TextBox
+            { 
+               Tag = "rightcolumn detailsprice",
+               FontSize = 16 ,
+               Background = Brushes.Transparent,
+               IsReadOnly = true
+            };
+            Elements.Add(rightColumn_DetailsPrice);
+
+            _rightColumn_detailsPanel_nameAndPrice.Children.Add(rightColumn_DetailsPrice);
 
             _rightColumn_DetailsDescription = new TextBox
             {
                 Tag = "rightcolumn detailsdescription",
                 TextWrapping = TextWrapping.Wrap,
                 Background = Brushes.Transparent,
-                IsReadOnly = true
+                IsReadOnly = true,
+                AcceptsReturn = true
             };
             Elements.Add(_rightColumn_DetailsDescription);
             // Create the product description Label
@@ -88,10 +101,6 @@ namespace StoreCommon
             // Add the right-column to the "root"-Grid.
             Grid.SetColumn(_rightColumnContentRoot, 1);
             Parent.Children.Add(_rightColumnContentRoot);
-        }
-        public void EditProductContent()
-        {
-
         }
         public void NewProductContent()
         {
@@ -138,7 +147,7 @@ namespace StoreCommon
 
             var editButton = new Button
             {
-                Tag = "Edit",
+                Tag = "edit",
                 Padding = new Thickness(5),
                 Content = new Label { Content = "Edit", HorizontalAlignment = HorizontalAlignment.Left },
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -161,7 +170,7 @@ namespace StoreCommon
 
             var removeButton = new Button
             {
-                Tag = "Remove",
+                Tag = "remove",
                 Padding = new Thickness(5),
                 Content = new Label { Content = "Remove", HorizontalAlignment = HorizontalAlignment.Left },
                 HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -171,13 +180,14 @@ namespace StoreCommon
 
             var changeImageButton = new Button
             {
-                Tag = "Change Image",
+                Tag = "change image",
                 Padding = new Thickness(5),
                 Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left },
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left,
             };
             Elements.Add(changeImageButton);
+            changeImageButton.Click += ChangeImageButton_Click;
 
             var cancelButton = new Button
             {
@@ -187,22 +197,21 @@ namespace StoreCommon
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left,
             };
-
             Elements.Add(cancelButton);
 
-            var rightColumn_DetailsPrice = new Label { Tag = "rightcolumn detailsprice", FontSize = 16 };
-            Elements.Add(rightColumn_DetailsPrice);
-
-            rightColumn_detailsPanel_AdminButtons.Children.Add(rightColumn_DetailsPrice);
-
             rightColumn_detailsPanel_AdminButtons.Children.Add(cancelButton);
+            rightColumn_detailsPanel_AdminButtons.Children.Add(changeImageButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(editButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(removeButton);
-            rightColumn_detailsPanel_AdminButtons.Children.Add(changeImageButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(saveChangesButton);
 
             Grid.SetColumn(rightColumn_detailsPanel_AdminButtons, 0);
             _detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_AdminButtons);
+        }
+
+        private void ChangeImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            _browser.SwitchContent();
         }
 
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
@@ -217,6 +226,8 @@ namespace StoreCommon
             _rightColumn_DetailsName.IsReadOnly = true;
             _rightColumn_DetailsName.Background = Brushes.Transparent;
             Store.SaveToText();
+            var browserItem = ProductBrowserItems.Find(x => x.ItemGrid.Tag == SelectedProduct);
+            browserItem.RefreshProductContent();           
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -227,14 +238,17 @@ namespace StoreCommon
             _rightColumn_DetailsName.IsReadOnly = false;
             _rightColumn_DetailsName.Background = Brushes.White;
         }
-
+        public void UpdateImage()
+        {
+           
+        }
         public void Update()
         {
             var product = SelectedProduct;
             var image = ((Image)GetElement("rightcolumn detailsimage"));
             image.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
             _rightColumn_DetailsName.Text = product.Name;
-            ((Label)GetElement("rightcolumn detailsprice")).Content = $"{product.Price} kr";
+            ((TextBox)GetElement("rightcolumn detailsprice")).Text = $"{product.Price} kr";
 
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
 

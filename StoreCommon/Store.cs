@@ -11,6 +11,7 @@ namespace StoreCommon
 
         public static List<Product> Products { get; set; } = new List<Product>();
         public static ProductList ShoppingCart { get; set; } = new ProductList();
+        public static List<string> ImageItemFilePaths { get; set; } = new List<string>();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
 
         public static void LoadProducts(string pathAndFileName)
@@ -36,7 +37,15 @@ namespace StoreCommon
             }
             Products = products;
         }
-
+        public static void LoadImagePaths(string imageFolderPath)
+        {
+            var imageFolder = new DirectoryInfo(imageFolderPath);
+            var files = imageFolder.GetFiles().ToList();
+            foreach (var file in files)
+            {
+                ImageItemFilePaths.Add(file.FullName);
+            }
+        }
         public static void SaveToText()
         {
             string productText = "";
@@ -78,6 +87,7 @@ namespace StoreCommon
         {
             Store.Currency = (Code: "SEK", Symbol: "kr");
             LoadProducts(AppFolder.ProductCSV);
+            LoadImagePaths(AppFolder.ImageFolderPath);
             LoadDiscountCodes(AppFolder.DiscountCSV);
             LoadShoppingCart(AppFolder.ShoppingCartCSV);
         }
