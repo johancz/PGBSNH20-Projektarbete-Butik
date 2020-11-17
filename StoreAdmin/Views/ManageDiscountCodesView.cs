@@ -24,8 +24,7 @@ namespace StoreAdmin.Views
         public static TabItem Init()
         {
             CreateGUI();
-            //UpdateData();
-            //UpdateGUI();
+            UpdateGUI(Store.DiscountCodes);
             return _root;
         }
 
@@ -36,152 +35,93 @@ namespace StoreAdmin.Views
 
             var rootScrollViewer = new ScrollViewer();
             _grid = new Grid();
-            int row = 0;
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
 
-            // Create the "Header"-row
-            {
-                _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
-                var newCodeTextBox = new Label
-                {
-                    Content = "Discount Code",
-                    Padding = new Thickness(5),
-                };
-                Grid.SetRow(newCodeTextBox, row);
-                _grid.Children.Add(newCodeTextBox);
-
-                var newPercentageTextBox = new Label
-                {
-                    Content = "Percentage (0 - 1)",
-                    Padding = new Thickness(5),
-                };
-                Grid.SetRow(newPercentageTextBox, row);
-                Grid.SetColumn(newPercentageTextBox, 1);
-                _grid.Children.Add(newPercentageTextBox);
-
-                var addButton = new Label
-                {
-                    Content = "Remove/Add",
-                    Padding = new Thickness(5),
-                };
-                Grid.SetRow(addButton, row);
-                Grid.SetColumn(addButton, 2);
-                _grid.Children.Add(addButton);
-
-                row++;
-            }
-
-            foreach (DiscountCode discountCode in Store.DiscountCodes)
-            {
-                _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
-
-                var codeTextBox = new TextBox
-                {
-                    Text = discountCode.Code,
-                    Padding = new Thickness(5),
-                    Tag = discountCode,
-                };
-                codeTextBox.LostFocus += CodeTextBox_LostFocus;
-                Grid.SetRow(codeTextBox, row);
-                _grid.Children.Add(codeTextBox);
-
-                var percentageTextBox = new TextBox
-                {
-                    Text = discountCode.Percentage.ToString(),
-                    Padding = new Thickness(5),
-                    Tag = discountCode,
-                };
-                percentageTextBox.LostFocus += PercentageTextBox_LostFocus;
-                Grid.SetRow(percentageTextBox, row);
-                Grid.SetColumn(percentageTextBox, 1);
-                _grid.Children.Add(percentageTextBox);
-
-                var deleteButton = new Button
-                {
-                    Content = "X",
-                    Padding = new Thickness(5),
-                    Tag = discountCode,
-                };
-                deleteButton.Click += DeleteButton_Click;
-                Grid.SetRow(deleteButton, row);
-                Grid.SetColumn(deleteButton, 2);
-                _grid.Children.Add(deleteButton);
-
-                row++;
-            }
-
-            _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
-            var gridSplitter = new GridSplitter
-            {
-                Height = 1,
-                Background = Brushes.Gray,
-                IsEnabled = false,
-                Margin = new Thickness(5),
-            };
-            Grid.SetRow(gridSplitter, ++row); // pre-increment = increment value before it is passed to Grid.SetRow().
-            Grid.SetColumnSpan(gridSplitter, 3);
-            _grid.Children.Add(gridSplitter);
-
-            // Create the Button and TextBoxes used for creating new DiscountCodes.
-            {
-                _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
-                row++;
-
-                var newCodeTextBox = new TextBox
-                {
-                    Padding = new Thickness(5),
-                };
-                Grid.SetRow(newCodeTextBox, row);
-                _grid.Children.Add(newCodeTextBox);
-
-                var newPercentageTextBox = new TextBox
-                {
-                    Padding = new Thickness(5),
-                };
-                Grid.SetRow(newPercentageTextBox, row);
-                Grid.SetColumn(newPercentageTextBox, 1);
-                _grid.Children.Add(newPercentageTextBox);
-
-                var addButton = new Button
-                {
-                    Content = "Add Discount Code",
-                    Padding = new Thickness(5),
-                };
-                addButton.Click += AddButton_Click;
-                Grid.SetRow(addButton, row);
-                Grid.SetColumn(addButton, 2);
-                _grid.Children.Add(addButton);
-            }
-
-            _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
-            var saveButton = new Button
-            {
-                Content = "Add Discount Code",
-                Padding = new Thickness(5),
-            };
-            saveButton.Click += SaveButton_Click; ;
-            Grid.SetRow(saveButton, ++row);
-            Grid.SetColumn(saveButton, 2);
-            _grid.Children.Add(saveButton);
 
             rootScrollViewer.Content = _grid;
             _root.Content = rootScrollViewer;
         }
 
-        public static void UpdateGUI()
+        public static void UpdateGUI(List<DiscountCode> discountCodes)
         {
+            // Create the "Header"-row
+            var codeHeader = new Label { FontSize = 16, Content = "Discount Code", Padding = new Thickness(5), };
+            var percentageHeader = new Label { FontSize = 16, Content = "Percentage (0 - 1)", Padding = new Thickness(5), };
+            AppendGridRow((codeHeader, null), (percentageHeader, null));
+
+            // Create a row for each DiscountCode
+            discountCodes.ForEach(discountCode => AppendDiscountCodeRow(discountCode));
+
+            var gridSplitter = new GridSplitter
+            {
+                IsEnabled = false,
+                Background = Brushes.Gray,
+                Height = 2,
+                Margin = new Thickness(0, 5, 0, 5),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            Grid.SetColumnSpan(gridSplitter, 3);
+            AppendGridRow((gridSplitter, null));
+
+            // Create "header"-row for controls used to create a new DiscountCode.
+            var codeHeader2 = new Label { FontSize = 14, Content = "Discount Code", Padding = new Thickness(5), };
+            var percentageHeader2 = new Label { FontSize = 14, Content = "Percentage (0 - 1)", Padding = new Thickness(5), };
+            AppendGridRow((codeHeader2, null), (percentageHeader2, null));
+
+            // Create the Button and TextBoxes used for creating new DiscountCodes.
+            var newCodeTextBox = new TextBox { Padding = new Thickness(5), };
+            var newPercentageTextBox = new TextBox { Padding = new Thickness(5), };
+            var addButton = new Button { Content = "Add Discount Code", Padding = new Thickness(5), };
+            addButton.Click += AddButton_Click;
+            AppendGridRow((newCodeTextBox, null), (newPercentageTextBox, null), (addButton, null));
+
+            _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
+            var gridSplitter2 = new GridSplitter
+            {
+                IsEnabled = false,
+                Background = Brushes.Gray,
+                Height = 2,
+                Margin = new Thickness(0, 5, 0, 5),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            Grid.SetColumnSpan(gridSplitter2, 3);
+            AppendGridRow((gridSplitter2, null));
+
+            // Button for saving the new DiscountCodes-list to file.
+            var saveButton = new Button { Content = "Save Discount Codes", Padding = new Thickness(5), };
+            saveButton.Click += SaveButton_Click;
+            AppendGridRow((saveButton, 2));
         }
 
-        //private static void UpdateData()
-        //{
-
-        //}
-
-        internal static void UpdateShoppingCartView()
+        private static void AppendGridRow(params (FrameworkElement element, int? column)[] elements)
         {
-            _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
+            int row = _grid.RowDefinitions.Count;
+            _grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto), });
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                var rowData = elements[i];
+                Grid.SetRow(rowData.element, row);
+                // Use rowData.column if it isn't null, if null use 'i'.
+                Grid.SetColumn(rowData.element, rowData.column ?? i);
+                _grid.Children.Add(rowData.element);
+            }
+        }
+
+        private static void AppendDiscountCodeRow(DiscountCode discountCode)
+        {
+            var codeTextBox = new TextBox { Text = discountCode.Code, Padding = new Thickness(5), Tag = discountCode, };
+            codeTextBox.LostFocus += CodeTextBox_LostFocus;
+
+            var percentageTextBox = new TextBox { Text = discountCode.Percentage.ToString(), Padding = new Thickness(5), Tag = discountCode, };
+            percentageTextBox.LostFocus += PercentageTextBox_LostFocus;
+
+            var deleteButton = new Button { Content = "X", Padding = new Thickness(5), Tag = discountCode, };
+            deleteButton.Click += DeleteButton_Click;
+
+            AppendGridRow((codeTextBox, null), (percentageTextBox, null), (deleteButton, null));
         }
 
         /***********************/
@@ -204,8 +144,6 @@ namespace StoreAdmin.Views
             }
             catch (Exception)
             {
-                // Split trims the 
-                //MessageBox.Show(error.Message.Split('(')[0].TrimEnd(), "Error!");
                 textBox.Background = Brushes.LightPink;
                 _errorsInNewData++;
             }
@@ -218,7 +156,7 @@ namespace StoreAdmin.Views
 
             try
             {
-                if (!Double.TryParse(textBox.Text, out percentage))
+                if (!double.TryParse(textBox.Text, out percentage))
                 {
                     throw new Exception("Could not parse to Double");
                 }
@@ -261,10 +199,17 @@ namespace StoreAdmin.Views
                 string newCode = ((TextBox)_grid.Children[buttonIndex - 2]).Text;
                 double newPercentage;
 
-                if (Double.TryParse(((TextBox)_grid.Children[buttonIndex - 1]).Text, out newPercentage))
+                if (!double.TryParse(((TextBox)_grid.Children[buttonIndex - 1]).Text, out newPercentage))
                 {
-                    newDiscountCode = new DiscountCode(newCode, newPercentage);
+                    throw new Exception("The \"Percentage\" value is not valid, enter a number between 0-1 (inclusive).");
                 }
+
+                newDiscountCode = new DiscountCode(newCode, newPercentage);
+                _newDiscountCodes.Add(newDiscountCode);
+
+                _grid.Children.Clear();
+                _grid.RowDefinitions.Clear();
+                UpdateGUI(_newDiscountCodes);
             }
             catch (Exception error)
             {

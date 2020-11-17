@@ -16,15 +16,15 @@ namespace StoreCommon
         {
             if (code == null)
             {
-                throw new ArgumentNullException("DiscountCode string cannot be null.", nameof(code));
+                throw new ArgumentNullException("DiscountCode string cannot be null.");
             }
             else if (code.Length == 0 || code.Length > 100)
             {
-                throw new ArgumentException("The length of the DiscountCode-string is too short/long.", nameof(code));
+                throw new ArgumentException("The length of the DiscountCode-string is too short/long.");
             }
             else if (percentage <= 0.0 || percentage > 1.0)
             {
-                throw new ArgumentException("The percentage is under 0.0 or above 1.0.", nameof(percentage));
+                throw new ArgumentException("The percentage value must be between 0 and 1 (inclusive).");
             }
 
             Code = code;
