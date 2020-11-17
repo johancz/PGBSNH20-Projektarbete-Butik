@@ -236,7 +236,7 @@ namespace StoreCommon
         }
         private void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            BrowserWrapPanel.Width = ThisScrollViewer.ActualWidth;   
+            BrowserWrapPanel.Width = ThisScrollViewer.ActualWidth;
         }
     }
     public class HybridPage : CommonFrameWork

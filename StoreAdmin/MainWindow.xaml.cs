@@ -1,4 +1,5 @@
-﻿using StoreCommon;
+﻿using StoreAdmin.Views;
+using StoreCommon;
 using StoreUser;
 using System.Globalization;
 using System.Windows;
@@ -43,9 +44,11 @@ namespace StoreAdmin
             var productBrowser = new Browser(editProductsPage.grid);
             productBrowser.LoadBrowserItems();
             productBrowser.LoadBrowserImages();
-            
 
+            // Edit Discount Codes
+            AdminApp.tabControl.Items.Add(ManageDiscountCodesView.Init());
         }
+
         private void Start()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;

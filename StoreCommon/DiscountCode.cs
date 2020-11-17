@@ -7,22 +7,13 @@ namespace StoreCommon
         public string Code { get; set; }
         public double Percentage { get; set; }
 
-        /// <summary>
-        /// A DiscountCode which can be added to the store's active ShoppingCart.
-        /// The final sum of a ShoppingCart will equal the TotalSum * (1.0 - Percentage).
-        /// </summary>
-        /// <param name="code">
-        /// The string that represents the DiscountCode.
-        /// Cannot be an empty string.
-        /// Must be under 100 characters long.
-        /// </param>
-        /// <param name="percentage">
-        /// The percentage of the TotalSum of an ShoppingCart that will be deducted from the TotalSum.
-        /// Must be > 0.0 and <= 100.0.
-        /// </param>
         public DiscountCode(string code, double percentage)
         {
-            var now = DateTime.Now;
+            SetValues(code, percentage);
+        }
+
+        public void SetValues(string code, double percentage)
+        {
             if (code == null)
             {
                 throw new ArgumentNullException("DiscountCode string cannot be null.", nameof(code));
