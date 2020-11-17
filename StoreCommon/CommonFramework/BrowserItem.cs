@@ -14,6 +14,7 @@ namespace StoreCommon
         public WrapPanel Parent;
         public Grid ItemGrid;
         public Image ImageThumbnail;
+        public Product? _product = null;
         public BrowserItem(WrapPanel parent)
         {
             Parent = parent;
@@ -42,18 +43,9 @@ namespace StoreCommon
             ItemGrid.MouseUp += ImageItemGrid_MouseUp;
         }
 
-        private void ImageItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            var itemGrid = (Grid)sender;
-            var itemImage = (Image)(itemGrid.Children[0]);
-            SelectedImage = itemImage;
-            var source = itemImage.Source;
-            var displayImage = ((Image)GetElement("rightcolumn detailsimage"));
-            displayImage.Source = source;
-        }
-
         public void LoadProductBrowserItem(Product product)
         {
+            _product = product;
             Parent.Children.Add(ItemGrid);
             ItemGrid.Tag = product;
             var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
@@ -103,10 +95,41 @@ namespace StoreCommon
             ProductBrowserItems.Add(this);
             ItemGrid.MouseUp += ProductItemGrid_MouseUp;
         }
+        public void SwitchOpacityMode()
+        {
+            if (EditProductModeEnabled || ChangeImageModeEnabled)
+            {
+                ImageThumbnail.Opacity = 0.7;
+            }
+            else
+            {
+                ImageThumbnail.Opacity = 1.0;
+            }
+        }
+        private void ImageItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var itemGrid = (Grid)sender;
+            var itemImage = (Image)(itemGrid.Children[0]);
+            SelectedImage = itemImage;
+            var source = itemImage.Source;
+            var displayImage = ((Image)GetElement("rightcolumn detailsimage"));
+            displayImage.Source = source;
+        }
+
+        public void ProductItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!EditProductModeEnabled)
+            {
+                SelectedProduct = (Product)(ItemGrid.Tag);
+                detailsPanel.UpdatePanel();
+                SelectedImage = null;
+            }
+        }
         public void RefreshProductContent()
         {
             var product = ((Product)(ItemGrid.Tag));
             var nameLabel = (Label)(ItemGrid.Children[1]);
+            
             if (SelectedImage != null)
             {
                 ImageThumbnail.Source = SelectedImage.Source;
@@ -114,12 +137,6 @@ namespace StoreCommon
             nameLabel.Content = product.Name;
             var priceLabel = (Label)(ItemGrid.Children[2]);
             priceLabel.Content = $"{product.Price} kr";
-        }
-        public void ProductItemGrid_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            SelectedImage = null;
-            SelectedProduct = (Product)(ItemGrid.Tag);
-            detailsPanel.Update();
         }
 
         internal struct ProductItem_LayoutSettings

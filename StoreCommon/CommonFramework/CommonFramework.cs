@@ -16,7 +16,8 @@ namespace StoreCommon
         public static List<BrowserItem> ProductBrowserItems = new List<BrowserItem>();
         public static List<BrowserItem> ImageBrowserItems = new List<BrowserItem>();
         public static List<FrameworkElement> Elements = new List<FrameworkElement>();
-        public static bool AddImage = false;
+        public static bool ChangeImageModeEnabled = false;
+        public static bool EditProductModeEnabled = false;
         public static Image? SelectedImage = new Image();
         public static Product SelectedProduct;
         public static object GetElement(string _tag)

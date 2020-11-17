@@ -62,15 +62,18 @@ namespace StoreCommon
             var editButton = (Button)GetElement("edit");
             var removeButton = (Button)GetElement("remove");
             var saveButton = (Button)GetElement("save changes");
-            var buttonParent = (StackPanel)(changeButton.Parent);
+            var buttonParent = (StackPanel)GetElement("admin buttons");
             changeButton.Width = changeButton.ActualWidth;
 
-            if (!AddImage)
+            if (!ChangeImageModeEnabled)
             {
-                AddImage = true;
+                ChangeImageModeEnabled = true;
+                EditProductModeEnabled = true;
                 foreach (var productItem in ProductBrowserItems)
                 {
                     BrowserWrapPanel.Children.Remove(productItem.ItemGrid);
+                    productItem.SwitchOpacityMode();
+
                 }
                 foreach (var imageItem in ImageBrowserItems)
                 {
@@ -84,7 +87,7 @@ namespace StoreCommon
             }
             else
             {
-                AddImage = false;
+                ChangeImageModeEnabled = false;
 
                 foreach (var productItem in ProductBrowserItems)
                 {
@@ -96,9 +99,7 @@ namespace StoreCommon
                 }
                 changeButton.Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left };
                 buttonParent.Children.Add(editButton);
-                buttonParent.Children.Add(removeButton);
                 buttonParent.Children.Add(saveButton);
-                buttonParent.Children.Add(newButton);
             }
         }
         private void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
