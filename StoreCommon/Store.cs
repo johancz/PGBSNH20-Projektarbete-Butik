@@ -46,7 +46,7 @@ namespace StoreCommon
                 ImageItemFilePaths.Add(file.FullName);
             }
         }
-        public static void SaveToText()
+        public static void SaveRuntimeProductsToCSV()
         {
             string productText = "";
             foreach (var product in Products)

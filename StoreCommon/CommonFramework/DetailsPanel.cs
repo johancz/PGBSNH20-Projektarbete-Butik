@@ -3,10 +3,11 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public class DetailsPanel : CommonFrameWork
+    public class DetailsPanel : CommonFramework
     {
         //private static Product Selected;
         public string Tag;
@@ -15,6 +16,7 @@ namespace StoreCommon
         private Grid _detailsColumn_detailsGrid;
         private TextBox _rightColumn_DetailsName;
         private TextBox _rightColumn_DetailsDescription;
+        private Image _rightColumn_DetailsImage;
         private StackPanel _rightColumn_detailsPanel_nameAndPrice;
         public DetailsPanel(Grid parent, Brush brush, string tag)
         {
@@ -23,11 +25,12 @@ namespace StoreCommon
             detailsPanel = this;
 
             _rightColumnContentRoot = new Grid { ShowGridLines = true, Background = brush };
-   
+
             _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             _rightColumnContentRoot.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             // Create and add a Product.Image to the right column's root (StackPanel)
             var rightColumn_DetailsImage = new Image { Tag = "rightcolumn detailsimage" };
+            _rightColumn_DetailsImage = rightColumn_DetailsImage;
 
             Elements.Add(rightColumn_DetailsImage);
 
@@ -56,25 +59,42 @@ namespace StoreCommon
 
             _rightColumn_DetailsName = new TextBox
             {
+                Tag = "rightcolumn detailsname",
                 FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
                 Background = Brushes.Transparent,
                 IsReadOnly = true
             };
+            Elements.Add(_rightColumn_DetailsName);
             _rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
-            Grid.SetRow(_rightColumn_detailsPanel_nameAndPrice, 0);
-            detailsColumn_namePriceDescription.Children.Add(_rightColumn_detailsPanel_nameAndPrice);
-            
+
             var rightColumn_DetailsPrice = new TextBox
-            { 
-               Tag = "rightcolumn detailsprice",
-               FontSize = 16 ,
-               Background = Brushes.Transparent,
-               IsReadOnly = true
+            {
+                Tag = "rightcolumn detailsprice",
+                FontSize = 16,
+                Background = Brushes.Transparent,
+                IsReadOnly = true
             };
             Elements.Add(rightColumn_DetailsPrice);
 
             _rightColumn_detailsPanel_nameAndPrice.Children.Add(rightColumn_DetailsPrice);
+
+            var rightColumn_DetailsCurrency = new TextBox
+            {
+                Tag = "rightcolumn detailscurrency",
+                FontSize = 16,
+                Background = Brushes.Transparent,
+                Text = "kr",
+                IsReadOnly = true
+            };
+            Elements.Add(rightColumn_DetailsPrice);
+
+            _rightColumn_detailsPanel_nameAndPrice.Children.Add(rightColumn_DetailsCurrency);
+
+
+            Grid.SetRow(_rightColumn_detailsPanel_nameAndPrice, 0);
+            detailsColumn_namePriceDescription.Children.Add(_rightColumn_detailsPanel_nameAndPrice);
+
 
             _rightColumn_DetailsDescription = new TextBox
             {
@@ -101,16 +121,6 @@ namespace StoreCommon
             // Add the right-column to the "root"-Grid.
             Grid.SetColumn(_rightColumnContentRoot, 1);
             Parent.Children.Add(_rightColumnContentRoot);
-        }
-        public void NewProductContent()
-        {
-            _rightColumnContentRoot.Visibility = Visibility.Visible;
-            _rightColumn_DetailsName.IsReadOnly = false;
-            _rightColumn_DetailsName.Text = "Enter Title";
-            _rightColumn_DetailsName.Background = Brushes.White;
-            _rightColumn_DetailsDescription.IsReadOnly = false;
-            _rightColumn_DetailsDescription.Text = "Enter Description...";
-            _rightColumn_DetailsDescription.Background = Brushes.White;
         }
         public void AddNewProductButtonPanel()
         {
@@ -144,6 +154,7 @@ namespace StoreCommon
                 Margin = new Thickness(5),
                 Tag = "admin buttons"
             };
+            Elements.Add(rightColumn_detailsPanel_AdminButtons);
 
             var editButton = new Button
             {
@@ -177,6 +188,7 @@ namespace StoreCommon
                 HorizontalContentAlignment = HorizontalAlignment.Left,
             };
             Elements.Add(removeButton);
+            removeButton.Click += RemoveButton_Click;
 
             var changeImageButton = new Button
             {
@@ -198,15 +210,105 @@ namespace StoreCommon
                 HorizontalContentAlignment = HorizontalAlignment.Left,
             };
             Elements.Add(cancelButton);
+            cancelButton.Click += CancelButton_Click;
+
+            var newProductButton = new Button
+            {
+                Tag = "new product",
+                Padding = new Thickness(5),
+                Content = new Label { Content = "New Product", HorizontalAlignment = HorizontalAlignment.Left },
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Left,
+            };
+            Elements.Add(newProductButton);
+            newProductButton.Click += NewProductButton_Click;
 
             rightColumn_detailsPanel_AdminButtons.Children.Add(cancelButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(changeImageButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(editButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(removeButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(saveChangesButton);
+            rightColumn_detailsPanel_AdminButtons.Children.Add(newProductButton);
 
             Grid.SetColumn(rightColumn_detailsPanel_AdminButtons, 0);
             _detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_AdminButtons);
+        }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Disables editable fields
+            var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
+            textbox.IsReadOnly = true;
+            textbox.Background = Brushes.Transparent;
+
+            var textPrice = ((TextBox)GetElement("rightcolumn detailsprice"));
+            textPrice.IsReadOnly = true;
+            textPrice.Background = Brushes.Transparent;
+
+            var textName = ((TextBox)GetElement("rightcolumn detailsname"));
+            textName.IsReadOnly = true;
+            textName.Background = Brushes.Transparent;
+           
+            UpdatePanel();
+            if (ChangeImageModeEnabled)
+            {
+                _browser.SwitchContent();
+            }
+
+            EditProductModeEnabled = false;
+            ChangeImageModeEnabled = false;
+            foreach (var item in ProductBrowserItems)
+            {
+                item.SwitchOpacityMode();
+            }
+            SelectedImage = null;
+
+            var newButton = (Button)GetElement("new product");
+            var removeButton = (Button)GetElement("remove");
+            var buttonParent = (StackPanel)GetElement("admin buttons");
+            var changeButton = (Button)GetElement("change image");
+            try
+            {
+                buttonParent.Children.Add(changeButton);
+                buttonParent.Children.Add(removeButton);
+                buttonParent.Children.Add(newButton);
+            }
+            catch (System.Exception)
+            {                
+            }
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ChangeImageModeEnabled && !EditProductModeEnabled)
+            {
+                var result = MessageBox.Show("Do you want to completly remove this product?", "", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
+                {
+                    Store.Products.Remove(SelectedProduct);
+                    Store.SaveRuntimeProductsToCSV();
+                    var productsItem = ProductBrowserItems.Find(x => x._product == SelectedProduct);
+                    var parent = productsItem.Parent;
+                    parent.Children.Remove(productsItem.ItemGrid);
+                    ProductBrowserItems.Remove(productsItem);
+                    _rightColumnContentRoot.Visibility = Visibility.Hidden;
+                    SelectedProduct = null;
+                }
+            }
+        }
+
+        private void NewProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!ChangeImageModeEnabled && !EditProductModeEnabled)
+            {
+                var newProduct = new Product("Title...", "uri missing", 0, "Enter your text...");
+                var newBrowserItem = new BrowserItem(_browser.BrowserWrapPanel);
+                newBrowserItem.LoadProductBrowserItem(newProduct);
+                SelectedProduct = newProduct;
+                Store.Products.Add(newProduct);
+                SelectedImage = null;
+                detailsPanel.UpdatePanel();
+            }
         }
 
         private void ChangeImageButton_Click(object sender, RoutedEventArgs e)
@@ -216,39 +318,100 @@ namespace StoreCommon
 
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
-            var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
+            var textPrice = ((TextBox)GetElement("rightcolumn detailsprice"));
+            string price = textPrice.Text;
+            decimal decPrice;
+            if (price.Contains(','))
+            {
+                price = textPrice.Text.Replace(',', '.');
+                textPrice.Text = price;
+            }
+            if (decimal.TryParse(price, out decPrice))
+            {
+                //Disables editable fields
+                var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
+                textbox.IsReadOnly = true;
+                textbox.Background = Brushes.Transparent;
 
-            SelectedProduct.Description = textbox.Text;
-            textbox.IsReadOnly = true;
-            textbox.Background = Brushes.Transparent;
+                textPrice.IsReadOnly = true;
+                textPrice.Background = Brushes.Transparent;
 
-            SelectedProduct.Name = _rightColumn_DetailsName.Text;
-            _rightColumn_DetailsName.IsReadOnly = true;
-            _rightColumn_DetailsName.Background = Brushes.Transparent;
-            Store.SaveToText();
-            var browserItem = ProductBrowserItems.Find(x => x.ItemGrid.Tag == SelectedProduct);
-            browserItem.RefreshProductContent();           
+                var textName = ((TextBox)GetElement("rightcolumn detailsname"));
+                textName.IsReadOnly = true;
+                textName.Background = Brushes.Transparent;
+
+                //updates name, description, image soon prize
+                SelectedProduct.Description = textbox.Text;
+                SelectedProduct.Name = textName.Text;
+                SelectedProduct.Price = decimal.Parse(textPrice.Text);
+
+                if (SelectedImage != null)
+                {
+                    SelectedProduct.Uri = SelectedImage.Source.ToString().Split('/')[^1];
+                }
+                Store.SaveRuntimeProductsToCSV();
+            
+                var browserItem = ProductBrowserItems.Find(x => x.ItemGrid.Tag == SelectedProduct); //Gets senders browserItem
+
+                browserItem.RefreshProductContent();
+                EditProductModeEnabled = false;
+                ChangeImageModeEnabled = false;
+                foreach (var item in ProductBrowserItems)
+                {
+                    item.SwitchOpacityMode();
+                }
+                var buttonParent = (StackPanel)GetElement("admin buttons");
+                var newButton = (Button)GetElement("new product");
+                var removeButton = (Button)GetElement("remove");
+                var changeButton = (Button)GetElement("change image");
+                buttonParent.Children.Add(changeButton);
+                buttonParent.Children.Add(removeButton);
+                buttonParent.Children.Add(newButton);
+            }
+            else
+            {
+                MessageBox.Show("Try entering a digit as price!");
+            }
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
+            var newButton = (Button)GetElement("new product");
+
+            var removeButton = (Button)GetElement("remove");
+            var changeButton = (Button)GetElement("change image");
+            var buttonParent = (StackPanel)GetElement("admin buttons");
+            buttonParent.Children.Remove(changeButton);
+            buttonParent.Children.Remove(removeButton);
+            buttonParent.Children.Remove(newButton);
+
+            EditProductModeEnabled = true;
+
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
             textbox.IsReadOnly = false;
             textbox.Background = Brushes.White;
-            _rightColumn_DetailsName.IsReadOnly = false;
-            _rightColumn_DetailsName.Background = Brushes.White;
+
+            var textPrice = ((TextBox)GetElement("rightcolumn detailsprice"));
+            textPrice.IsReadOnly = false;
+            textPrice.Background = Brushes.White;
+
+            var textName = ((TextBox)GetElement("rightcolumn detailsname"));
+            textName.IsReadOnly = false;
+            textName.Background = Brushes.White;
+
+            foreach (var item in ProductBrowserItems)
+            {
+                item.SwitchOpacityMode();
+            }
         }
-        public void UpdateImage()
-        {
-           
-        }
-        public void Update()
+  
+        public void UpdatePanel()
         {
             var product = SelectedProduct;
             var image = ((Image)GetElement("rightcolumn detailsimage"));
             image.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
             _rightColumn_DetailsName.Text = product.Name;
-            ((TextBox)GetElement("rightcolumn detailsprice")).Text = $"{product.Price} kr";
+            ((TextBox)GetElement("rightcolumn detailsprice")).Text = product.Price.ToString();
 
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
 
