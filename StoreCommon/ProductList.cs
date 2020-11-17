@@ -12,16 +12,12 @@ namespace StoreCommon
     {
         // Move to a Settings-class in StoreCommon-namespace? Or StoreCommon.Settings-namespace?
         private static readonly DirectoryInfo _textFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent;
-        /// <summary>
-        /// Collection of "KeyValuePair"s where:
-        ///     Key (Product): instance of Product-class
-        ///     Value (int):   itemcount of (Key)"Product"
-        /// </summary>
         public Dictionary<Product, int> Products { get; private set; } = new Dictionary<Product, int>();
         // TODO(johancz): Should this be saved to file?
         public decimal TotalSum { get; private set; } = 0;
         // TODO(johancz): should this live in the Store-class?
         // TODO(johancz): should this be saved to file?
+        public decimal FinalSum { get; private set; } = 0;
         public DiscountCode ActiveDiscountCode { get; private set; }
 
         public void AddProduct(Product product, int count)
@@ -35,6 +31,7 @@ namespace StoreCommon
             Products.TryAdd(product, 0);
             Products[product] += count;
             TotalSum += product.Price * count;
+            UpdateFinalSum();
         }
 
         public void RemoveProduct(Product product)
@@ -57,21 +54,32 @@ namespace StoreCommon
                 }
 
                 TotalSum -= product.Price;
+                UpdateFinalSum();
             }
         }
 
-        // TODO(johancz): should this live in the Store-class?
-        // TODO(johancz): should this be saved to file?
         public void SetDiscountCode(DiscountCode discountCode)
         {
             ActiveDiscountCode = discountCode;
+            UpdateFinalSum();
         }
 
-        // TODO(johancz): should this live in the Store-class?
-        // TODO(johancz): should this be saved to file?
         public void RemoveDiscountCode()
         {
             ActiveDiscountCode = null;
+            UpdateFinalSum();
+        }
+
+        private void UpdateFinalSum()
+        {
+            if (ActiveDiscountCode == null)
+            {
+                FinalSum = TotalSum;
+            }
+            else
+            {
+                FinalSum = TotalSum - TotalSum * (decimal)ActiveDiscountCode.Percentage;
+            }
         }
 
         public bool SaveToFile(string path)
