@@ -53,6 +53,7 @@ namespace StoreCommon
                 Margin = new Thickness(5),
             };
             _rightColumnContentRoot.Visibility = Visibility.Hidden;
+
             _rightColumn_DetailsName = new TextBox
             {
                 FontSize = 16,
@@ -63,6 +64,17 @@ namespace StoreCommon
             _rightColumn_detailsPanel_nameAndPrice.Children.Add(_rightColumn_DetailsName);
             Grid.SetRow(_rightColumn_detailsPanel_nameAndPrice, 0);
             detailsColumn_namePriceDescription.Children.Add(_rightColumn_detailsPanel_nameAndPrice);
+            
+            var rightColumn_DetailsPrice = new TextBox
+            { 
+               Tag = "rightcolumn detailsprice",
+               FontSize = 16 ,
+               Background = Brushes.Transparent,
+               IsReadOnly = true
+            };
+            Elements.Add(rightColumn_DetailsPrice);
+
+            _rightColumn_detailsPanel_nameAndPrice.Children.Add(rightColumn_DetailsPrice);
 
             _rightColumn_DetailsDescription = new TextBox
             {
@@ -184,13 +196,7 @@ namespace StoreCommon
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left,
             };
-
             Elements.Add(cancelButton);
-
-            var rightColumn_DetailsPrice = new Label { Tag = "rightcolumn detailsprice", FontSize = 16 };
-            Elements.Add(rightColumn_DetailsPrice);
-
-            rightColumn_detailsPanel_AdminButtons.Children.Add(rightColumn_DetailsPrice);
 
             rightColumn_detailsPanel_AdminButtons.Children.Add(cancelButton);
             rightColumn_detailsPanel_AdminButtons.Children.Add(editButton);
@@ -232,7 +238,7 @@ namespace StoreCommon
             var image = ((Image)GetElement("rightcolumn detailsimage"));
             image.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
             _rightColumn_DetailsName.Text = product.Name;
-            ((Label)GetElement("rightcolumn detailsprice")).Content = $"{product.Price} kr";
+            ((TextBox)GetElement("rightcolumn detailsprice")).Text = $"{product.Price} kr";
 
             var textbox = ((TextBox)GetElement("rightcolumn detailsdescription"));
 
