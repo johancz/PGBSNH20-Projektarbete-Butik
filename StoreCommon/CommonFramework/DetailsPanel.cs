@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public class DetailsPanel : CommonFrameWork
+    public class DetailsPanel : CommonFramework
     {
         //private static Product Selected;
         public string Tag;

@@ -33,11 +33,11 @@ namespace StoreAdmin
                 Margin = new Thickness(5),
             };
             _rootGrid = rootGrid;
-            WpfTools.ColumnsAndRows(rootGrid, 2, 0);
+            Helpers.ColumnsAndRows(rootGrid, 2, 0);
 
             var scrollProducts = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
             scrollProducts.Background = Brushes.LightCyan;
-            WpfTools.AddToGrid(rootGrid, scrollProducts, 0, 0);
+            Helpers.AddToGrid(rootGrid, scrollProducts, 0, 0);
 
             var productsPanel = new WrapPanel { HorizontalAlignment = HorizontalAlignment.Center, Width = 600};
             scrollProducts.Content = productsPanel;
@@ -56,7 +56,7 @@ namespace StoreAdmin
             _rootGrid = rootGrid;
 
             var shoppingCartScrollViewer = new ScrollViewer();
-            WpfTools.AddToGrid(_rootGrid, shoppingCartScrollViewer, 0, 1);
+            Helpers.AddToGrid(_rootGrid, shoppingCartScrollViewer, 0, 1);
             
             var shoppingCartRootGrid = new Grid { ShowGridLines = true, Height = 500, Width = 500 };
             shoppingCartScrollViewer.Content = shoppingCartRootGrid;
