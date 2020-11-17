@@ -170,5 +170,11 @@ namespace StoreCommon
         {
             ShoppingCart.RemoveDiscountCode();
         }
+
+        public static void SaveDiscountCodesToFile()
+        {
+            string[] linesToSave = DiscountCodes.Select(discountCode => $"{discountCode.Code};{discountCode.Percentage}").ToArray();
+            File.WriteAllLines(AppFolder.DiscountCSV, linesToSave);
+        }
     }
 }

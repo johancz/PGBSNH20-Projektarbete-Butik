@@ -1,15 +1,9 @@
-﻿using System;
+﻿using StoreCommon;
+using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using StoreCommon;
 
 namespace StoreAdmin.Views
 {
@@ -31,7 +25,7 @@ namespace StoreAdmin.Views
         public static void CreateGUI()
         {
             _newDiscountCodes = new List<DiscountCode>(Store.DiscountCodes);
-            _root = new TabItem { Header = "Manage Discount Codes", };
+            _root = new TabItem { Header = "Manage Discount Codes", Background = Brushes.White };
 
             var rootScrollViewer = new ScrollViewer();
             _grid = new Grid();
@@ -113,10 +107,10 @@ namespace StoreAdmin.Views
         private static void AppendDiscountCodeRow(DiscountCode discountCode)
         {
             var codeTextBox = new TextBox { Text = discountCode.Code, Padding = new Thickness(5), Tag = discountCode, };
-            codeTextBox.LostFocus += CodeTextBox_LostFocus;
+            codeTextBox.TextChanged += CodeTextBox_TextChanged;
 
             var percentageTextBox = new TextBox { Text = discountCode.Percentage.ToString(), Padding = new Thickness(5), Tag = discountCode, };
-            percentageTextBox.LostFocus += PercentageTextBox_LostFocus;
+            percentageTextBox.TextChanged += PercentageTextBox_TextChanged;
 
             var deleteButton = new Button { Content = "X", Padding = new Thickness(5), Tag = discountCode, };
             deleteButton.Click += DeleteButton_Click;
@@ -128,7 +122,7 @@ namespace StoreAdmin.Views
         /*** Event Handling ***/
         /***********************/
 
-        private static void CodeTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private static void CodeTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var textBox = (TextBox)sender;
 
@@ -136,10 +130,11 @@ namespace StoreAdmin.Views
             {
                 DiscountCode discountCode = (DiscountCode)textBox.Tag;
                 discountCode.SetValues(textBox.Text, discountCode.Percentage);
+
                 if (textBox.Background == Brushes.LightPink)
                 {
                     _errorsInNewData--;
-                    textBox.Background = Brushes.LightGreen;
+                    textBox.ClearValue(TextBox.BackgroundProperty);
                 }
             }
             catch (Exception)
@@ -149,7 +144,7 @@ namespace StoreAdmin.Views
             }
         }
 
-        private static void PercentageTextBox_LostFocus(object sender, RoutedEventArgs e)
+        private static void PercentageTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var textBox = (TextBox)sender;
             double percentage;
@@ -167,7 +162,7 @@ namespace StoreAdmin.Views
                 if (textBox.Background == Brushes.LightPink)
                 {
                     _errorsInNewData--;
-                    textBox.Background = Brushes.LightGreen;
+                    textBox.ClearValue(TextBox.BackgroundProperty);
                 }
             }
             catch (Exception)
@@ -222,6 +217,7 @@ namespace StoreAdmin.Views
             if (_errorsInNewData == 0)
             {
                 Store.DiscountCodes = _newDiscountCodes;
+                Store.SaveDiscountCodesToFile();
             }
             else
             {
