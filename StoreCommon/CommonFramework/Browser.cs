@@ -39,6 +39,14 @@ namespace StoreCommon
             BrowserWrapPanel = productPanel;
             scrollViewer.SizeChanged += ScrollViewer_SizeChanged;
         }
+        public void LoadBrowserImages()
+        {
+            foreach (var filePath in Store.ImageItemFilePaths)
+            {
+                var newProductItem = new BrowserItem(BrowserWrapPanel);
+                newProductItem.LoadImageBrowserItem(filePath);
+            }
+        }
         public void LoadBrowserItems()
         {
             foreach (var product in Store.Products)
@@ -91,14 +99,6 @@ namespace StoreCommon
                 buttonParent.Children.Add(removeButton);
                 buttonParent.Children.Add(saveButton);
                 buttonParent.Children.Add(newButton);
-            }
-        }
-        public void LoadBrowserImages()
-        {
-            foreach (var filePath in Store.ImageItemFilePaths)
-            {
-                var newProductItem = new BrowserItem(BrowserWrapPanel);
-                newProductItem.LoadImageBrowserItem(filePath);
             }
         }
         private void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
