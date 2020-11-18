@@ -27,7 +27,6 @@ namespace StoreCommon
 
             var productParentPanel = new WrapPanel
             {
-                Tag = "product panel",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Background = Brushes.LightBlue,
                 VerticalAlignment = VerticalAlignment.Top
@@ -92,9 +91,9 @@ namespace StoreCommon
                 ChangeImageButton.Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left };
             }
         }
-        private void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        public static void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ProductParentPanel.Width = ThisScrollViewer.ActualWidth;
+            ProductParentPanel.Width = BrowserRootScrollViewer.ActualWidth;
         }
     }
 }
