@@ -11,7 +11,7 @@ using StoreCommon;
 
 namespace StoreUser.Views
 {
-    public static class View_DetailsPanel
+    public static class DetailsPanelView
     {
         private static Grid _root;
 
@@ -177,7 +177,7 @@ namespace StoreUser.Views
 
             internal static void External_RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
             {
-                View_DetailsPanel._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
+                DetailsPanelView._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
             }
         }
     }

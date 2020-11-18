@@ -10,7 +10,7 @@ using StoreCommon;
 
 namespace StoreUser.Views
 {
-    public static class View_ShoppingCartToolbar
+    public static class ShoppingCartToolbarView
     {
         private static Grid _root;
 
