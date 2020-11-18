@@ -1,13 +1,9 @@
-﻿@@ -0,0 +1,309 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using StoreCommon;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using StoreCommon;
 
 namespace StoreUser.Views
 {
@@ -26,7 +22,6 @@ namespace StoreUser.Views
         public static Grid Init()
         {
             CreateGUI();
-            UpdateData();
             UpdateGUI();
             return _root;
         }
