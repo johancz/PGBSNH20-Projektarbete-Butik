@@ -47,8 +47,6 @@ namespace StoreCommon
         //State Framework
         public static Product SelectedProduct = null;
         public static Image? SelectedImage = null; //tveksamt
-        public static Mode AppMode = Mode.Hide;
-        public enum Mode { Hide, Default, Edit, ChangeImage }
 
     }
 }   

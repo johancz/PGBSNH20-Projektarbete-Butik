@@ -71,24 +71,6 @@ namespace StoreCommon
 
             browserRootScrollViewer.SizeChanged += BrowserRootScrollViewer_SizeChanged;
         }
-
-        private void BrowserRootScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            BrowserProductsPanel.Width = BrowserRootScrollViewer.ActualWidth;
-        }
-        private void LoadItemGrids()
-        {
-            foreach (var product in Store.Products)
-            {
-                var productGrid = CreateProductGridWithContent(product);
-                ProductGrids.Add(productGrid);
-            }
-            foreach (var imageFilePath in Store.ImageItemFilePaths)
-            {
-                var imageGrid = CreateImageGridWithContent(imageFilePath);
-                ImageGrids.Add(imageGrid);
-            }
-        }
         private void LoadDetailsPanel()
         {
             var detailsPanelRootGrid = new Grid { ShowGridLines = true, Background = Brushes.AntiqueWhite };
@@ -189,6 +171,76 @@ namespace StoreCommon
             DetailsPanelName = detailsPanelName;
             DetailsPanelPrice = detailsPanelPrice;
             DetailsPanelCurrency = detailsPanelCurrency;
+        }
+        private void LoadItemGrids()
+        {
+            foreach (var product in Store.Products)
+            {
+                var productGrid = CreateProductGridWithContent(product);
+                ProductGrids.Add(productGrid);
+                BrowserProductsPanel.Children.Add(productGrid);
+            }
+            foreach (var imageFilePath in Store.ImageItemFilePaths)
+            {
+                var imageGrid = CreateImageGridWithContent(imageFilePath);
+                ImageGrids.Add(imageGrid);
+            }
+        }
+        public Grid CreateProductGridWithContent(Product product)
+        {
+            var productsItem = CreateItemGridRoot();
+            productsItem.Tag = product;
+
+            productsItem.ColumnDefinitions.Add(new ColumnDefinition());
+            productsItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            productsItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            productsItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+
+            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+            Grid.SetColumn(productThumbnail, 1);
+            productThumbnail.Tag = product.Uri;
+            productThumbnail.Stretch = Stretch.UniformToFill;
+            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
+            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
+            productThumbnail.Tag = product;
+
+            var nameLabel = new Label
+            {
+                Content = product.Name,
+                FontSize = 14,
+            };
+            Grid.SetColumn(nameLabel, 0);
+            Grid.SetRow(nameLabel, 1);
+
+            var priceLabel = new Label
+            {
+                Content = $"{product.Price} kr",
+            };
+            Grid.SetColumn(priceLabel, 1);
+            Grid.SetRow(priceLabel, 1);
+
+            productsItem.Children.Add(productThumbnail);
+            productsItem.Children.Add(nameLabel);
+            productsItem.Children.Add(priceLabel);
+            ProductGrids.Add(productsItem);
+
+            return productsItem;
+        }
+        public Grid CreateImageGridWithContent(string filePath)
+        {
+            var imageGrid = CreateItemGridRoot();
+            var productThumbnail = Helpers.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
+            productThumbnail.Tag = filePath;
+            productThumbnail.Stretch = Stretch.UniformToFill;
+            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
+            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
+            imageGrid.Children.Add(productThumbnail);
+            return imageGrid;
+        }
+
+        private void BrowserRootScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            BrowserProductsPanel.Width = BrowserRootScrollViewer.ActualWidth;
         }
         private void LoadButtons()
         {
@@ -293,57 +345,6 @@ namespace StoreCommon
             return itemGrid;
         }
 
-        public Grid CreateProductGridWithContent(Product product)
-        {
-            var productsItem = CreateItemGridRoot();
-            productsItem.Tag = product;
-
-            productsItem.ColumnDefinitions.Add(new ColumnDefinition());
-            productsItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            productsItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            productsItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-
-            var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
-            productThumbnail.Tag = product.Uri;
-            productThumbnail.Stretch = Stretch.UniformToFill;
-            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
-            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
-            productThumbnail.Tag = product;
-
-            var nameLabel = new Label
-            {
-                Content = product.Name,
-                FontSize = 14,
-            };
-            Grid.SetColumn(nameLabel, 0);
-            Grid.SetRow(nameLabel, 1);
-
-            var priceLabel = new Label
-            {
-                Content = $"{product.Price} kr",
-            };
-            Grid.SetColumn(priceLabel, 1);
-            Grid.SetRow(priceLabel, 1);
-
-            productsItem.Children.Add(productThumbnail);
-            productsItem.Children.Add(nameLabel);
-            productsItem.Children.Add(priceLabel);
-            BrowserProductsPanel.Children.Add(productsItem);
-            ProductGrids.Add(productsItem);
-
-            return productsItem;
-        }
-        public Grid CreateImageGridWithContent(string filePath)
-        {
-            var imageGrid = CreateItemGridRoot();
-            var productThumbnail = Helpers.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
-            productThumbnail.Tag = filePath;
-            productThumbnail.Stretch = Stretch.UniformToFill;
-            productThumbnail.VerticalAlignment = VerticalAlignment.Center;
-            productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
-            imageGrid.Children.Add(productThumbnail);
-            return imageGrid;
-        }
 
         internal struct ProductItem_LayoutSettings
         {

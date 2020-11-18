@@ -12,10 +12,9 @@ namespace StoreCommon
 {
     public class AdminAppEvents : AdminFramework
     {
-       
+        bool ProductGridsSelectable = true;
         public void Init()
         {
-            HideMode();
             SaveImageButton.Click += SaveImageButton_Click;
             SaveChangesButton.Click += SaveChangesButton_Click;
             ChangeImageButton.Click += ChangeImageButton_Click;
@@ -33,8 +32,33 @@ namespace StoreCommon
             {
                 imageGrid.MouseUp += ImageGrid_MouseUp;
             }
+            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+            LoadDefaultButtonPanel();
+        }
+        //Image Selection Events
+        private void ImageGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var imageGrid = (Grid)sender;
+            var selectedImage = (Image)(imageGrid.Children[0]);
+            var selectedImageUri = selectedImage.Tag;
+            SelectedImage = selectedImage;
+            SelectedImage.Tag = selectedImageUri;
+            string uri = (string)imageGrid.Tag;
+            DetailsPanelImage.Source = selectedImage.Source;
         }
 
+        private void ProductGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ProductGridsSelectable)
+            {
+                DetailsPanelRootGrid.Visibility = Visibility.Visible;
+                var product = (Product)((Grid)sender).Tag;
+                SelectedProduct = product;
+                UpdateDetailsPanel(product);
+            }
+        }
+
+        //Button Click Events
         private void NewProductButton_Click(object sender, RoutedEventArgs e)
         {
             var newProduct = new Product("Title...", "uri missing", 0, "Enter your text...");
@@ -43,17 +67,18 @@ namespace StoreCommon
             AppWindow.CreateProductGridWithContent(newProduct);
             SelectedProduct = newProduct;
             UpdateDetailsPanel(newProduct);
-            
+            EnterEditmode();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            EditMode();
+            EnterEditmode();
         }
 
         private void SaveImageButton_Click(object sender, RoutedEventArgs e)
         {
-            DefaultMode();
+            
+            LeaveEditMode();
         }
 
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
@@ -88,13 +113,14 @@ namespace StoreCommon
                 {
                     thumbNail.Source = SelectedImage.Source;
                 }
-                DefaultMode();
+
                 UpdateDetailsPanel(product);
             }
             else
             {
                 MessageBox.Show("Try entering a digit as price!");
             }
+            LeaveEditMode();
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
@@ -107,13 +133,12 @@ namespace StoreCommon
                     var productsGridItem = ProductGrids.Find(x => x.Tag == SelectedProduct);
                     BrowserProductsPanel.Children.Remove(productsGridItem);
                     SelectedProduct = null;
-                    HideMode();
                 }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            DefaultMode();
+            LeaveEditMode();
 
             var product = SelectedProduct;
             DetailsPanelImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
@@ -125,67 +150,58 @@ namespace StoreCommon
 
         private void CancelImageButton_Click(object sender, RoutedEventArgs e)
         {
-            DefaultMode();
+            LeaveImageMode();
         }
         public void ChangeImageButton_Click(object sender, RoutedEventArgs e)
         {
-            ChangeImageMode();
+            EnterChangeImageMode();
         }
-
-        private void ImageGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        //Switch mode methods
+        public void EnterEditmode()
         {
-            var imageGrid = (Grid)sender;
-            var selectedImage = (Image)(imageGrid.Children[0]);
-            var selectedImageUri = selectedImage.Tag;
-            SelectedImage = selectedImage;
-            SelectedImage.Tag = selectedImageUri;
-            string uri = (string)imageGrid.Tag;
-            DetailsPanelImage.Source = selectedImage.Source;
-        }
+            ProductGridsSelectable = false;
+            DetailsPanelContentEditable(true);
 
-        private void ProductGrid_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (AppMode != Mode.Edit)
+            foreach (var grid in ProductGrids)
             {
-                var product = (Product)((Grid)sender).Tag;
-                SelectedProduct = product;
-                UpdateDetailsPanel(product);
-                DefaultMode();
+                grid.Opacity = 0.7;
             }
+            LoadEditButtonPanel();            
         }
-        public void HideMode()
+        public void LeaveEditMode()
         {
-            AppMode = Mode.Hide;
-            SwitchOpacity();
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
-        }
-        public void DefaultMode()
-        {
+            ProductGridsSelectable = true;
+            DetailsPanelContentEditable(false);
 
-            DetailsPanelRootGrid.Visibility = Visibility.Visible;
-            DetailsPanelDescription.IsReadOnly = true;
-            DetailsPanelDescription.Background = Brushes.Transparent;
-            DetailsPanelPrice.IsReadOnly = true;
-            DetailsPanelPrice.Background = Brushes.Transparent;
-            DetailsPanelName.IsReadOnly = true;
-            DetailsPanelName.Background = Brushes.Transparent;
-
-            HideButtons(new List<Button> { CancelButton, SaveChangesButton, CancelImageButton });
-            ViewButtons(new List<Button> { NewProductButton, ChangeImageButton, EditButton, RemoveButton });
-
-            if (AppMode == Mode.ChangeImage)
+            foreach (var grid in ProductGrids)
             {
-                foreach (var grid in ImageGrids)
-                {
-                    BrowserProductsPanel.Children.Remove(grid);
-                }
-                foreach (var grid in ProductGrids)
-                {
-                    BrowserProductsPanel.Children.Add(grid);
-                }
+                grid.Opacity = 1;
             }
-            AppMode = Mode.Default;
-            SwitchOpacity();
+            LoadDefaultButtonPanel();
+        }
+        public void EnterChangeImageMode()
+        {
+            foreach (var productGrid in ProductGrids)
+            {
+                BrowserProductsPanel.Children.Remove(productGrid);
+            }
+            foreach (var imageGrid in ImageGrids)
+            {
+                BrowserProductsPanel.Children.Add(imageGrid);
+            }
+            LoadChangeImageButtonPanel();
+        }
+        public void LeaveImageMode()
+        {
+            foreach (var productGrid in ProductGrids)
+            {
+                BrowserProductsPanel.Children.Remove(productGrid);
+            }
+            foreach (var imageGrid in ImageGrids)
+            {
+                BrowserProductsPanel.Children.Add(imageGrid);
+            }
+            LoadDefaultButtonPanel();
         }
         public void UpdateDetailsPanel(Product product)
         {
@@ -195,60 +211,46 @@ namespace StoreCommon
             DetailsPanelDescription.MaxWidth = ((ScrollViewer)DetailsPanelDescription.Parent).ActualWidth;
             DetailsPanelDescription.Text = product.Description;
         }
-        public void ChangeImageMode()
+        //simplyfications
+        public void LoadDefaultButtonPanel()
         {
-            AppMode = Mode.ChangeImage;
-            SwitchOpacity();
-            HideButtons(new List<Button> { NewProductButton, EditButton, RemoveButton, CancelButton, ChangeImageButton });
-            ViewButtons(new List<Button> { SaveImageButton, CancelImageButton });
-
-            //Switch items in browser
-            foreach (var productGrid in ProductGrids)
-            {
-                BrowserProductsPanel.Children.Remove(productGrid);
-            }
-            foreach (var imageGrid in ImageGrids)
-            {
-                BrowserProductsPanel.Children.Add(imageGrid);
-            }
-            ChangeImageButton.Width = ChangeImageButton.ActualWidth;
+            HideButtons(new List<Button> { CancelButton, SaveChangesButton, CancelImageButton });
+            ShowButtons(new List<Button> { NewProductButton, ChangeImageButton, EditButton, RemoveButton });
         }
-
-        public void EditMode()
+        public void LoadEditButtonPanel()
         {
-            AppMode = Mode.Edit;
-
             HideButtons(new List<Button> { NewProductButton, EditButton, RemoveButton, CancelImageButton, ChangeImageButton });
-            ViewButtons(new List<Button> { CancelButton, SaveChangesButton });
-            SwitchOpacity();
-            DetailsPanelRootGrid.Visibility = Visibility.Visible;
-            DetailsPanelDescription.IsReadOnly = false;
-            DetailsPanelDescription.Background = Brushes.White;
-            DetailsPanelPrice.IsReadOnly = false;
-            DetailsPanelPrice.Background = Brushes.White;
-            DetailsPanelName.IsReadOnly = false;
-            DetailsPanelName.Background = Brushes.White;         
-
+            ShowButtons(new List<Button> { CancelButton, SaveChangesButton });
         }
-
-        private void SwitchOpacity()
+        public void LoadChangeImageButtonPanel()
         {
-            if (AppMode == Mode.Edit)
+            HideButtons(new List<Button> { NewProductButton, EditButton, RemoveButton, CancelImageButton, ChangeImageButton });
+            ShowButtons(new List<Button> { CancelButton, SaveChangesButton });
+        }
+        public void DetailsPanelContentEditable(bool isContentEditable)
+        {
+            if (isContentEditable)
             {
-                foreach (var grid in ProductGrids)
-                {
-                    grid.Opacity = 0.7;
-                }
+                DetailsPanelRootGrid.Visibility = Visibility.Visible;
+                DetailsPanelDescription.IsReadOnly = false;
+                DetailsPanelDescription.Background = Brushes.White;
+                DetailsPanelPrice.IsReadOnly = false;
+                DetailsPanelPrice.Background = Brushes.White;
+                DetailsPanelName.IsReadOnly = false;
+                DetailsPanelName.Background = Brushes.White;
             }
             else
             {
-                foreach (var grid in ProductGrids)
-                {
-                    grid.Opacity = 1;
-                }
+                DetailsPanelRootGrid.Visibility = Visibility.Visible;
+                DetailsPanelDescription.IsReadOnly = true;
+                DetailsPanelDescription.Background = Brushes.Transparent;
+                DetailsPanelPrice.IsReadOnly = true;
+                DetailsPanelPrice.Background = Brushes.Transparent;
+                DetailsPanelName.IsReadOnly = true;
+                DetailsPanelName.Background = Brushes.Transparent;
             }
         }
-        private void ViewButtons(List<Button> buttonsToView)
+        private void ShowButtons(List<Button> buttonsToView)
         {
             foreach (var button in buttonsToView)
             {
