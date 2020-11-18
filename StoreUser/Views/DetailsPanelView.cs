@@ -146,6 +146,7 @@ namespace StoreUser.Views
             _rightColumn_DetailsRemoveFromCartButton.Visibility = Store.ShoppingCart.Products.ContainsKey(product)
                                                                   ? Visibility.Visible
                                                                   : Visibility.Hidden;
+            _root.Visibility = Visibility.Visible;
         }
 
         private static void UpdateData()

@@ -156,6 +156,7 @@ namespace StoreUser.Views
                 if (listViewItemData != null)
                 {
                     var product = (Product)listViewItemData.ToList()[0].Value;
+                    UserView._selectedProduct = product;
                     UserView.UpdateGUI();
                 }
             }

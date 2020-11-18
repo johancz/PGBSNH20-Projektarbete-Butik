@@ -111,7 +111,7 @@ namespace StoreUser
             ShoppingCartTabView.UpdateShoppingCartTabHeader();
             ShoppingCartToolbarView.UpdateGUI();
             ShoppingCartListView.UpdateShoppingCartView();
-            DetailsPanelView.UpdateDetailsColumn(UserView._selectedProduct);
+            DetailsPanelView.UpdateDetailsColumn(_selectedProduct);
         }
 
         /******************************************************/
@@ -204,7 +204,6 @@ namespace StoreUser
             var product = (Product)((Grid)sender).Tag;
             _selectedProduct = product;
             DetailsPanelView.UpdateDetailsColumn(product);
-            DetailsPanel.Visibility = Visibility.Visible;
         }
     }
 }
