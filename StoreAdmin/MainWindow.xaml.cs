@@ -1,10 +1,6 @@
 ﻿using StoreCommon;
-using StoreUser;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace StoreAdmin
 {
@@ -12,8 +8,8 @@ namespace StoreAdmin
     {
         public MainWindow()
         {
-            InitializeComponent();
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            InitializeComponent();
             Store.Init();
             var AdminApp = new HybridAppWindow(this);
             AdminApp.LoadGUI();

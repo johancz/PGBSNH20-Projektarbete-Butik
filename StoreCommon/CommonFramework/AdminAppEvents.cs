@@ -77,15 +77,13 @@ namespace StoreCommon
 
         private void SaveImageButton_Click(object sender, RoutedEventArgs e)
         {
-            
-            LeaveEditMode();
+            LeaveImageMode();
         }
 
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             string price = DetailsPanelPrice.Text;
             decimal decPrice;
-
 
             if (price.Contains(','))
             {
@@ -115,12 +113,12 @@ namespace StoreCommon
                 }
 
                 UpdateDetailsPanel(product);
+                LeaveEditMode();
             }
             else
             {
                 MessageBox.Show("Try entering a digit as price!");
             }
-            LeaveEditMode();
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
@@ -183,23 +181,47 @@ namespace StoreCommon
         {
             foreach (var productGrid in ProductGrids)
             {
-                BrowserProductsPanel.Children.Remove(productGrid);
+                try
+                {
+                    BrowserProductsPanel.Children.Remove(productGrid);
+                }
+                catch (System.Exception)
+                {
+                }
             }
             foreach (var imageGrid in ImageGrids)
             {
-                BrowserProductsPanel.Children.Add(imageGrid);
+                try
+                {
+                    BrowserProductsPanel.Children.Add(imageGrid);
+                }
+                catch (System.Exception)
+                {
+                }
             }
             LoadChangeImageButtonPanel();
         }
         public void LeaveImageMode()
         {
-            foreach (var productGrid in ProductGrids)
-            {
-                BrowserProductsPanel.Children.Remove(productGrid);
-            }
             foreach (var imageGrid in ImageGrids)
             {
-                BrowserProductsPanel.Children.Add(imageGrid);
+                try
+                {
+                    BrowserProductsPanel.Children.Remove(imageGrid);
+                }
+                catch (System.Exception)
+                {
+                }
+            }
+            foreach (var productGrid in ProductGrids)
+            {
+                try
+                {
+                    BrowserProductsPanel.Children.Add(productGrid);
+                }
+                catch (System.Exception)
+                {
+                }
             }
             LoadDefaultButtonPanel();
         }

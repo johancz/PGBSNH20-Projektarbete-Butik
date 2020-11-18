@@ -222,6 +222,7 @@ namespace StoreCommon
             productsItem.Children.Add(productThumbnail);
             productsItem.Children.Add(nameLabel);
             productsItem.Children.Add(priceLabel);
+
             ProductGrids.Add(productsItem);
 
             return productsItem;
