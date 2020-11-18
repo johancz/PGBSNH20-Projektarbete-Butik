@@ -138,7 +138,7 @@ namespace StoreCommon
                 string discountCode = items[0].Trim();
                 double discountPercentage;
 
-                if (discountCode == "" || !Double.TryParse(items[1], out discountPercentage))
+                if (discountCode == "" || !double.TryParse(items[1], out discountPercentage))
                 {
                     // the item in the 1st column (DiscountCode.Code) is an emptry string.
                     // or
@@ -155,7 +155,9 @@ namespace StoreCommon
 
         public static bool AddDiscountCode(string text)
         {
-            var discountCode = DiscountCodes.Find(dc => dc.Code == text.Trim());
+            var discountCode = DiscountCodes.Find(dc => {
+                return string.Equals(dc.Code, text.Trim(), StringComparison.OrdinalIgnoreCase);
+            });
 
             if (discountCode == null)
             {
