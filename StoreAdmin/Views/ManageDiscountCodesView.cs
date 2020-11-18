@@ -10,6 +10,7 @@ namespace StoreAdmin.Views
     public static class ManageDiscountCodesView
     {
         private static TabItem _root;
+        private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;
 
         private static List<DiscountCode> _newDiscountCodes;
@@ -27,15 +28,15 @@ namespace StoreAdmin.Views
             _newDiscountCodes = new List<DiscountCode>(Store.DiscountCodes);
             _root = new TabItem { Header = "Manage Discount Codes", Background = Brushes.White };
 
-            var rootScrollViewer = new ScrollViewer();
-            _grid = new Grid();
+            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center };
+            _grid = new Grid { Margin = new Thickness(0, 0, 0, 20) };
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
 
 
-            rootScrollViewer.Content = _grid;
-            _root.Content = rootScrollViewer;
+            _rootScrollViewer.Content = _grid;
+            _root.Content = _rootScrollViewer;
         }
 
         public static void UpdateGUI(List<DiscountCode> discountCodes)
@@ -112,7 +113,7 @@ namespace StoreAdmin.Views
             var percentageTextBox = new TextBox { Text = discountCode.Percentage.ToString(), Padding = new Thickness(5), Tag = discountCode, };
             percentageTextBox.TextChanged += PercentageTextBox_TextChanged;
 
-            var deleteButton = new Button { Content = "X", Padding = new Thickness(5), Tag = discountCode, };
+            var deleteButton = new Button { Content = "(X) Delete Discount Code", Padding = new Thickness(5), Tag = discountCode, };
             deleteButton.Click += DeleteButton_Click;
 
             AppendGridRow((codeTextBox, null), (percentageTextBox, null), (deleteButton, null));
