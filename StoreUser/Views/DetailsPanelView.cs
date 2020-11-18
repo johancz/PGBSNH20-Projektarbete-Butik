@@ -25,7 +25,6 @@ namespace StoreUser.Views
         public static Grid Init()
         {
             CreateGUI();
-            UpdateData();
             UpdateGUI();
             return _root;
         }
@@ -149,15 +148,6 @@ namespace StoreUser.Views
             _root.Visibility = Visibility.Visible;
         }
 
-        private static void UpdateData()
-        {
-
-        }
-
-        private static void UpdateShoppingCartView()
-        {
-        }
-
         internal static class EventHandler
         {
             internal static void RightColumn_DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
@@ -178,7 +168,7 @@ namespace StoreUser.Views
 
             internal static void External_RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
             {
-                DetailsPanelView._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
+                _rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
             }
         }
     }

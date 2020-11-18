@@ -135,11 +135,6 @@ namespace StoreUser.Views
                     };
                     _discountCodeSubmit.Click += EventHandler.discountSubmitEventHandler;
                     discountForm.Children.Add(_discountCodeSubmit);
-                    //Grid.SetColumn(_discountCodeInput, 2);
-                    //_root.Children.Add(_discountCodeInput);
-
-                    //Grid.SetColumn(_discountCodeSubmit, 3);
-                    //_root.Children.Add(_discountCodeSubmit);
 
                     Grid.SetColumn(discountForm, 2);
                     _root.Children.Add(discountForm);
@@ -175,8 +170,6 @@ namespace StoreUser.Views
                     Margin = new Thickness(2.5),
                 };
                 shoppingCart_saveButton.Click += EventHandler.ShoppingCart_saveButton_Click;
-                //Grid.SetColumn(shoppingCart_saveButton, 5);
-                //_root.Children.Add(shoppingCart_saveButton);
 
                 var shoppingCart_loadButton = new Button
                 {
@@ -188,8 +181,6 @@ namespace StoreUser.Views
                     Margin = new Thickness(2.5),
                 };
                 shoppingCart_loadButton.Click += EventHandler.ShoppingCart_loadButton_Click;
-                //Grid.SetColumn(shoppingCart_loadButton, 6);
-                //_root.Children.Add(shoppingCart_loadButton);
                 stackPanel_saveLoadButtons.Children.Add(shoppingCart_saveButton);
                 stackPanel_saveLoadButtons.Children.Add(shoppingCart_loadButton);
                 Grid.SetColumn(stackPanel_saveLoadButtons, 6);
