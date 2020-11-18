@@ -1,3 +1,4 @@
+﻿@@ -0,0 +1,309 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -206,9 +207,16 @@ namespace StoreUser.Views
             }
         }
 
-        private static void UpdateData()
+        private static void ResetDiscountCodeForm()
         {
-
+            _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+            _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+            _discountCodeInput.IsEnabled = true;
+            _discountCodeInput.Text = (string)_discountCodeInput.Tag;
+            _summary_finalPrice.Visibility = Visibility.Collapsed;
+            _discountCodeInput.IsEnabled = true;
+            _discountCodeSubmit.Content = "+ Add discount code";
+            _discountCodeSubmit.Background = Brushes.LightGreen;
         }
 
         private static class EventHandler
@@ -241,14 +249,7 @@ namespace StoreUser.Views
                 else if ((string)_discountCodeSubmit.Content == "- Remove discount code")
                 {
                     Store.RemoveDiscountCode();
-                    _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
-                    _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
-                    _discountCodeInput.IsEnabled = true;
-                    _discountCodeInput.Text = (string)_discountCodeInput.Tag;
-                    _summary_finalPrice.Visibility = Visibility.Collapsed;
-                    _discountCodeInput.IsEnabled = true;
-                    _discountCodeSubmit.Content = "+ Add discount code";
-                    _discountCodeSubmit.Background = Brushes.LightGreen;
+                    ResetDiscountCodeForm();
                     UpdateGUI();
                 }
             }
@@ -301,6 +302,7 @@ namespace StoreUser.Views
             internal static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
             {
                 Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
+                ResetDiscountCodeForm();
                 UserView.UpdateGUI();
             }
         }
