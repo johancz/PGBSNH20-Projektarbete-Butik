@@ -13,7 +13,7 @@ using StoreCommon;
 
 namespace StoreUser.Views
 {
-    public static class View_ShoppingCartList
+    public static class ShoppingCartListView
     {
         private static ListView _root;
         internal static GridView _gridView;

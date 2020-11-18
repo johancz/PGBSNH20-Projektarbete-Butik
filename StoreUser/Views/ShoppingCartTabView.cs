@@ -11,7 +11,7 @@ using StoreCommon;
 
 namespace StoreUser.Views
 {
-    public static class View_ShoppingCartTab
+    public static class ShoppingCartTabView
     {
         private static TabItem _root;
 
