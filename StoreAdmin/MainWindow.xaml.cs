@@ -21,8 +21,8 @@ namespace StoreAdmin
         public MainWindow()
         {
             InitializeComponent();
-            //Start();
-            UnderConstructionStart();
+            Start();
+            //UnderConstructionStart();
         }
         public void UnderConstructionStart()
         {
@@ -30,17 +30,11 @@ namespace StoreAdmin
             Store.Init();
 
             var AdminApp = new HybridAppWindow(this, "Administrator View", Brushes.LightBlue);
-            var editProductsPage = new HybridPage(AdminApp.tabControl, "Edit Products", Brushes.Aquamarine);
-            var editPanel = new DetailsPanel(editProductsPage.grid, Brushes.Red, "edit panel");
-            editPanel.AddAdminButtonPanel();
-
-            //var newProduct = new HybridPage(AdminApp.tabControl, "New Product", Brushes.Aquamarine);
-            //var newProductPanel = new DetailsPanel(newProduct.grid, Brushes.Red, "edit panel");
-            //newProductPanel.NewProductContent();
-            //newProductPanel.AddNewProductButtonPanel();
-            //var discountCodePage = new HybridPage(AdminApp.tabControl, "Edit Discount Codes", Brushes.Aquamarine);
-
-            var productBrowser = new Browser(editProductsPage.grid);
+            AdminApp.AddDefaultAdminPage("Administrator mode", Brushes.AntiqueWhite);
+            var productBrowser = new Browser(CommonFramework.EditTabGrid);
+            var editPanel = new DetailsPanel(CommonFramework.EditTabGrid, Brushes.Red, "edit panel");
+            AdminApp.LoadAllButtons();
+            AdminApp.DefaultModeButtons();
             productBrowser.LoadBrowserItems();
             productBrowser.LoadBrowserImages();
             

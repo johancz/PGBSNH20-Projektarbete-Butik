@@ -11,7 +11,6 @@ namespace StoreCommon
 {
     public class Browser : CommonFramework
     {
-        public WrapPanel BrowserWrapPanel;
         public Grid Parent;
         public ScrollViewer ThisScrollViewer;
 
@@ -26,24 +25,25 @@ namespace StoreCommon
             parent.Children.Add(scrollViewer);
             Grid.SetColumn(scrollViewer, 0);
 
-            var productPanel = new WrapPanel
+            var productParentPanel = new WrapPanel
             {
                 Tag = "product panel",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Background = Brushes.LightBlue,
                 VerticalAlignment = VerticalAlignment.Top
             };
-            Elements.Add(productPanel);
+            ProductParentPanel = productParentPanel;
 
-            scrollViewer.Content = productPanel;
-            BrowserWrapPanel = productPanel;
+            scrollViewer.Content = productParentPanel;
+            ProductParentPanel = productParentPanel;
+
             scrollViewer.SizeChanged += ScrollViewer_SizeChanged;
         }
         public void LoadBrowserImages()
         {
             foreach (var filePath in Store.ImageItemFilePaths)
             {
-                var newProductItem = new BrowserItem(BrowserWrapPanel);
+                var newProductItem = new BrowserItem(ProductParentPanel);
                 newProductItem.LoadImageBrowserItem(filePath);
             }
         }
@@ -51,39 +51,30 @@ namespace StoreCommon
         {
             foreach (var product in Store.Products)
             {
-                var newProductItem = new BrowserItem(BrowserWrapPanel);
+                var newProductItem = new BrowserItem(ProductParentPanel);
                 newProductItem.LoadProductBrowserItem(product);
             }
         }
         public void SwitchContent()
         {
-            var newButton = (Button)GetElement("new product");
-            var changeButton = (Button)GetElement("change image");
-            var editButton = (Button)GetElement("edit");
-            var removeButton = (Button)GetElement("remove");
-            var saveButton = (Button)GetElement("save changes");
-            var buttonParent = (StackPanel)GetElement("admin buttons");
-            changeButton.Width = changeButton.ActualWidth;
-
             if (!ChangeImageModeEnabled)
             {
+                ImageModeButtons();
                 ChangeImageModeEnabled = true;
                 EditProductModeEnabled = true;
                 foreach (var productItem in ProductBrowserItems)
                 {
-                    BrowserWrapPanel.Children.Remove(productItem.ItemGrid);
+                    ProductParentPanel.Children.Remove(productItem.ItemGrid);
                     productItem.SwitchOpacityMode();
 
                 }
                 foreach (var imageItem in ImageBrowserItems)
                 {
-                    BrowserWrapPanel.Children.Add(imageItem.ItemGrid);
+                    ProductParentPanel.Children.Add(imageItem.ItemGrid);
                 }
-                changeButton.Content = new Label { Content = "Select Image", HorizontalAlignment = HorizontalAlignment.Left };
-                buttonParent.Children.Remove(editButton);
-                buttonParent.Children.Remove(removeButton);
-                buttonParent.Children.Remove(saveButton);
-                buttonParent.Children.Remove(newButton);
+               
+                ChangeImageButton.Width = ChangeImageButton.ActualWidth;
+                ChangeImageButton.Content = new Label { Content = "Select Image", HorizontalAlignment = HorizontalAlignment.Left };
             }
             else
             {
@@ -91,20 +82,19 @@ namespace StoreCommon
 
                 foreach (var productItem in ProductBrowserItems)
                 {
-                    BrowserWrapPanel.Children.Add(productItem.ItemGrid);
+                    ProductParentPanel.Children.Add(productItem.ItemGrid);
                 }
                 foreach (var imageItem in ImageBrowserItems)
                 {
-                    BrowserWrapPanel.Children.Remove(imageItem.ItemGrid);
+                    ProductParentPanel.Children.Remove(imageItem.ItemGrid);
                 }
-                changeButton.Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left };
-                buttonParent.Children.Add(editButton);
-                buttonParent.Children.Add(saveButton);
+                ChangeImageButton.Width = ChangeImageButton.ActualWidth;
+                ChangeImageButton.Content = new Label { Content = "Change Image", HorizontalAlignment = HorizontalAlignment.Left };
             }
         }
         private void ScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            BrowserWrapPanel.Width = ThisScrollViewer.ActualWidth;
+            ProductParentPanel.Width = ThisScrollViewer.ActualWidth;
         }
     }
 }

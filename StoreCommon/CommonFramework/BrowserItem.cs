@@ -91,7 +91,6 @@ namespace StoreCommon
             Grid.SetRow(priceLabel, 1);
             ItemGrid.Children.Add(priceLabel);
 
-            Elements.Add(ItemGrid);
             ProductBrowserItems.Add(this);
             ItemGrid.MouseUp += ProductItemGrid_MouseUp;
         }
@@ -112,7 +111,7 @@ namespace StoreCommon
             var itemImage = (Image)(itemGrid.Children[0]);
             SelectedImage = itemImage;
             var source = itemImage.Source;
-            var displayImage = ((Image)GetElement("rightcolumn detailsimage"));
+            var displayImage = DetailsPanelImage;
             displayImage.Source = source;
         }
 
