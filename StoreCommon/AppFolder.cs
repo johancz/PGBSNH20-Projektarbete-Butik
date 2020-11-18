@@ -53,7 +53,6 @@ namespace StoreCommon
                     File.Copy(image, Path.Combine(ImageFolderPath, name));
                 }
             }
-
         }
     }
 }
