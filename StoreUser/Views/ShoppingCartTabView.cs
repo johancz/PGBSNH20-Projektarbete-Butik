@@ -107,7 +107,12 @@ namespace StoreUser.Views
             {
                 finalCost += $" (you saved {Store.ShoppingCart.FinalSum - Store.ShoppingCart.TotalSum} {Store.Currency.Symbol}!)";
             }
-            var totalsLabel = new Label { Content = finalCost += "\n\nThank you for your order!", FontWeight = FontWeights.SemiBold, };
+            var totalsLabel = new Label
+            {
+                Content = finalCost += "\n\nThank you for your order!",
+                FontWeight = FontWeights.SemiBold,
+                FontSize = 14,
+            };
             Grid.SetColumnSpan(totalsLabel, 3);
             Grid.SetRow(totalsLabel, receiptGrid.RowDefinitions.Count);
             receiptGrid.Children.Add(totalsLabel);
