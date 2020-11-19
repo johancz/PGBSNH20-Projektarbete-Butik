@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using StoreCommon;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using StoreCommon;
 
 namespace StoreUser.Views
 {
@@ -25,7 +22,6 @@ namespace StoreUser.Views
         public static Grid Init()
         {
             CreateGUI();
-            UpdateData();
             UpdateGUI();
             return _root;
         }
@@ -206,9 +202,15 @@ namespace StoreUser.Views
             }
         }
 
-        private static void UpdateData()
+        private static void ResetDiscountCodeForm()
         {
-
+            _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+            _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+            _discountCodeInput.IsEnabled = true;
+            _summary_finalPrice.Visibility = Visibility.Collapsed;
+            _discountCodeInput.IsEnabled = true;
+            _discountCodeSubmit.Content = "+ Add discount code";
+            _discountCodeSubmit.Background = Brushes.LightGreen;
         }
 
         private static class EventHandler
@@ -241,14 +243,7 @@ namespace StoreUser.Views
                 else if ((string)_discountCodeSubmit.Content == "- Remove discount code")
                 {
                     Store.RemoveDiscountCode();
-                    _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
-                    _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
-                    _discountCodeInput.IsEnabled = true;
-                    _discountCodeInput.Text = (string)_discountCodeInput.Tag;
-                    _summary_finalPrice.Visibility = Visibility.Collapsed;
-                    _discountCodeInput.IsEnabled = true;
-                    _discountCodeSubmit.Content = "+ Add discount code";
-                    _discountCodeSubmit.Background = Brushes.LightGreen;
+                    ResetDiscountCodeForm();
                     UpdateGUI();
                 }
             }
@@ -301,6 +296,7 @@ namespace StoreUser.Views
             internal static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
             {
                 Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
+                ResetDiscountCodeForm();
                 UserView.UpdateGUI();
             }
         }
