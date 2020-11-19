@@ -8,7 +8,7 @@ namespace StoreAdmin.Tests
 {
     // TODO(johancz): Den här klassen kanske inte skall testat, så den här filen är mer av en placeholder
     [TestClass()]
-    public class MainWindowTests
+    public class Empty___WasIn_StoreAdminTests___MainWindowTests
     {
         [TestInitialize]
         public void TestInit()

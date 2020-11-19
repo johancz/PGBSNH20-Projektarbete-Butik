@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StoreCommon;
 using System.Globalization;
 using System.IO;
+using StoreCommon;
 
 namespace StoreAdmin.Tests
 {

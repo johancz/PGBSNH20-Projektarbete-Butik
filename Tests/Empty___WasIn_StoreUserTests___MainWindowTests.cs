@@ -1,12 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StoreCommon;
 using System;
 using System.Globalization;
 using System.IO;
 
-namespace StoreCommon.Tests
+namespace StoreUser.Tests
 {
     [TestClass()]
-    public class ProductListTests
+    public class Empty___WasIn_StoreUserTests___MainWindowTests
     {
         [TestInitialize]
         public void TestInit()
@@ -16,37 +17,18 @@ namespace StoreCommon.Tests
         }
 
         [TestMethod()]
-        public void AddProductTest()
+        public void CreateTest()
         {
             throw new NotImplementedException();
         }
 
         [TestMethod()]
-        public void RemoveProductTest()
+        public void CreateProductItemTest()
         {
             throw new NotImplementedException();
         }
 
-        [TestMethod()]
-        public void SetDiscountCodeTest()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod()]
-        public void RemoveDiscountCodeTest()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod()]
-        public void SaveToFileTest()
-        {
-            throw new NotImplementedException();
-        }
-
-        [TestMethod()]
-        public void LoadFromFileTest()
+        public void ProductItem_MouseUpTest()
         {
             throw new NotImplementedException();
         }

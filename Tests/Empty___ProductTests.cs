@@ -6,7 +6,7 @@ using System.IO;
 namespace StoreCommon.Tests
 {
     [TestClass()]
-    public class ProductTests
+    public class Empty___ProductTests
     {
         [TestInitialize]
         public void TestInit()
