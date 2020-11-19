@@ -50,10 +50,7 @@ namespace StoreCommon
         }
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
-            {
-                Application.Current.Shutdown();
-            }
+            if (e.Key == Key.Escape) Application.Current.Shutdown();
         }
 
         private void ProductGrid_MouseUp(object sender, MouseButtonEventArgs e)
