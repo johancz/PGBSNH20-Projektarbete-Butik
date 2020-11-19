@@ -129,6 +129,7 @@ namespace StoreUser.Views
             });
 
             _root.ItemsSource = combinedData;
+            _root.UpdateLayout();
         }
 
         private static class EventHandler
@@ -138,6 +139,7 @@ namespace StoreUser.Views
                 // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
                 Store.ShoppingCart.RemoveProduct(product);
+                UserView._selectedProduct = product;
                 UserView.UpdateGUI();
             }
 

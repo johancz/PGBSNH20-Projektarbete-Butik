@@ -207,7 +207,6 @@ namespace StoreUser.Views
             _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
             _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
             _discountCodeInput.IsEnabled = true;
-            _discountCodeInput.Text = (string)_discountCodeInput.Tag;
             _summary_finalPrice.Visibility = Visibility.Collapsed;
             _discountCodeInput.IsEnabled = true;
             _discountCodeSubmit.Content = "+ Add discount code";
