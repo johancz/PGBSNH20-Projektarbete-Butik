@@ -12,7 +12,7 @@ namespace StoreAdmin
             InitializeComponent();
             Store.Init();
             var AdminApp = new HybridAppWindow(this);
-            AdminApp.LoadGUI();
+            AdminApp.CreateGUI();
             var appEvents = new AdminAppEvents();
             appEvents.Init();            
         }

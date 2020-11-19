@@ -23,7 +23,7 @@ namespace StoreCommon
                                     public static List<Grid> ProductGrids = new List<Grid>();
 
                             public static Grid DetailsPanelRootGrid; //two rows
-                                public static Image DetailsPanelImage = new Image();
+                                public static Image DetailsPanelImage;
                                 public static Grid DetailsTextAndButtonGrid; //two columns
                                     public static Grid DetailsTitleAndDescriptionGrid; //two rows
                                         public static ScrollViewer DetailsDescriptionScrollViewer;

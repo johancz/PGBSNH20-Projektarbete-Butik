@@ -27,16 +27,17 @@ namespace StoreCommon
                 WindowTabControl = windowTabControl;           
         }
 
-        public void LoadGUI()
+        public void CreateGUI()
         {
-            LoadDefaultAdminPage("Administrator mode", Brushes.AliceBlue);
-                LoadBrowser();
-                    LoadItemGrids();
-                LoadDetailsPanel();
-                    LoadEditableTextBoxes();
-                    LoadButtons();
+            CreateAdminPage("Administrator mode", Brushes.AliceBlue);
+                CreateBrowser();
+                    CreateItemGrids();
+                CreateDetailsPanel();
+                    CreateEditableTextBoxes();
+                    CreateButtons();
+            CreateAdminPage("Manage Discount Codes", Brushes.Azure);
         }
-        private void LoadDefaultAdminPage(string header, Brush brush)
+        private void CreateAdminPage(string header, Brush brush)
         {            
             var editPageTabItem = new TabItem { Header = header };
             WindowTabControl.Items.Add(editPageTabItem);
@@ -51,7 +52,7 @@ namespace StoreCommon
                 EditPageGrid = editPageGrid;
                     
         }
-            private void LoadDetailsPanel()
+            private void CreateDetailsPanel()
             {
                 var detailsPanelRootGrid = new Grid { ShowGridLines = true, Background = Brushes.AntiqueWhite };
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -108,7 +109,7 @@ namespace StoreCommon
                             DetailsDescriptionScrollViewer = productDescriptionScrollViewer;
                         DetailsButtonPanel = detailsButtonPanel;
             }
-                public void LoadEditableTextBoxes()
+                public void CreateEditableTextBoxes()
                 {
                 var detailsPanelDescription = new TextBox
                 {
@@ -152,7 +153,7 @@ namespace StoreCommon
                 DetailsPanelPrice = detailsPanelPrice;
                 DetailsPanelCurrency = detailsPanelCurrency;
                 }
-                private void LoadButtons()
+                private void CreateButtons()
                 {
                     //Parent DetailsButtonPanel
                     NewProductButton = CreateButton("New Product");
@@ -177,7 +178,7 @@ namespace StoreCommon
                         };
                         return newButton;
                     }
-            private void LoadBrowser()
+            private void CreateBrowser()
             {
                 var browserRootScrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto };
                 Grid.SetColumn(browserRootScrollViewer, 0);
@@ -195,7 +196,7 @@ namespace StoreCommon
 
                 browserRootScrollViewer.SizeChanged += BrowserRootScrollViewer_SizeChanged;
             }
-                private void LoadItemGrids()
+                private void CreateItemGrids()
                 {
                     foreach (var product in Store.Products)
                     {
@@ -212,7 +213,7 @@ namespace StoreCommon
                         var productAndImageGrid = CreateProductGrid(product, Brushes.AliceBlue); //2 rows //2 columns
                         CreateProductThumbnail(productAndImageGrid, product, 1, 0);
                         CreateGridNameLabel(productAndImageGrid, product, 0, 1);
-                        CreateGridPriceLabel(productAndImageGrid, product, 1, 1);
+                        //CreateGridPriceLabel(productAndImageGrid, product, 1, 1);
                     }
                         private Grid CreateProductGrid(Product product, Brush background) //2 columns //2 rows //needs to return grid right now
                         {
@@ -223,7 +224,8 @@ namespace StoreCommon
                                 Height = ProductItem_LayoutSettings.gridItemHeight,
                                 Margin = new Thickness(5),
                                 Background = background,
-                                Tag = product
+                                Tag = product,
+                                ShowGridLines = true
                             };
 
                             productGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -249,7 +251,7 @@ namespace StoreCommon
                             {
                                 var nameLabel = new Label
                                 {
-                                    Content = product.Name,
+                                    Content = $"{product.Name}",
                                     FontSize = 14,
                                 };
                                 Grid.SetColumn(nameLabel, column);
@@ -287,8 +289,7 @@ namespace StoreCommon
                         imageGrid.Children.Add(productThumbnail);
 
                         return imageGrid;
-                    }
-        
+                    }        
         private void BrowserRootScrollViewer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             ProductAndImageWrapPanel.Width = BrowserRootScrollViewer.ActualWidth;
