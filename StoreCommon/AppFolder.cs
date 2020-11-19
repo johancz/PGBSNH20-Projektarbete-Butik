@@ -19,31 +19,30 @@ namespace StoreCommon
 
         static AppFolder()
         {
-            string productCSV = Path.Combine(RootFolderPath, "Products.csv");
-            string discountCSV = Path.Combine(RootFolderPath, "DiscountCodes.csv");
-            string shoppingCartCSV = Path.Combine(RootFolderPath, "ShoppingCart.csv");
-
-            ProductCSV = productCSV;
-            DiscountCSV = discountCSV;
-            ShoppingCartCSV = shoppingCartCSV;
+            ProductCSV = Path.Combine(RootFolderPath, "Products.csv");
+            DiscountCSV = Path.Combine(RootFolderPath, "DiscountCodes.csv");
+            ShoppingCartCSV = Path.Combine(RootFolderPath, "ShoppingCart.csv");
 
             var storeFolder = new DirectoryInfo(RootFolderPath);
             var imageFolder = new DirectoryInfo(ImageFolderPath);
             storeFolder.Create();
             imageFolder.Create();
 
-            if (!File.Exists(productCSV))
+            if (!File.Exists(ProductCSV))
             {
-                File.Copy(InputProductsCSV, productCSV);
+                File.Copy(InputProductsCSV, ProductCSV);
             }
-            if (!File.Exists(discountCSV))
+
+            if (!File.Exists(DiscountCSV))
             {
-                File.Copy(InputDiscountCodesCSV, discountCSV);
+                File.Copy(InputDiscountCodesCSV, DiscountCSV);
             }
-            if (!File.Exists(shoppingCartCSV))
+
+            if (!File.Exists(ShoppingCartCSV))
             {
-                File.Copy(InputShoppingCartCSV, shoppingCartCSV);
+                File.Copy(InputShoppingCartCSV, ShoppingCartCSV);
             }
+
             if (imageFolder.GetFiles().Length == 0)
             {
                 var images = Directory.GetFiles(InputImages);
