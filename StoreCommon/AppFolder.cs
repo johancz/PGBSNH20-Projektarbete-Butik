@@ -4,7 +4,7 @@ namespace StoreCommon
 {
     public static class AppFolder
     {
-        private static readonly string ProjectName = "Fight Club & Veggies_JC.RA";
+        public static string ProjectName = "Fight Club & Veggies_JC.RA";
         private static readonly string RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
         public static readonly string ImageFolderPath = Path.Combine(RootFolderPath, "Images");
 

@@ -143,5 +143,33 @@ namespace StoreCommon.Tests
 
             CollectionAssert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success()
+        {
+            // The contents of the test file (ExampleDiscountCodes.csv):
+            // Gimme-free-stuff;1
+            // Half-Off;0.5
+            AppFolder.ProjectName = AppFolder.ProjectName + "_Test_SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success";
+
+            // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
+            Helpers.StoreDataCsvPath = Path.Combine("TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
+            Store.LoadDiscountCodes(Helpers.StoreDataCsvPath);
+            //Store.DiscountCodes = Store.DiscountCodes.Remove(1);
+
+            var expectedDiscountCodes = new List<DiscountCode>
+            {
+                new DiscountCode(code: "Gimmefreestuff", percentage: 1),
+            };
+
+            Store.DiscountCodes = expectedDiscountCodes;
+            Store.SaveDiscountCodesToFile();
+            Store.LoadDiscountCodes(AppFolder.DiscountCSV);
+
+            var expected = expectedDiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
+            var actual = Store.DiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
     }
 }
