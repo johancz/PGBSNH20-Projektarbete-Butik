@@ -13,6 +13,14 @@ namespace StoreCommon
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<string> ImageItemFilePaths { get; set; } = new List<string>();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
+        public static void Init()
+        {
+            Store.Currency = (Code: "SEK", Symbol: "kr");
+            LoadProducts(AppFolder.ProductCSV);
+            LoadImagePaths(AppFolder.ImageFolderPath);
+            LoadDiscountCodes(AppFolder.DiscountCSV);
+            LoadShoppingCart(AppFolder.ShoppingCartCSV);
+        }
 
         public static void LoadProducts(string pathAndFileName)
         {
@@ -46,7 +54,7 @@ namespace StoreCommon
                 ImageItemFilePaths.Add(file.FullName);
             }
         }
-        public static void SaveRuntimeProductsToCSV()
+        public static void SaveCurrentProductsInStoreToCSV()
         {
             string productText = "";
             foreach (var product in Products)
@@ -81,15 +89,6 @@ namespace StoreCommon
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);
             }
-        }
-
-        public static void Init()
-        {
-            Store.Currency = (Code: "SEK", Symbol: "kr");
-            LoadProducts(AppFolder.ProductCSV);
-            LoadImagePaths(AppFolder.ImageFolderPath);
-            LoadDiscountCodes(AppFolder.DiscountCSV);
-            LoadShoppingCart(AppFolder.ShoppingCartCSV);
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
@@ -157,11 +156,7 @@ namespace StoreCommon
         {
             var discountCode = DiscountCodes.Find(dc => dc.Code == text.Trim());
 
-            if (discountCode == null)
-            {
-                return false;
-            }
-
+            if (discountCode == null) return false;
             ShoppingCart.SetDiscountCode(discountCode);
             return true;
         }

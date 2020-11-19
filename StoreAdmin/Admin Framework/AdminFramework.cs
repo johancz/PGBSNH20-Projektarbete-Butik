@@ -15,19 +15,20 @@ namespace StoreCommon
             public static Window MainWindow;
                 public static TabControl WindowTabControl;
                     public static TabItem EditPageTabItem;                    
-                        public static Grid EditPageGrid; //two columns
+                        public static Grid EditPageGrid;
 
                             public static ScrollViewer BrowserRootScrollViewer;
                                 public static WrapPanel ProductAndImageWrapPanel;
                                     public static List<Grid> ImageGrids = new List<Grid>();
                                     public static List<Grid> ProductGrids = new List<Grid>();
 
-                            public static Grid DetailsPanelRootGrid; //two rows
+                            public static Grid DetailsPanelRootGrid;
                                 public static Image DetailsPanelImage;
-                                public static Grid DetailsTextAndButtonGrid; //two columns
-                                    public static Grid DetailsTitleAndDescriptionGrid; //two rows
+                                public static Grid DetailsTextAndButtonGrid;
+                                    public static Grid DetailsTitleAndDescriptionGrid;
                                         public static ScrollViewer DetailsDescriptionScrollViewer;
                                             public static TextBox DetailsPanelDescription;
+                                                public static List<TextBox> EditDetailsTextBoxes = new List<TextBox>();
 
                                         public static StackPanel NameAndPricePanel;
                                             public static TextBox DetailsPanelName;
@@ -43,12 +44,8 @@ namespace StoreCommon
                                         public static Button CancelImageButton;
                                         public static Button SaveImageButton;
                                         public static Button SaveChangesButton;
-
-        //State Framework
-        public static Product SelectedProduct = null;
-        public static Image? SelectedImage = null; //tveksamt
-        public static string? SelectedImageUri = null;
-
+                                            public static List<Button> AdminButtons = new List<Button>();    
+                                         
     }
 }   
 

@@ -9,10 +9,11 @@ namespace StoreAdmin
         public MainWindow()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+            
             InitializeComponent();
             Store.Init();
             var AdminApp = new HybridAppWindow(this);
-            AdminApp.CreateGUI();
+            AdminApp.CreateAdminGUI();
             var appEvents = new AdminAppEvents();
             appEvents.Init();            
         }
