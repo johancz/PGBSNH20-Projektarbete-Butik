@@ -18,7 +18,7 @@ namespace StoreCommon
                         public static Grid EditPageGrid; //two columns
 
                             public static ScrollViewer BrowserRootScrollViewer;
-                                public static WrapPanel BrowserProductsPanel;
+                                public static WrapPanel ProductAndImageWrapPanel;
                                     public static List<Grid> ImageGrids = new List<Grid>();
                                     public static List<Grid> ProductGrids = new List<Grid>();
 
@@ -35,7 +35,7 @@ namespace StoreCommon
                                             public static TextBox DetailsPanelCurrency;
 
                                     public static StackPanel DetailsButtonPanel;
-                                        public static Button EditButton;
+                                        public static Button EditProductButton;
                                         public static Button RemoveButton;
                                         public static Button ChangeImageButton;
                                         public static Button NewProductButton;
@@ -47,6 +47,7 @@ namespace StoreCommon
         //State Framework
         public static Product SelectedProduct = null;
         public static Image? SelectedImage = null; //tveksamt
+        public static string? SelectedImageUri = null;
 
     }
 }   
