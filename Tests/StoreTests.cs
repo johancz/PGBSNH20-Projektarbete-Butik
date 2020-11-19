@@ -128,13 +128,13 @@ namespace StoreCommon.Tests
             // Half-Off;0.5
 
             // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "StoreTests_LoadDiscountCodes", "csvFiles");
+            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "..", "TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
             Store.LoadDiscountCodes(Helpers.StoreDataCsvPath);
 
             var expectedDiscountCodes = new List<DiscountCode>
             {
-                new DiscountCode(code: "Gimme-free-stuff", percentage: 1),
-                new DiscountCode(code: "Half-Off", percentage: 0.5),
+                new DiscountCode(code: "Gimmefreestuff", percentage: 1),
+                new DiscountCode(code: "HalfOff", percentage: 0.5),
             };
 
             var expected = expectedDiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
