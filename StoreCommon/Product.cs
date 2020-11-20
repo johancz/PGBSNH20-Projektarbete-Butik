@@ -1,4 +1,6 @@
-﻿namespace StoreCommon
+﻿using System.Windows.Controls;
+
+namespace StoreCommon
 {
     public class Product
     {
@@ -6,6 +8,7 @@
         public string Description;
         public decimal Price { get; set; }
         public string Uri;
+        public Image Tag { get; set; }
 
         public Product(string name, string uri, decimal price, string description)
         {

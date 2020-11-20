@@ -16,6 +16,16 @@ namespace StoreCommon
         public static List<string> ImageItemFilePaths { get; set; } = new List<string>();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
 
+        public static void Init()
+        {
+            DataManager.SetPaths();
+            Store.Currency = (Code: "SEK", Symbol: "kr");
+            LoadProducts(DataManager.ProductCSV);
+            LoadImagePaths(DataManager.ImageFolderPath);
+            LoadDiscountCodes(DataManager.DiscountCSV);
+            LoadShoppingCart(DataManager.ShoppingCartCSV);
+        }
+
         public static void LoadProducts(string pathAndFileName)
         {
             var products = new List<Product>();
@@ -49,8 +59,7 @@ namespace StoreCommon
                 ImageItemFilePaths.Add(file.FullName);
             }
         }
-
-        public static void SaveRuntimeProductsToCSV()
+        public static void SaveCurrentProductsInStoreToCSV()
         {
             string productText = "";
             foreach (var product in Products)
@@ -63,16 +72,6 @@ namespace StoreCommon
                 });
             }
             File.WriteAllText(DataManager.ProductCSV, productText);
-        }
-
-        public static void Init()
-        {
-            DataManager.SetPaths();
-            Store.Currency = (Code: "SEK", Symbol: "kr");
-            LoadProducts(DataManager.ProductCSV);
-            LoadImagePaths(DataManager.ImageFolderPath);
-            LoadDiscountCodes(DataManager.DiscountCSV);
-            LoadShoppingCart(DataManager.ShoppingCartCSV);
         }
 
         public static void LoadShoppingCart(string path)
@@ -132,11 +131,7 @@ namespace StoreCommon
                 return string.Equals(dc.Code, text.Trim(), StringComparison.OrdinalIgnoreCase);
             });
 
-            if (discountCode == null)
-            {
-                return false;
-            }
-
+            if (discountCode == null) return false;
             ShoppingCart.SetDiscountCode(discountCode);
             return true;
         }
