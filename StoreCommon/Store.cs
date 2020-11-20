@@ -60,7 +60,7 @@ namespace StoreCommon
                     product.Description + "#\n\n"
                 });
             }
-            File.WriteAllText(AppFolder.ProductCSV, productText);
+            File.WriteAllText(DataManager.ProductCSV, productText);
         }
         //public static void LoadProducts(string pathAndFileName, out List<Product> products)
         //{
@@ -88,10 +88,10 @@ namespace StoreCommon
         public static void Init()
         {
             Store.Currency = (Code: "SEK", Symbol: "kr");
-            LoadProducts(AppFolder.ProductCSV);
-            LoadImagePaths(AppFolder.ImageFolderPath);
-            LoadDiscountCodes(AppFolder.DiscountCSV);
-            LoadShoppingCart(AppFolder.ShoppingCartCSV);
+            LoadProducts(DataManager.ProductCSV);
+            LoadImagePaths(DataManager.ImageFolderPath);
+            LoadDiscountCodes(DataManager.DiscountCSV);
+            LoadShoppingCart(DataManager.ShoppingCartCSV);
         }
 
         // TODO(johancz): not required if the method lives in the ProductList-class.
@@ -107,7 +107,7 @@ namespace StoreCommon
         // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(AppFolder.ShoppingCartCSV);
+            ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
         }
 
         public static void LoadDiscountCodes(string path)
@@ -178,7 +178,7 @@ namespace StoreCommon
         public static void SaveDiscountCodesToFile()
         {
             string[] linesToSave = DiscountCodes.Select(discountCode => $"{discountCode.Code};{discountCode.Percentage}").ToArray();
-            File.WriteAllLines(AppFolder.DiscountCSV, linesToSave);
+            File.WriteAllLines(DataManager.DiscountCSV, linesToSave);
         }
     }
 }

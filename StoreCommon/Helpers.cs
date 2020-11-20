@@ -21,7 +21,7 @@ namespace StoreCommon
         {
             try
             {
-                var uri = new Uri(Path.Combine(AppFolder.ImageFolderPath, uriString), UriKind.Absolute);
+                var uri = new Uri(Path.Combine(DataManager.ImageFolderPath, uriString), UriKind.Absolute);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace StoreCommon
 {
-    public static class AppFolder
+    public static class DataManager
     {
         public static string ProjectName = "Fight Club & Veggies_JC.RA";
         public static string RootFolderPath;
@@ -20,7 +20,7 @@ namespace StoreCommon
         public static string DiscountCSV;
         public static string ShoppingCartCSV;
 
-        static AppFolder()
+        static DataManager()
         {
             SetPaths();
         }

@@ -295,7 +295,7 @@ namespace StoreUser.Views
 
             internal static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
             {
-                Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
+                Store.LoadShoppingCart(DataManager.ShoppingCartCSV);
                 ResetDiscountCodeForm();
                 UserView.UpdateGUI();
             }

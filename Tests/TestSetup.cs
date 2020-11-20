@@ -23,7 +23,7 @@ namespace Store.Tests
         public static void Init()
         {
             TestDataPath = Path.Combine(Environment.CurrentDirectory, "TestData");
-            TestOutputPath = Path.Combine(Path.GetTempPath(), AppFolder.ProjectName + "__TESTS");
+            TestOutputPath = Path.Combine(Path.GetTempPath(), DataManager.ProjectName + "__TESTS");
             _initiated = true;
         }
 
@@ -56,7 +56,7 @@ namespace Store.Tests
             foreach (string csvFilePath in pathSourceTestDataCSVFiles)
             {
                 // Copy all ".csv"-files to the folder in the system's "Temp"-folder. Always overwrite.
-                File.Copy(csvFilePath, Path.Combine(AppFolder.RootFolderPath, Path.GetFileName(csvFilePath)), true);
+                File.Copy(csvFilePath, Path.Combine(DataManager.RootFolderPath, Path.GetFileName(csvFilePath)), true);
             }
 
 
