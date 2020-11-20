@@ -295,9 +295,16 @@ namespace StoreUser.Views
 
             internal static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
             {
-                Store.LoadShoppingCart(DataManager.ShoppingCartCSV);
-                ResetDiscountCodeForm();
-                UserView.UpdateGUI();
+                var result = MessageBox.Show("You already have items in your shopping cart, do you want overwrite it?",
+                                             "Overwrite Shopping Cart?",
+                                             MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    Store.LoadShoppingCart(DataManager.ShoppingCartCSV);
+                    ResetDiscountCodeForm();
+                    UserView.UpdateGUI();
+                }
             }
         }
     }

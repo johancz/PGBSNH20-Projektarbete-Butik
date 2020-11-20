@@ -27,6 +27,14 @@ namespace Store.Tests
             _initiated = true;
         }
 
+        public static void Cleanup()
+        {
+            if (Directory.Exists(TestOutputPath) && new DirectoryInfo(TestOutputPath).Parent == new DirectoryInfo(Path.GetTempPath()))
+            {
+                Directory.Delete(TestOutputPath, true);
+            }
+        }
+
         /// <summary>
         /// <p
         /// </summary>
@@ -44,6 +52,11 @@ namespace Store.Tests
             {
                 throw new ArgumentException("'testDataFolder cannot be null or an empty string.");
             }
+
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            DataManager.SetPaths(null, TestOutputPath);
 
             string PathTestCSVFiles = Path.Combine(TestDataPath, testDataFolder);
             var TestCSVFiles = new DirectoryInfo(PathTestCSVFiles);

@@ -5,42 +5,12 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <!--<ItemGroup>
-    <None Remove="TestData\StoreTests_LoadDiscountCodes\csvFiles\ExampleDiscountCodes.csv" />
-    <None Remove="TestData\ExampleTestData\csvFiles\ExampleDiscountCodes.csv" />
-    <None Remove="TestData\ExampleTestData\csvFiles\ExampleProducts.csv" />
-    <None Remove="TestData\ExampleTestData\csvFiles\ExampleShoppingCart.csv" />
-  </ItemGroup>-->
-
-  <!--<ItemGroup>
-    <Content Include="TestData\StoreTests_LoadDiscountCodes\csvFiles\ExampleDiscountCodes.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="TestData\ExampleTestData\csvFiles\ExampleDiscountCodes.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="TestData\ExampleTestData\csvFiles\ExampleProducts.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="TestData\ExampleTestData\csvFiles\ExampleShoppingCart.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-  </ItemGroup>-->
-  
   <ItemGroup>
     <Content Include="TestData\**">
       <BuildAction>Content</BuildAction>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  
-  <!--<ItemGroup>
-    <None Remove="TestData\TestLoadProducts\ExampleProducts.csv" />
-  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />

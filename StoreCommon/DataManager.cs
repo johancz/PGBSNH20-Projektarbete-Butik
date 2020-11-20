@@ -20,10 +20,10 @@ namespace StoreCommon
         public static string DiscountCSV;
         public static string ShoppingCartCSV;
 
-        static DataManager()
-        {
-            SetPaths();
-        }
+        //public static void Init()
+        //{
+        //    SetPaths();
+        //}
 
         public static void SetPaths(string inputFolderPath = null, string outputFolderPath = null, bool overwrite = false)
         {
