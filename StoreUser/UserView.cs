@@ -1,15 +1,10 @@
 ﻿using StoreCommon;
 using StoreUser.Views;
-using System.Dynamic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace StoreUser
 {
@@ -41,10 +36,10 @@ namespace StoreUser
         {
             // NEW ////////////////////////////////
             /*** Views ***/
-            ShoppingCartToolbar = View_ShoppingCartToolbar.Init();
-            ShoppingCartList = View_ShoppingCartList.Init();
-            ShoppingCartTab = View_ShoppingCartTab.Init();
-            DetailsPanel = View_DetailsPanel.Init();
+            ShoppingCartToolbar = ShoppingCartToolbarView.Init();
+            ShoppingCartList = ShoppingCartListView.Init();
+            ShoppingCartTab = ShoppingCartTabView.Init();
+            DetailsPanel = DetailsPanelView.Init();
 
             ;
             // NEW ////////////////////////////////
@@ -108,10 +103,10 @@ namespace StoreUser
 
         internal static void UpdateGUI()
         {
-            View_ShoppingCartTab.UpdateShoppingCartTabHeader();
-            View_ShoppingCartToolbar.UpdateGUI();
-            View_ShoppingCartList.UpdateShoppingCartView();
-            View_DetailsPanel.UpdateDetailsColumn(UserView._selectedProduct);
+            ShoppingCartTabView.UpdateShoppingCartTabHeader();
+            ShoppingCartToolbarView.UpdateGUI();
+            ShoppingCartListView.UpdateShoppingCartView();
+            DetailsPanelView.UpdateDetailsColumn(_selectedProduct);
         }
 
         /******************************************************/
@@ -195,7 +190,7 @@ namespace StoreUser
 
             // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond it's bounds.
             //__View_DetailsPanel._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
-            View_DetailsPanel.EventHandler.External_RootElement_SizeChanged(sender, e);
+            DetailsPanelView.EventHandler.External_RootElement_SizeChanged(sender, e);
         }
 
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
@@ -203,8 +198,7 @@ namespace StoreUser
             // TODO(johancz): Error/Exception-handling
             var product = (Product)((Grid)sender).Tag;
             _selectedProduct = product;
-            View_DetailsPanel.UpdateDetailsColumn(product);
-            DetailsPanel.Visibility = Visibility.Visible;
+            DetailsPanelView.UpdateDetailsColumn(product);
         }
     }
 }

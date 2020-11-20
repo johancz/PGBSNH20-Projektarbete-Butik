@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace StoreCommon
 {
@@ -7,33 +8,39 @@ namespace StoreCommon
         public string Code { get; set; }
         public double Percentage { get; set; }
 
-        /// <summary>
-        /// A DiscountCode which can be added to the store's active ShoppingCart.
-        /// The final sum of a ShoppingCart will equal the TotalSum * (1.0 - Percentage).
-        /// </summary>
-        /// <param name="code">
-        /// The string that represents the DiscountCode.
-        /// Cannot be an empty string.
-        /// Must be under 100 characters long.
-        /// </param>
-        /// <param name="percentage">
-        /// The percentage of the TotalSum of an ShoppingCart that will be deducted from the TotalSum.
-        /// Must be > 0.0 and <= 100.0.
-        /// </param>
         public DiscountCode(string code, double percentage)
         {
-            var now = DateTime.Now;
+            SetValues(code, percentage);
+        }
+
+        public void SetValues(string code, double percentage)
+        {
             if (code == null)
             {
-                throw new ArgumentNullException("DiscountCode string cannot be null.", nameof(code));
+                throw new ArgumentNullException("DiscountCode string cannot be null.");
             }
-            else if (code.Length == 0 || code.Length > 100)
+
+            code = code.Trim();
+
+            if (code.Length < 3 || code.Length > 20)
             {
-                throw new ArgumentException("The length of the DiscountCode-string is too short/long.", nameof(code));
+                throw new ArgumentException("The length of the DiscountCode-string is too short/long.");
             }
-            else if (percentage <= 0.0 || percentage > 1.0)
+            // Check if 'code' is a valid English alphanumeric string.
+            // ^ = start of string, [] = contains the valid characters.
+            // 0-9 = range of valid digits,
+            // a-z = range of valid lowercase letters,
+            // and A-Z = range of valid uppercaser letters
+            // * match 0 or more of the characters in the []
+            // $ = end of the string
+            else if (!Regex.IsMatch(code, "^[0-9a-zA-Z]*$"))
             {
-                throw new ArgumentException("The percentage is under 0.0 or above 1.0.", nameof(percentage));
+                throw new Exception("The discount code is not valid. Only English alphanumerics are allowed.");
+            }
+            
+            if (percentage <= 0.0 || percentage > 1.0)
+            {
+                throw new ArgumentException("The percentage value must be between 0 and 1 (inclusive).");
             }
 
             Code = code;

@@ -13,12 +13,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="StoreData\AppImages\NewProductImage.jpeg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
-  </ItemGroup>
-
 </Project>

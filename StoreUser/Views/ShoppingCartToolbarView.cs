@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using StoreCommon;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using StoreCommon;
 
 namespace StoreUser.Views
 {
-    public static class View_ShoppingCartToolbar
+    public static class ShoppingCartToolbarView
     {
         private static Grid _root;
 
@@ -25,7 +22,6 @@ namespace StoreUser.Views
         public static Grid Init()
         {
             CreateGUI();
-            UpdateData();
             UpdateGUI();
             return _root;
         }
@@ -135,11 +131,6 @@ namespace StoreUser.Views
                     };
                     _discountCodeSubmit.Click += EventHandler.discountSubmitEventHandler;
                     discountForm.Children.Add(_discountCodeSubmit);
-                    //Grid.SetColumn(_discountCodeInput, 2);
-                    //_root.Children.Add(_discountCodeInput);
-
-                    //Grid.SetColumn(_discountCodeSubmit, 3);
-                    //_root.Children.Add(_discountCodeSubmit);
 
                     Grid.SetColumn(discountForm, 2);
                     _root.Children.Add(discountForm);
@@ -175,8 +166,6 @@ namespace StoreUser.Views
                     Margin = new Thickness(2.5),
                 };
                 shoppingCart_saveButton.Click += EventHandler.ShoppingCart_saveButton_Click;
-                //Grid.SetColumn(shoppingCart_saveButton, 5);
-                //_root.Children.Add(shoppingCart_saveButton);
 
                 var shoppingCart_loadButton = new Button
                 {
@@ -188,8 +177,6 @@ namespace StoreUser.Views
                     Margin = new Thickness(2.5),
                 };
                 shoppingCart_loadButton.Click += EventHandler.ShoppingCart_loadButton_Click;
-                //Grid.SetColumn(shoppingCart_loadButton, 6);
-                //_root.Children.Add(shoppingCart_loadButton);
                 stackPanel_saveLoadButtons.Children.Add(shoppingCart_saveButton);
                 stackPanel_saveLoadButtons.Children.Add(shoppingCart_loadButton);
                 Grid.SetColumn(stackPanel_saveLoadButtons, 6);
@@ -215,9 +202,15 @@ namespace StoreUser.Views
             }
         }
 
-        private static void UpdateData()
+        private static void ResetDiscountCodeForm()
         {
-
+            _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+            _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+            _discountCodeInput.IsEnabled = true;
+            _summary_finalPrice.Visibility = Visibility.Collapsed;
+            _discountCodeInput.IsEnabled = true;
+            _discountCodeSubmit.Content = "+ Add discount code";
+            _discountCodeSubmit.Background = Brushes.LightGreen;
         }
 
         private static class EventHandler
@@ -250,14 +243,7 @@ namespace StoreUser.Views
                 else if ((string)_discountCodeSubmit.Content == "- Remove discount code")
                 {
                     Store.RemoveDiscountCode();
-                    _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
-                    _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
-                    _discountCodeInput.IsEnabled = true;
-                    _discountCodeInput.Text = (string)_discountCodeInput.Tag;
-                    _summary_finalPrice.Visibility = Visibility.Collapsed;
-                    _discountCodeInput.IsEnabled = true;
-                    _discountCodeSubmit.Content = "+ Add discount code";
-                    _discountCodeSubmit.Background = Brushes.LightGreen;
+                    ResetDiscountCodeForm();
                     UpdateGUI();
                 }
             }
@@ -309,8 +295,16 @@ namespace StoreUser.Views
 
             internal static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
             {
-                Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
-                UserView.UpdateGUI();
+                var result = MessageBox.Show("You already have items in your shopping cart, do you want overwrite it?",
+                                             "Overwrite Shopping Cart?",
+                                             MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    Store.LoadShoppingCart(DataManager.ShoppingCartCSV);
+                    ResetDiscountCodeForm();
+                    UserView.UpdateGUI();
+                }
             }
         }
     }

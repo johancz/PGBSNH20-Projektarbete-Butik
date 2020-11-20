@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace StoreCommon
 {
@@ -13,13 +15,15 @@ namespace StoreCommon
         public static ProductList ShoppingCart { get; set; } = new ProductList();
         public static List<string> ImageItemFilePaths { get; set; } = new List<string>();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
+
         public static void Init()
         {
+            DataManager.SetPaths();
             Store.Currency = (Code: "SEK", Symbol: "kr");
-            LoadProducts(AppFolder.ProductCSV);
-            LoadImagePaths(AppFolder.ImageFolderPath);
-            LoadDiscountCodes(AppFolder.DiscountCSV);
-            LoadShoppingCart(AppFolder.ShoppingCartCSV);
+            LoadProducts(DataManager.ProductCSV);
+            LoadImagePaths(DataManager.ImageFolderPath);
+            LoadDiscountCodes(DataManager.DiscountCSV);
+            LoadShoppingCart(DataManager.ShoppingCartCSV);
         }
 
         public static void LoadProducts(string pathAndFileName)
@@ -45,6 +49,7 @@ namespace StoreCommon
             }
             Products = products;
         }
+
         public static void LoadImagePaths(string imageFolderPath)
         {
             var imageFolder = new DirectoryInfo(imageFolderPath);
@@ -66,66 +71,37 @@ namespace StoreCommon
                     product.Description + "#\n\n"
                 });
             }
-            File.WriteAllText(AppFolder.ProductCSV, productText);
-        }
-        public static void LoadProducts(string pathAndFileName, out List<Product> products)
-        {
-            products = new List<Product>();
-            string input = File.ReadAllText(pathAndFileName);
-
-            var infoArray = input.Trim().Split('#');
-
-            for (int i = 0; i < infoArray.Length; i++)
-            {
-                if (infoArray[i] == "") { break; }
-                var name = infoArray[i].Trim();
-                i++;
-                var uri = infoArray[i].Trim();
-                i++;
-                var price = decimal.Parse(infoArray[i].Trim());
-                i++;
-                var description = infoArray[i].Trim();
-
-                var newProduct = new Product(name, uri, price, description);
-                products.Add(newProduct);
-            }
+            File.WriteAllText(DataManager.ProductCSV, productText);
         }
 
-        // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void LoadShoppingCart(string path)
         {
-            // TODO(johancz): error checking? the ShoppingCart might already contain items.
-            //ShoppingCart.AddRange(ProductList.LoadFromFile("ExampleShoppingCart.csv")); // possible solution to the above, if they should be merged.
-            //MessageBox.Show("You already have items in your shopping cart, do you want to merge shopping cart you're trying to merge?", "Merge Shopping Carts?", MessageBoxButton.YesNoCancel);
             ShoppingCart = ProductList.LoadFromFile(path);
-            // TODO(johancz): Should the ShoppingCart be loaded by default? We would need a new shopping cart button which creates a new shoppingcart and overwrites the file with a blank file.
         }
 
-        // TODO(johancz): not required if the method lives in the ProductList-class.
         public static void SaveShoppingCart()
         {
-            ShoppingCart.SaveToFile(AppFolder.ShoppingCartCSV);
+            ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
         }
 
         public static void LoadDiscountCodes(string path)
         {
             string[] fileLines;
+            var discountCodes = new List<DiscountCode>();
 
             try
             {
                 fileLines = File.ReadAllLines(path);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                // TODO(johancz): exception handling
-                throw;
+                // Silently fail.
+                Debug.WriteLine("The discount codes could not be loaded " + e.Message);
+                return;
             }
-
-            var discountCodes = new List<DiscountCode>();
 
             foreach (string line in fileLines)
             {
-                // Split the line-string into an items-array and trim each item.
                 string[] items = line.Split(';').Select(item => item.Trim()).ToArray();
 
                 // Silently ignore lines that are do have the required number of items.
@@ -137,11 +113,8 @@ namespace StoreCommon
                 string discountCode = items[0].Trim();
                 double discountPercentage;
 
-                if (discountCode == "" || !Double.TryParse(items[1], out discountPercentage))
+                if (discountCode == "" || !double.TryParse(items[1], out discountPercentage))
                 {
-                    // the item in the 1st column (DiscountCode.Code) is an emptry string.
-                    // or
-                    // the item in the 2nd column could not be parsed to a double.
                     // Silently ignore this line.
                     continue;
                 }
@@ -154,7 +127,9 @@ namespace StoreCommon
 
         public static bool AddDiscountCode(string text)
         {
-            var discountCode = DiscountCodes.Find(dc => dc.Code == text.Trim());
+            var discountCode = DiscountCodes.Find(dc => {
+                return string.Equals(dc.Code, text.Trim(), StringComparison.OrdinalIgnoreCase);
+            });
 
             if (discountCode == null) return false;
             ShoppingCart.SetDiscountCode(discountCode);
@@ -164,6 +139,12 @@ namespace StoreCommon
         public static void RemoveDiscountCode()
         {
             ShoppingCart.RemoveDiscountCode();
+        }
+
+        public static void SaveDiscountCodesToFile()
+        {
+            string[] linesToSave = DiscountCodes.Select(discountCode => $"{discountCode.Code};{discountCode.Percentage}").ToArray();
+            File.WriteAllLines(DataManager.DiscountCSV, linesToSave);
         }
     }
 }

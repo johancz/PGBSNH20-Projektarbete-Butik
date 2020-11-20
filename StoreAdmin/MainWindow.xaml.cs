@@ -1,4 +1,6 @@
-﻿using StoreCommon;
+using StoreAdmin.Views;
+using StoreCommon;
+using StoreUser;
 using System.Globalization;
 using System.Windows;
 
@@ -15,7 +17,10 @@ namespace StoreAdmin
             var AdminApp = new HybridAppWindow(this);
             AdminApp.CreateAdminGUI();
             var appEvents = new AdminAppEvents();
-            appEvents.Init();            
+            appEvents.Init();
+
+            // Edit Discount Codes
+            AdminApp.tabControl.Items.Add(ManageDiscountCodesView.Init());
         }
        
     }

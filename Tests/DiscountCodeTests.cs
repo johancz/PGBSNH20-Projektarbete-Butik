@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Store.Tests;
 using System;
 using System.Globalization;
-using System.IO;
 
 namespace StoreCommon.Tests
 {
@@ -12,14 +12,20 @@ namespace StoreCommon.Tests
         public void TestInit()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
+            TestSetup.Init();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            TestSetup.Cleanup();
         }
 
         [TestMethod]
         public void DiscountCode_AllParamsAreValid_ValidDiscountCode()
         {
-            var discountCode = new DiscountCode("a", 0.0001);
-            Assert.AreEqual("a", discountCode.Code);
+            var discountCode = new DiscountCode("abc", 0.0001);
+            Assert.AreEqual("abc", discountCode.Code);
             Assert.AreEqual(0.0001, discountCode.Percentage);
         }
 
@@ -41,8 +47,8 @@ namespace StoreCommon.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_CodeParamNotValidTooLong_ArgumentException()
         {
-            // 101 character long string
-            var discountCode = new DiscountCode("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLM", 0.1);
+            // 21 character long string
+            var discountCode = new DiscountCode("abcdefghijklmnopqrstu", 0.1);
         }
 
         [TestMethod]

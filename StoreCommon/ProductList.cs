@@ -5,18 +5,10 @@ using System.Linq;
 
 namespace StoreCommon
 {
-    /// <summary>
-    /// Generic list of products which can be used for; shopping carts, shopping lists, wishlists, store-curated lists.
-    /// </summary>
     public class ProductList
     {
-        // Move to a Settings-class in StoreCommon-namespace? Or StoreCommon.Settings-namespace?
-        private static readonly DirectoryInfo _textFolderPath = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent;
         public Dictionary<Product, int> Products { get; private set; } = new Dictionary<Product, int>();
-        // TODO(johancz): Should this be saved to file?
         public decimal TotalSum { get; private set; } = 0;
-        // TODO(johancz): should this live in the Store-class?
-        // TODO(johancz): should this be saved to file?
         public decimal FinalSum { get; private set; } = 0;
         public DiscountCode ActiveDiscountCode { get; private set; }
 
@@ -114,11 +106,7 @@ namespace StoreCommon
                 throw e;
             }
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pathAndFileName">Filename (including file-extension) of the list to be loaded.</param>
-        /// <returns></returns>
+
         public static ProductList LoadFromFile(string pathAndFileName)
         {
             string[] fileLines;
