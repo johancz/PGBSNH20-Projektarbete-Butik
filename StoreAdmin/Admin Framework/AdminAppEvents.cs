@@ -100,9 +100,8 @@ namespace StoreCommon
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
         {
             string price = DetailsPanelPrice.Text;
-            decimal decPrice;
-            
-            if (IsPriceInCorrectFormat(out decPrice))
+
+            if (IsPriceInCorrectFormat(out decimal decPrice))
             {
                 var product = SelectedProduct;
                 product.Description = DetailsPanelDescription.Text;
