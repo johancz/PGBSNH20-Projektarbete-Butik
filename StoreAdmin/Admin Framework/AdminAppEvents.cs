@@ -1,5 +1,7 @@
 ﻿using StoreCommon;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -14,6 +16,7 @@ namespace StoreCommon
     {
         public static Product SelectedProduct = null;
         private bool ProductGridsIsSelectable;
+        private bool IsFirstImage = false;
         public void Init()
         {
             MainWindow.Loaded += MainWindow_Loaded;
@@ -21,20 +24,23 @@ namespace StoreCommon
             ProductGrids.ForEach(productGrid => productGrid.MouseUp += ProductGrid_MouseUp);
             ImageGrids.ForEach(imageGrid => imageGrid.MouseUp += ImageGrid_MouseUp);
 
-            NewProductButton.Click += NewProductButton_Click;
-            RemoveButton.Click += RemoveButton_Click;
             EditProductButton.Click += EditButton_Click;
+                SaveChangesButton.Click += SaveChangesButton_Click;
+                CancelButton.Click += CancelButton_Click;
+            
             ChangeImageButton.Click += ChangeImageButton_Click;            
-
-            SaveImageButton.Click += SaveImageButton_Click;
-            CancelImageButton.Click += CancelImageButton_Click;
-
-            SaveChangesButton.Click += SaveChangesButton_Click;
-            CancelButton.Click += CancelButton_Click;
+                SaveImageButton.Click += SaveImageButton_Click;
+                CancelImageButton.Click += CancelImageButton_Click;
+            NewProductButton.Click += NewProductButton_Click;
+                NewProductSaveButton.Click += NewProductSaveButton_Click;
+                NewProductAbortButton.Click += NewProductAbortButton_Click;
+            RemoveButton.Click += RemoveButton_Click;
 
             DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             LoadDefaultButtonPanel();
         }
+
+    
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -60,6 +66,7 @@ namespace StoreCommon
                 DetailsPanelRootGrid.Visibility = Visibility.Visible;
                 SelectedProduct = (Product)((Grid)sender).Tag;
                 UpdateDetailsPanel(SelectedProduct);
+                var image = DetailsPanelImage; 
             }
         }
 
@@ -102,7 +109,7 @@ namespace StoreCommon
                 product.Name = DetailsPanelName.Text;
                 product.Price = decPrice;
                 Store.SaveCurrentProductsInStoreToCSV();
-                UpdateTextInProductBrowser(product);
+
                 UpdateDetailsPanel(product);
                 EnableProductGrids();
                 LoadDefaultButtonPanel();
@@ -133,13 +140,7 @@ namespace StoreCommon
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DisableEditBoxes();
-
-            var product = SelectedProduct;
-            DetailsPanelImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
-            DetailsPanelName.Text = product.Name;
-            DetailsPanelPrice.Text = product.Price.ToString();
-            DetailsPanelDescription.MaxWidth = DetailsDescriptionScrollViewer.ActualWidth;
-            DetailsPanelDescription.Text = product.Description;
+            UpdateDetailsPanel(SelectedProduct);
             EnableProductGrids();
             LoadDefaultButtonPanel();
         }
@@ -152,6 +153,14 @@ namespace StoreCommon
                         box.IsReadOnly = true;
                     });
                 }
+            public void UpdateDetailsPanel(Product product)
+            {
+                DetailsPanelImage.Source = product.Tag.Source;
+                DetailsPanelName.Text = product.Name; //gives the title from selected product
+                DetailsPanelPrice.Text = product.Price.ToString();
+                DetailsPanelDescription.MaxWidth = DetailsDescriptionScrollViewer.ActualWidth;
+                DetailsPanelDescription.Text = product.Description;
+            }
             private void EnableProductGrids()
             {
                 ProductGridsIsSelectable = true;
@@ -176,26 +185,31 @@ namespace StoreCommon
             }
         private void NewProductButton_Click(object sender, RoutedEventArgs e)
         {
-            var newProduct = new Product("Title...", "uri missing", 0, "Enter your text..."); 
-            var newGrid = AppWindow.CreateProductGridWithContent(newProduct);
-            ProductAndImageWrapPanel.Children.Add(newGrid);
-            Store.Products.Add(newProduct);
-            Store.SaveCurrentProductsInStoreToCSV();
-            UpdateDetailsPanel(newProduct);
-            DisableProductGrids();
-            EnableEditBoxes();
-            LoadEditButtonPanel();
-            SelectedProduct = newProduct;
+            IsFirstImage = true;
+            DetailsPanelImage.Visibility = Visibility.Hidden;
+            DetailsTextAndButtonGrid.Visibility = Visibility.Hidden;
+            HideAllButtons();
+            SwitchGridsToImageModeInBrowser();
+            MessageBox.Show("Choose Image");
         }
-            public void UpdateDetailsPanel(Product product)
-            {
-                DetailsPanelImage.Source = product.Tag.Source;
-                DetailsPanelName.Text = product.Name; //gives the title from selected product
-                DetailsPanelPrice.Text = product.Price.ToString();
-                DetailsPanelDescription.MaxWidth = ((ScrollViewer)DetailsPanelDescription.Parent).ActualWidth;
-                DetailsPanelDescription.Text = product.Description;
-            }
-        
+                    private void NewProductAbortButton_Click(object sender, RoutedEventArgs e)
+                    {
+                        IsFirstImage = false;
+                        UpdateDetailsPanel(SelectedProduct);
+                        DetailsTextAndButtonGrid.Visibility = Visibility.Visible;
+                        DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+                        SwitchGridsToDefaultModeInBrowser();
+                    }
+                    private void NewProductSaveButton_Click(object sender, RoutedEventArgs e)
+                    {
+                        string productUri = DetailsPanelImage.Source.ToString().Split('/')[^1];
+                        var newProduct = new Product("Title...", productUri, 0, "Enter your product description...");
+                        SelectedProduct = newProduct;
+                        Store.Products.Add(newProduct);
+                        UpdateDetailsPanel(SelectedProduct);
+                        Store.SaveCurrentProductsInStoreToCSV();
+                        AppWindow.CreateProductGridWithContent(newProduct);
+                    }
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
         {               
             if (IsRemoveTrue())
@@ -221,6 +235,11 @@ namespace StoreCommon
         private void ImageGrid_MouseUp(object sender, MouseButtonEventArgs e)
         {
             DetailsPanelImage.Source = (ImageSource)((Grid)sender).Tag; //switch right columns imagecontent
+            if (IsFirstImage)
+            {
+                DetailsPanelImage.Visibility = Visibility.Visible;
+                ShowButtons(new List<Button> { NewProductSaveButton, NewProductAbortButton });
+            }
         }
         private void SaveImageButton_Click(object sender, RoutedEventArgs e)
         {
@@ -271,6 +290,19 @@ namespace StoreCommon
         private void HideButtons(List<Button> buttonsToHide)
         {
             foreach (var button in buttonsToHide)
+            {
+                try
+                {
+                    DetailsButtonPanel.Children.Remove(button);
+                }
+                catch (System.Exception)
+                {
+                }
+            }
+        }
+        private void HideAllButtons()
+        {
+            foreach (var button in AdminButtons)
             {
                 try
                 {

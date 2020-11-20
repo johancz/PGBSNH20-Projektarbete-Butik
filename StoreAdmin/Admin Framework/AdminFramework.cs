@@ -37,13 +37,15 @@ namespace StoreCommon
 
                                     public static StackPanel DetailsButtonPanel;
                                         public static Button EditProductButton;
-                                        public static Button RemoveButton;
+                                            public static Button CancelButton;
+                                            public static Button SaveChangesButton;
                                         public static Button ChangeImageButton;
+                                            public static Button SaveImageButton;
+                                            public static Button CancelImageButton;
                                         public static Button NewProductButton;
-                                        public static Button CancelButton;
-                                        public static Button CancelImageButton;
-                                        public static Button SaveImageButton;
-                                        public static Button SaveChangesButton;
+                                            public static Button NewProductSaveButton;
+                                            public static Button NewProductAbortButton;
+                                        public static Button RemoveButton;
                                             public static List<Button> AdminButtons = new List<Button>();    
                                          
     }

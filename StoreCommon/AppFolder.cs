@@ -7,6 +7,7 @@ namespace StoreCommon
         private static readonly string ProjectName = "Fight Club & Veggies_JC.RA";
         private static readonly string RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
         public static readonly string ImageFolderPath = Path.Combine(RootFolderPath, "Images");
+        public static readonly string ImageHelpersFolderPath = Path.Combine(RootFolderPath, "AppImages");
 
         private static readonly string InputProductsCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv");
         private static readonly string InputDiscountCodesCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleDiscountCodes.csv");

@@ -156,18 +156,21 @@ namespace StoreCommon
                 private void CreateAdminButtonsToCollection()
                 {
                     //Parent DetailsButtonPanel
-                    NewProductButton = CreateButton("New Product");
                     EditProductButton = CreateButton("Edit Product");
+                        SaveChangesButton = CreateButton("Save Changes");
+                        CancelButton = CreateButton("Cancel");
+
                     ChangeImageButton = CreateButton("Change Image");
-                    RemoveButton = CreateButton("Remove Product");
-
-                    SaveImageButton = CreateButton("Save Image");
-                    CancelImageButton = CreateButton("Cancel");
-
-                    SaveChangesButton = CreateButton("Save Changes");
-                    CancelButton = CreateButton("Cancel");
+                        SaveImageButton = CreateButton("Save Image");
+                        CancelImageButton = CreateButton("Cancel");
                     
-                    AdminButtons = new List<Button> { NewProductButton, EditProductButton, ChangeImageButton, RemoveButton, SaveImageButton, CancelImageButton, SaveChangesButton, CancelButton };
+                    NewProductButton = CreateButton("New Product");
+                        NewProductSaveButton = CreateButton("Save Image");
+                        NewProductAbortButton = CreateButton("Abort Product");
+
+                    RemoveButton = CreateButton("Remove Product");
+                    
+                    AdminButtons = new List<Button> { NewProductButton, EditProductButton, ChangeImageButton, RemoveButton, SaveImageButton, CancelImageButton, SaveChangesButton, CancelButton, NewProductAbortButton, NewProductSaveButton };
                 }
                     private Button CreateButton(string content)
                     {
