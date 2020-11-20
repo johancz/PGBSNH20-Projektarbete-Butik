@@ -12,7 +12,7 @@ namespace StoreCommon.Tests
         public void TestInit()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
+            AppFolder.StoreDataCsvPath = Path.Combine(AppFolder.RootFolderPath, ".CSVs"); // Reset StoreDataCsvPath
         }
 
         [TestMethod]

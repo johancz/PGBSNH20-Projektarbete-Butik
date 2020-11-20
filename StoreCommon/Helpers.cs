@@ -9,9 +9,9 @@ namespace StoreCommon
 {
     public static class Helpers
     {
-        public static string StoreDataPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData");
-        public static string StoreDataCsvPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
-        public static string StoreDataImagesPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
+        //public static string StoreDataPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData");
+        //public static string StoreDataCsvPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
+        //public static string StoreDataImagesPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
         // TODO(johancz): Temporary output path, this should use the system's temp-folder.
         public static string StoreDataTemporaryOutputPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "TemporaryOutput");
         public static void BackgroundImage(Control element, string uriRelative)

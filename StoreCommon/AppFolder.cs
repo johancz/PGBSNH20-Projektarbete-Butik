@@ -1,32 +1,51 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace StoreCommon
 {
     public static class AppFolder
     {
         public static string ProjectName = "Fight Club & Veggies_JC.RA";
-        private static readonly string RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
-        public static readonly string ImageFolderPath = Path.Combine(RootFolderPath, "Images");
+        public static string RootFolderPath;
+        public static DirectoryInfo ImageFolder;
+        public static string ImageFolderPath;
 
-        private static readonly string InputProductsCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleProducts.csv");
-        private static readonly string InputDiscountCodesCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleDiscountCodes.csv");
-        private static readonly string InputShoppingCartCSV = Path.Combine(Helpers.StoreDataCsvPath, "ExampleShoppingCart.csv");
-        private static readonly string InputImages = Helpers.StoreDataImagesPath;
+        public static string StoreDataCsvPath { get; set; }
+        private static string InputProductsCSV;
+        private static string InputDiscountCodesCSV;
+        private static string InputShoppingCartCSV;
+        public static string InputImages;
 
-        public static readonly string ProductCSV;
-        public static readonly string DiscountCSV;
-        public static readonly string ShoppingCartCSV;
+        public static string ProductCSV;
+        public static string DiscountCSV;
+        public static string ShoppingCartCSV;
 
-        static AppFolder()
+        public static void SetPaths(string inputFolderPath = null, string outputFolderPath = null)
         {
+            StoreDataCsvPath = inputFolderPath ?? Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
+            RootFolderPath = outputFolderPath ?? Path.Combine(Path.GetTempPath(), ProjectName);
+
+            RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
+            ImageFolderPath = Path.Combine(RootFolderPath, "Images");
+
+            InputProductsCSV = Path.Combine(StoreDataPath, "ExampleProducts.csv");
+            InputDiscountCodesCSV = Path.Combine(StoreDataPath, "ExampleDiscountCodes.csv");
+            InputShoppingCartCSV = Path.Combine(StoreDataPath, "ExampleShoppingCart.csv");
+            InputImages = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
+
             ProductCSV = Path.Combine(RootFolderPath, "Products.csv");
             DiscountCSV = Path.Combine(RootFolderPath, "DiscountCodes.csv");
             ShoppingCartCSV = Path.Combine(RootFolderPath, "ShoppingCart.csv");
 
             var storeFolder = new DirectoryInfo(RootFolderPath);
-            var imageFolder = new DirectoryInfo(ImageFolderPath);
+            ImageFolder = new DirectoryInfo(ImageFolderPath);
             storeFolder.Create();
-            imageFolder.Create();
+            ImageFolder.Create();
+        }
+
+        static AppFolder()
+        {
+            SetPaths();
 
             if (!File.Exists(ProductCSV))
             {
@@ -43,7 +62,7 @@ namespace StoreCommon
                 File.Copy(InputShoppingCartCSV, ShoppingCartCSV);
             }
 
-            if (imageFolder.GetFiles().Length == 0)
+            if (ImageFolder.GetFiles().Length == 0)
             {
                 var images = Directory.GetFiles(InputImages);
                 foreach (var image in images)

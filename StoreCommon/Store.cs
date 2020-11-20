@@ -37,6 +37,7 @@ namespace StoreCommon
             }
             Products = products;
         }
+
         public static void LoadImagePaths(string imageFolderPath)
         {
             var imageFolder = new DirectoryInfo(imageFolderPath);
@@ -46,6 +47,7 @@ namespace StoreCommon
                 ImageItemFilePaths.Add(file.FullName);
             }
         }
+
         public static void SaveRuntimeProductsToCSV()
         {
             string productText = "";
@@ -60,28 +62,28 @@ namespace StoreCommon
             }
             File.WriteAllText(AppFolder.ProductCSV, productText);
         }
-        public static void LoadProducts(string pathAndFileName, out List<Product> products)
-        {
-            products = new List<Product>();
-            string input = File.ReadAllText(pathAndFileName);
+        //public static void LoadProducts(string pathAndFileName, out List<Product> products)
+        //{
+        //    products = new List<Product>();
+        //    string input = File.ReadAllText(pathAndFileName);
 
-            var infoArray = input.Trim().Split('#');
+        //    var infoArray = input.Trim().Split('#');
 
-            for (int i = 0; i < infoArray.Length; i++)
-            {
-                if (infoArray[i] == "") { break; }
-                var name = infoArray[i].Trim();
-                i++;
-                var uri = infoArray[i].Trim();
-                i++;
-                var price = decimal.Parse(infoArray[i].Trim());
-                i++;
-                var description = infoArray[i].Trim();
+        //    for (int i = 0; i < infoArray.Length; i++)
+        //    {
+        //        if (infoArray[i] == "") { break; }
+        //        var name = infoArray[i].Trim();
+        //        i++;
+        //        var uri = infoArray[i].Trim();
+        //        i++;
+        //        var price = decimal.Parse(infoArray[i].Trim());
+        //        i++;
+        //        var description = infoArray[i].Trim();
 
-                var newProduct = new Product(name, uri, price, description);
-                products.Add(newProduct);
-            }
-        }
+        //        var newProduct = new Product(name, uri, price, description);
+        //        products.Add(newProduct);
+        //    }
+        //}
 
         public static void Init()
         {

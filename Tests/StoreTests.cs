@@ -1,4 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Store.Tests;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,17 +16,24 @@ namespace StoreCommon.Tests
         public void TestInit()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
+            TestSetup.Init();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            //AppFolder.StoreDataCsvPath = Path.Combine(AppFolder.RootFolderPath, ".CSVs"); // Reset StoreDataCsvPath
         }
 
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            //var products = new List<Product>();
+            //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
             var nameListActual = new List<string>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 nameListActual.Add(p.Name);
             }
@@ -38,11 +47,12 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedHashtags()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            //var products = new List<Product>();
+            //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
             var charList = new List<char>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 foreach (var c in p.Name)
                 {
@@ -63,11 +73,12 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedWhite()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            //var products = new List<Product>();
+            //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
             var charList = new List<char>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 foreach (var c in p.Name)
                 {
@@ -85,11 +96,20 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_WantedNewLinesCanExist()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            AppFolder.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            AppFolder.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
+            //var products = new List<Product>();
+            //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
             var charList = new List<char>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 foreach (var c in p.Description)
                 {
@@ -102,12 +122,13 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_Only_JPG_PNG()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            //var products = new List<Product>();
+            //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
             var fileExtensions = new List<string>();
             string extension = "";
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 for (int i = 4; i >= 1; i--)
                 {
@@ -128,8 +149,8 @@ namespace StoreCommon.Tests
             // Half-Off;0.5
 
             // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "..", "TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
-            Store.LoadDiscountCodes(Helpers.StoreDataCsvPath);
+            AppFolder.StoreDataCsvPath = Path.Combine(AppFolder.RootFolderPath, "..", "TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
+            Store.LoadDiscountCodes(AppFolder.StoreDataCsvPath);
 
             var expectedDiscountCodes = new List<DiscountCode>
             {
@@ -153,8 +174,8 @@ namespace StoreCommon.Tests
             AppFolder.ProjectName = AppFolder.ProjectName + "_Test_SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success";
 
             // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
-            Helpers.StoreDataCsvPath = Path.Combine("TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
-            Store.LoadDiscountCodes(Helpers.StoreDataCsvPath);
+            AppFolder.StoreDataCsvPath = Path.Combine("TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
+            Store.LoadDiscountCodes(AppFolder.StoreDataCsvPath);
             //Store.DiscountCodes = Store.DiscountCodes.Remove(1);
 
             var expectedDiscountCodes = new List<DiscountCode>
