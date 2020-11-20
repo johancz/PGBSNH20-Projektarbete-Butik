@@ -9,11 +9,6 @@ namespace StoreCommon
 {
     public static class Helpers
     {
-        public static string StoreDataPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData");
-        public static string StoreDataCsvPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
-        public static string StoreDataImagesPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
-        // TODO(johancz): Temporary output path, this should use the system's temp-folder.
-        public static string StoreDataTemporaryOutputPath { get; set; } = Path.Combine(Environment.CurrentDirectory, "StoreData", "TemporaryOutput");
         public static void BackgroundImage(Control element, string uriRelative)
         {
             ImageSource source = new BitmapImage(new Uri(uriRelative, UriKind.Relative));
@@ -21,11 +16,12 @@ namespace StoreCommon
             ImageBrush imageBrushTitle = new ImageBrush { ImageSource = source };
             element.Background = imageBrush;
         }
+
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try
             {
-                var uri = new Uri(Path.Combine(AppFolder.ImageFolderPath, uriString), UriKind.Absolute);
+                var uri = new Uri(Path.Combine(DataManager.ImageFolderPath, uriString), UriKind.Absolute);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;
@@ -36,6 +32,7 @@ namespace StoreCommon
                 return null;
             }
         }
+
         public static Image CreateNewImage(string uriString = null, int? height = null, string tooltipText = null, bool imageInTooltip = false)
         {
             Image image = new Image();

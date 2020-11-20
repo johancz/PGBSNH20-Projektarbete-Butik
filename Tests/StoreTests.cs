@@ -1,9 +1,9 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Store.Tests;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace StoreCommon.Tests
 {
@@ -14,17 +14,24 @@ namespace StoreCommon.Tests
         public void TestInit()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, ".CSVs"); // Reset StoreDataCsvPath
+            TestSetup.Init();
+        }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            TestSetup.Cleanup();
         }
 
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
+            Store.LoadProducts(Path.Combine(DataManager.RootFolderPath, "Products.csv"));
             var nameListActual = new List<string>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 nameListActual.Add(p.Name);
             }
@@ -38,11 +45,12 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedHashtags()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
+            Store.LoadProducts(Path.Combine(DataManager.RootFolderPath, "Products.csv"));
             var charList = new List<char>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 foreach (var c in p.Name)
                 {
@@ -63,11 +71,12 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedWhite()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
+            Store.LoadProducts(Path.Combine(DataManager.RootFolderPath, "Products.csv"));
             var charList = new List<char>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 foreach (var c in p.Name)
                 {
@@ -85,11 +94,12 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_WantedNewLinesCanExist()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
+            Store.LoadProducts(Path.Combine(DataManager.RootFolderPath, "Products.csv"));
             var charList = new List<char>();
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 foreach (var c in p.Description)
                 {
@@ -102,12 +112,13 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_Only_JPG_PNG()
         {
-            var products = new List<Product>();
-            Store.LoadProducts(Path.Combine(Helpers.StoreDataCsvPath, "TestProducts_Clean_5instances.csv"), out products);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
+            Store.LoadProducts(Path.Combine(DataManager.RootFolderPath, "Products.csv"));
             var fileExtensions = new List<string>();
             string extension = "";
 
-            foreach (var p in products)
+            foreach (var p in Store.Products)
             {
                 for (int i = 4; i >= 1; i--)
                 {
@@ -123,23 +134,40 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void LoadDiscountCodes_LoadFromExampleFile_Success()
         {
-            // The contents of the test file (ExampleDiscountCodes.csv):
-            // Gimme-free-stuff;1
-            // Half-Off;0.5
+            TestSetup.CopyTestFiles("StoreTests_LoadDiscountCodes");
 
-            // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
-            Helpers.StoreDataCsvPath = Path.Combine(Helpers.StoreDataPath, "TestFiles", "StoreTests_LoadDiscountCodes", "csvFiles");
-            Store.LoadDiscountCodes(Helpers.StoreDataCsvPath);
+            Store.LoadDiscountCodes(Path.Combine(DataManager.RootFolderPath, "DiscountCodes.csv"));
 
             var expectedDiscountCodes = new List<DiscountCode>
             {
-                new DiscountCode(code: "Gimme-free-stuff", percentage: 1),
-                new DiscountCode(code: "Half-Off", percentage: 0.5),
+                new DiscountCode(code: "Gimmefreestuff", percentage: 1),
+                new DiscountCode(code: "HalfOff", percentage: 0.5),
             };
 
             var expected = expectedDiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
             var actual = Store.DiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
 
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success()
+        {
+            TestSetup.CopyTestFiles("StoreTests_LoadDiscountCodes");
+
+            Store.LoadDiscountCodes(Path.Combine(DataManager.RootFolderPath, "DiscountCodes.csv"));
+
+            var expectedDiscountCodes = new List<DiscountCode>
+            {
+                new DiscountCode(code: "Gimmefreestuff", percentage: 1),
+            };
+
+            Store.DiscountCodes = expectedDiscountCodes;
+            Store.SaveDiscountCodesToFile();
+            Store.LoadDiscountCodes(DataManager.DiscountCSV);
+
+            var expected = expectedDiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
+            var actual = Store.DiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
 
             CollectionAssert.AreEqual(expected, actual);
         }

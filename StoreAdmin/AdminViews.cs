@@ -350,7 +350,7 @@ namespace StoreAdmin
 
         private static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
         {
-            Store.LoadShoppingCart(AppFolder.ShoppingCartCSV);
+            Store.LoadShoppingCart(DataManager.ShoppingCartCSV);
         }
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
