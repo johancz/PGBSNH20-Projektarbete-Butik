@@ -46,20 +46,21 @@ namespace Store.Tests
             }
 
             string PathTestCSVFiles = Path.Combine(TestDataPath, testDataFolder);
+            var TestCSVFiles = new DirectoryInfo(PathTestCSVFiles);
+            var files = TestCSVFiles.GetFiles();
+
             // Create the '\TestData\.csvFiles\' folder structure in the programs's save folder in the system's "Temp"-folder.
             // E.g.: "C:\Users\**user**\AppData\Local\Temp\Fight Club & Veggies - JohanC RobinA\TestData\.csvFiles\"
             //var outputTestDataCSVFolder = Directory.CreateDirectory(Path.Combine(AppFolder.RootFolderPath, "TestData", ".csvFiles"));
 
             // Get the paths for all .csv file from "\TestData\.csvFiles\" in
             // the program's "run directory" (E.g.: "...\ProjectDir\Tests\bin\Debug\netcoreapp3.1\".
-            string[] pathSourceTestDataCSVFiles = Directory.GetFiles(PathTestCSVFiles, ".csv");
+            string[] pathSourceTestDataCSVFiles = Directory.GetFiles(PathTestCSVFiles, "*.csv");
             foreach (string csvFilePath in pathSourceTestDataCSVFiles)
             {
                 // Copy all ".csv"-files to the folder in the system's "Temp"-folder. Always overwrite.
-                File.Copy(csvFilePath, Path.Combine(DataManager.RootFolderPath, Path.GetFileName(csvFilePath)), true);
+                File.Copy(csvFilePath, Path.Combine(DataManager.RootFolderPath, Path.GetFileName(csvFilePath).Substring("Example".Length)), true);
             }
-
-
         }
     }
 }

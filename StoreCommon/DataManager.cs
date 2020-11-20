@@ -50,19 +50,19 @@ namespace StoreCommon
             storeFolder.Create();
             ImageFolder.Create();
 
-            if (!File.Exists(ProductCSV))
+            if (!File.Exists(ProductCSV) || (File.Exists(InputProductsCSV) && overwrite))
             {
-                File.Copy(InputProductsCSV, ProductCSV);
+                File.Copy(InputProductsCSV, ProductCSV, overwrite);
             }
 
-            if (!File.Exists(DiscountCSV))
+            if (!File.Exists(DiscountCSV) || (File.Exists(InputDiscountCodesCSV) && overwrite))
             {
-                File.Copy(InputDiscountCodesCSV, DiscountCSV);
+                File.Copy(InputDiscountCodesCSV, DiscountCSV, overwrite);
             }
 
-            if (!File.Exists(ShoppingCartCSV))
+            if (!File.Exists(ShoppingCartCSV) || (File.Exists(InputShoppingCartCSV) && overwrite))
             {
-                File.Copy(InputShoppingCartCSV, ShoppingCartCSV);
+                File.Copy(InputShoppingCartCSV, ShoppingCartCSV, overwrite);
             }
 
             if (ImageFolder.GetFiles().Length == 0)
@@ -71,7 +71,7 @@ namespace StoreCommon
                 foreach (var image in images)
                 {
                     string name = image.Split('\\')[^1];
-                    File.Copy(image, Path.Combine(ImageFolderPath, name), overwrite);
+                    File.Copy(image, Path.Combine(ImageFolderPath, name));
                 }
             }
         }

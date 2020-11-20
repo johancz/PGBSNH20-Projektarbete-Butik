@@ -176,13 +176,21 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void LoadDiscountCodes_LoadFromExampleFile_Success()
         {
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            DataManager.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            DataManager.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath);
+            TestSetup.CopyTestFiles("StoreTests_LoadDiscountCodes");
+
             // The contents of the test file (ExampleDiscountCodes.csv):
-            // Gimme-free-stuff;1
-            // Half-Off;0.5
+            // Gimmefreestuff;1
+            // HalfOff;0.5
 
             // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
-            DataManager.StoreDataCsvPath = Path.Combine(DataManager.RootFolderPath, "..", "TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
-            Store.LoadDiscountCodes(DataManager.StoreDataCsvPath);
+            //DataManager.StoreDataCsvPath = Path.Combine(DataManager.RootFolderPath, "..", "TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
+            Store.LoadDiscountCodes(Path.Combine(DataManager.RootFolderPath, "DiscountCodes.csv"));
 
             var expectedDiscountCodes = new List<DiscountCode>
             {
@@ -193,21 +201,29 @@ namespace StoreCommon.Tests
             var expected = expectedDiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
             var actual = Store.DiscountCodes.Select(discountCode => (discountCode.Code, discountCode.Percentage)).ToArray();
 
-
             CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
         public void SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success()
         {
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            DataManager.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            DataManager.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath);
+            TestSetup.CopyTestFiles("StoreTests_LoadDiscountCodes");
+
             // The contents of the test file (ExampleDiscountCodes.csv):
-            // Gimme-free-stuff;1
-            // Half-Off;0.5
-            DataManager.ProjectName = DataManager.ProjectName + "_Test_SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success";
+            // Gimmefree-stuff;1
+            // HalfOff;0.5
+            //DataManager.ProjectName = DataManager.ProjectName + "_Test_SaveDiscountCodes_LoadFromExampleFileModifyAndSave_Success";
 
             // Set the StoreDatePath so that this test's test files are used instead of the the actual files.
-            DataManager.StoreDataCsvPath = Path.Combine("TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
-            Store.LoadDiscountCodes(DataManager.StoreDataCsvPath);
+            //DataManager.StoreDataCsvPath = Path.Combine("TestData", "StoreTests_LoadDiscountCodes", "csvFiles", "ExampleDiscountCodes.csv");
+            //Store.LoadDiscountCodes(DataManager.StoreDataCsvPath);
+            Store.LoadDiscountCodes(Path.Combine(DataManager.RootFolderPath, "DiscountCodes.csv"));
             //Store.DiscountCodes = Store.DiscountCodes.Remove(1);
 
             var expectedDiscountCodes = new List<DiscountCode>
