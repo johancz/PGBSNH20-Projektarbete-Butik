@@ -20,32 +20,35 @@ namespace StoreCommon
         public static string DiscountCSV;
         public static string ShoppingCartCSV;
 
-        public static void SetPaths(string inputFolderPath = null, string outputFolderPath = null)
+        static AppFolder()
+        {
+            SetPaths();
+        }
+
+        public static void SetPaths(string inputFolderPath = null, string outputFolderPath = null, bool overwrite = false)
         {
             StoreDataCsvPath = inputFolderPath ?? Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
             RootFolderPath = outputFolderPath ?? Path.Combine(Path.GetTempPath(), ProjectName);
-
-            RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
             ImageFolderPath = Path.Combine(RootFolderPath, "Images");
 
-            InputProductsCSV = Path.Combine(StoreDataPath, "ExampleProducts.csv");
-            InputDiscountCodesCSV = Path.Combine(StoreDataPath, "ExampleDiscountCodes.csv");
-            InputShoppingCartCSV = Path.Combine(StoreDataPath, "ExampleShoppingCart.csv");
+            InputProductsCSV = Path.Combine(StoreDataCsvPath, "ExampleProducts.csv");
+            InputDiscountCodesCSV = Path.Combine(StoreDataCsvPath, "ExampleDiscountCodes.csv");
+            InputShoppingCartCSV = Path.Combine(StoreDataCsvPath, "ExampleShoppingCart.csv");
             InputImages = Path.Combine(Environment.CurrentDirectory, "StoreData", "Images");
 
             ProductCSV = Path.Combine(RootFolderPath, "Products.csv");
             DiscountCSV = Path.Combine(RootFolderPath, "DiscountCodes.csv");
             ShoppingCartCSV = Path.Combine(RootFolderPath, "ShoppingCart.csv");
 
+            CopyFiles(overwrite);
+        }
+
+        private static void CopyFiles(bool overwrite = false)
+        {
             var storeFolder = new DirectoryInfo(RootFolderPath);
             ImageFolder = new DirectoryInfo(ImageFolderPath);
             storeFolder.Create();
             ImageFolder.Create();
-        }
-
-        static AppFolder()
-        {
-            SetPaths();
 
             if (!File.Exists(ProductCSV))
             {
@@ -68,7 +71,7 @@ namespace StoreCommon
                 foreach (var image in images)
                 {
                     string name = image.Split('\\')[^1];
-                    File.Copy(image, Path.Combine(ImageFolderPath, name));
+                    File.Copy(image, Path.Combine(ImageFolderPath, name), overwrite);
                 }
             }
         }

@@ -28,9 +28,17 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_NameInstances()
         {
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            AppFolder.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            AppFolder.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath, true);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
             //var products = new List<Product>();
             //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
-            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "Products.csv"));
             var nameListActual = new List<string>();
 
             foreach (var p in Store.Products)
@@ -47,9 +55,17 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedHashtags()
         {
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            AppFolder.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            AppFolder.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
             //var products = new List<Product>();
             //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
-            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "Products.csv"));
             var charList = new List<char>();
 
             foreach (var p in Store.Products)
@@ -73,9 +89,17 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_UnWantedWhite()
         {
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            AppFolder.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            AppFolder.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
             //var products = new List<Product>();
             //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
-            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "Products.csv"));
             var charList = new List<char>();
 
             foreach (var p in Store.Products)
@@ -106,7 +130,7 @@ namespace StoreCommon.Tests
 
             //var products = new List<Product>();
             //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
-            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "Products.csv"));
             var charList = new List<char>();
 
             foreach (var p in Store.Products)
@@ -122,9 +146,17 @@ namespace StoreCommon.Tests
         [TestMethod]
         public void ProductLoadAll_Only_JPG_PNG()
         {
+            // First load the real example files used by the program to the test's own folder in the system's "Temp"-folder.
+            // AppFolder.AppFolder() expects all ".csv"-files and image to exist, and the testdata-folder does not include all files,
+            // which necessitates this step.
+            AppFolder.SetPaths(null, TestSetup.TestOutputPath);
+            // TODO: is this unnecessary?
+            AppFolder.SetPaths(Path.Combine(Environment.CurrentDirectory, "TestData"), TestSetup.TestOutputPath);
+            TestSetup.CopyTestFiles("TestLoadProducts");
+
             //var products = new List<Product>();
             //Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "TestProducts_Clean_5instances.csv"), out products);
-            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "ExampleProducts.csv"));
+            Store.LoadProducts(Path.Combine(AppFolder.RootFolderPath, "Products.csv"));
             var fileExtensions = new List<string>();
             string extension = "";
 

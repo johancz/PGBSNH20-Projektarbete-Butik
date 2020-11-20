@@ -27,6 +27,12 @@ namespace Store.Tests
             _initiated = true;
         }
 
+        /// <summary>
+        /// <p
+        /// </summary>
+        /// <param name="testDataFolder">
+        ///     The name of the folder in "\Tests\TestData\" (project source folder) which contains the necessary test-files.
+        /// </param>
         public static void CopyTestFiles(string testDataFolder)
         {
             if (!_initiated)
