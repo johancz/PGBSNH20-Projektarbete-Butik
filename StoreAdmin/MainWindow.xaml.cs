@@ -18,9 +18,6 @@ namespace StoreAdmin
             AdminApp.CreateAdminGUI();
             var appEvents = new AdminAppEvents();
             appEvents.Init();
-
-            // Edit Discount Codes
-            AdminApp.tabControl.Items.Add(ManageDiscountCodesView.Init());
         }
        
     }

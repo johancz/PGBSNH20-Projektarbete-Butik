@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StoreAdmin.Views;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -27,7 +28,7 @@ namespace StoreCommon
                 mainWindow.Content = windowTabControl;
             
             MainWindow = mainWindow;
-                WindowTabControl = windowTabControl;           
+                WindowTabControl = windowTabControl;
         }
 
         public void CreateAdminGUI()
@@ -39,7 +40,10 @@ namespace StoreCommon
                 CreateDetailsPanel();
                     CreateEditableTextBoxes();
                     CreateAdminButtonsToCollection();
-            CreateAdminPage("Manage Discount Codes", Brushes.Azure);
+            //CreateAdminPage("Manage Discount Codes", Brushes.Azure);
+
+            // Edit Discount Codes
+            WindowTabControl.Items.Add(ManageDiscountCodesView.Init());
         }
         private void CreateAdminPage(string header, Brush brush)
         {            
