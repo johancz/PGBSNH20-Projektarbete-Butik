@@ -33,19 +33,31 @@ namespace StoreCommon
 
         public void CreateAdminGUI()
         {
-            CreateAdminPage("Administrator mode", Brushes.AliceBlue);
+            CreateEditPage("Administrator mode", Brushes.AliceBlue);
                 CreateBrowser(Brushes.WhiteSmoke);
                     CreateProductGridsToCollection(Brushes.LightGray);
                     CreateImageGridsToCollection(Brushes.Black);
                 CreateDetailsPanel();
                     CreateEditableTextBoxes();
                     CreateAdminButtonsToCollection();
-            //CreateAdminPage("Manage Discount Codes", Brushes.Azure);
-
-            // Edit Discount Codes
-            WindowTabControl.Items.Add(ManageDiscountCodesView.Init());
+            CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
+                EditDiscountCodePageGrid.Children.Add(ManageDiscountCodesView.Init());
         }
-        private void CreateAdminPage(string header, Brush brush)
+        private void CreateDiscountPage(string header, Brush brush)
+        {
+            var editPageTabItem = new TabItem { Header = header };
+            WindowTabControl.Items.Add(editPageTabItem);
+
+            var editPageGrid = new Grid { Background = brush };
+            editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editPageTabItem.Content = editPageGrid;
+
+            EditDiscountCodeTabItem = editPageTabItem;
+                EditDiscountCodePageGrid = editPageGrid;
+        }
+        private void CreateEditPage(string header, Brush brush)
         {            
             var editPageTabItem = new TabItem { Header = header };
             WindowTabControl.Items.Add(editPageTabItem);

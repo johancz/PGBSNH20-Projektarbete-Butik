@@ -46,8 +46,11 @@ namespace StoreCommon
                                             public static Button NewProductSaveButton;
                                             public static Button NewProductAbortButton;
                                         public static Button RemoveButton;
-                                            public static List<Button> AdminButtons = new List<Button>();    
-                                         
+                                            public static List<Button> AdminButtons = new List<Button>();
+
+                            public static TabItem EditDiscountCodeTabItem;
+                                public static Grid EditDiscountCodePageGrid;
+
     }
 }   
 

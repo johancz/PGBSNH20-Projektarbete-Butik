@@ -1,6 +1,4 @@
-using StoreAdmin.Views;
 using StoreCommon;
-using StoreUser;
 using System.Globalization;
 using System.Windows;
 

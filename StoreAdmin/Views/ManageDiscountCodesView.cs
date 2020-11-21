@@ -9,34 +9,27 @@ namespace StoreAdmin.Views
 {
     public static class ManageDiscountCodesView
     {
-        private static TabItem _root;
         private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;
 
         private static List<DiscountCode> _newDiscountCodes;
         private static int _errorsInNewData;
 
-        public static TabItem Init()
+        public static ScrollViewer Init()
         {
             CreateGUI();
             UpdateGUI(Store.DiscountCodes);
-            return _root;
+            return _rootScrollViewer;
         }
 
         public static void CreateGUI()
         {
-            _newDiscountCodes = new List<DiscountCode>(Store.DiscountCodes);
-            _root = new TabItem { Header = "Manage Discount Codes", Background = Brushes.White };
-
-            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center };
+            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center, VerticalScrollBarVisibility = ScrollBarVisibility.Hidden, Margin = new Thickness(0, 30, 0, 0) };
             _grid = new Grid { Margin = new Thickness(0, 0, 0, 20) };
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
-
-
             _rootScrollViewer.Content = _grid;
-            _root.Content = _rootScrollViewer;
         }
 
         public static void UpdateGUI(List<DiscountCode> discountCodes)
