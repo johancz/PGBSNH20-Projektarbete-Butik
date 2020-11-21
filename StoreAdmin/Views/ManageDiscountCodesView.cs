@@ -12,27 +12,29 @@ namespace StoreAdmin.Views
         private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;
 
-        private static List<DiscountCode> _newDiscountCodes;
+        private static List<DiscountCode> _newDiscountCodes = new List<DiscountCode>();
+        private static DiscountCode _newDiscountCode = new DiscountCode();
         private static int _errorsInNewData;
 
         public static ScrollViewer Init()
         {
+            _newDiscountCodes = Store.DiscountCodes;
             CreateGUI();
-            UpdateGUI(Store.DiscountCodes);
+            UpdateGUI();
             return _rootScrollViewer;
         }
 
         public static void CreateGUI()
         {
-            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center, VerticalScrollBarVisibility = ScrollBarVisibility.Hidden, Margin = new Thickness(0, 30, 0, 0) };
-            _grid = new Grid { Margin = new Thickness(0, 0, 0, 20) };
+            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 30, 0, 0), VerticalScrollBarVisibility = ScrollBarVisibility.Hidden };
+            _grid = new Grid { Margin = new Thickness(0, 0, 0, 20)};
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _rootScrollViewer.Content = _grid;
         }
 
-        public static void UpdateGUI(List<DiscountCode> discountCodes)
+        public static void UpdateGUI()
         {
             // Create the "Header"-row
             var codeHeader = new Label { FontSize = 16, Content = "Discount Code", Padding = new Thickness(5), };
@@ -40,11 +42,10 @@ namespace StoreAdmin.Views
             AppendGridRow((codeHeader, null), (percentageHeader, null));
 
             // Create a row for each DiscountCode
-            discountCodes.ForEach(discountCode => AppendDiscountCodeRow(discountCode));
-
-            var gridSplitter = new GridSplitter
+            _newDiscountCodes.ForEach(discountCode => AppendDiscountCodeRow(discountCode));
+            
+            var gridSplitter = new GridSplitter //vad fylle denna för funktion?
             {
-                IsEnabled = false,
                 Background = Brushes.Gray,
                 Height = 2,
                 Margin = new Thickness(0, 5, 0, 5),
@@ -180,7 +181,6 @@ namespace StoreAdmin.Views
 
         private static void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            DiscountCode newDiscountCode;
             var buttonIndex = _grid.Children.IndexOf((Button)sender);
 
             try
@@ -193,12 +193,12 @@ namespace StoreAdmin.Views
                     throw new Exception("The \"Percentage\" value is not valid, enter a number between 0-1 (inclusive).");
                 }
 
-                newDiscountCode = new DiscountCode(newCode, newPercentage);
-                _newDiscountCodes.Add(newDiscountCode);
+                _newDiscountCode = new DiscountCode(newCode, newPercentage);
+                _newDiscountCodes.Add(_newDiscountCode);
 
                 _grid.Children.Clear();
-                _grid.RowDefinitions.Clear();
-                UpdateGUI(_newDiscountCodes);
+                _grid.RowDefinitions.Clear(); //ska alla verkligen försvinna?
+                UpdateGUI();
             }
             catch (Exception error)
             {
@@ -212,6 +212,7 @@ namespace StoreAdmin.Views
             {
                 Store.DiscountCodes = _newDiscountCodes;
                 Store.SaveDiscountCodesToFile();
+                MessageBox.Show("Your Discount Codes was successfully saved to file.");
             }
             else
             {

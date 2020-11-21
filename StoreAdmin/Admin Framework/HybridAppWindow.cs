@@ -152,7 +152,6 @@ namespace StoreCommon
                         FontSize = 16,
                         Background = Brushes.Transparent,
                         BorderBrush = Brushes.Transparent,
-                        IsReadOnly = true
                     };
                     NameAndPricePanel.Children.Add(detailsPanelPrice);
 
@@ -171,7 +170,7 @@ namespace StoreCommon
                     DetailsPanelPrice = detailsPanelPrice;
                     DetailsPanelCurrency = detailsPanelCurrency;
                     
-                    EditDetailsTextBoxes = new List<TextBox> { detailsPanelDescription, detailsPanelName};                    
+                    EditDetailsTextBoxes = new List<TextBox> { detailsPanelDescription, detailsPanelName, detailsPanelPrice};                    
                 }
                 private void CreateAdminButtonsToCollection()
                 {

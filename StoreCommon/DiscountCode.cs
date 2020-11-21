@@ -8,6 +8,7 @@ namespace StoreCommon
         public string Code { get; set; }
         public double Percentage { get; set; }
 
+        public DiscountCode() { }
         public DiscountCode(string code, double percentage)
         {
             SetValues(code, percentage);
