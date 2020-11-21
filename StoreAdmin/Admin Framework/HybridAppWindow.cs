@@ -149,7 +149,10 @@ namespace StoreCommon
 
                     var detailsPanelPrice = new TextBox
                     {
-                        FontSize = 16
+                        FontSize = 16,
+                        Background = Brushes.Transparent,
+                        BorderBrush = Brushes.Transparent,
+                        IsReadOnly = true
                     };
                     NameAndPricePanel.Children.Add(detailsPanelPrice);
 
@@ -157,8 +160,9 @@ namespace StoreCommon
                     {
                         FontSize = 16,
                         Background = Brushes.Transparent,
-                        Text = "kr",
-                        BorderBrush = Brushes.Transparent
+                        Text = Store.Currency.Symbol,
+                        BorderBrush = Brushes.Transparent,
+                        IsReadOnly = true
                     };
                     NameAndPricePanel.Children.Add(detailsPanelCurrency);
 
@@ -167,7 +171,7 @@ namespace StoreCommon
                     DetailsPanelPrice = detailsPanelPrice;
                     DetailsPanelCurrency = detailsPanelCurrency;
                     
-                    EditDetailsTextBoxes = new List<TextBox> { detailsPanelDescription, detailsPanelName, detailsPanelPrice};                    
+                    EditDetailsTextBoxes = new List<TextBox> { detailsPanelDescription, detailsPanelName};                    
                 }
                 private void CreateAdminButtonsToCollection()
                 {
@@ -275,8 +279,8 @@ namespace StoreCommon
                             {
                                 var priceLabel = new Label
                                 {
-                                    Content = $"{product.Price} kr",
-                                    FontSize = 14,
+                                    Content = $"{product.Price} {Store.Currency}",
+                                    FontSize = 14
                                 };
                                 Grid.SetColumn(priceLabel, column);
                                 Grid.SetRow(priceLabel, row);

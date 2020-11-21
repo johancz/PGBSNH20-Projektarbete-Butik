@@ -41,7 +41,6 @@ namespace StoreAdmin
         }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Main Window Loaded"); //test
             AdminButtons.ForEach(button => button.Width = DetailsButtonPanel.ActualWidth);
             DisableEditBoxes();
             AddAllProductGridsToProductBrowser();
