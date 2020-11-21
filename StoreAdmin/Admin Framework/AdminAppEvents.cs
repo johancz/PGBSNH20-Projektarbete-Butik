@@ -105,7 +105,8 @@ namespace StoreAdmin
                     product.Name = DetailsPanelName.Text;
                     product.Price = decPrice;
                     Store.SaveCurrentProductsInStoreToCSV();
-
+                    
+                    DisableEditBoxes();
                     UpdateDetailsPanel(product);
                     UpdateTextInProductBrowser(product);
                     EnableProductGrids();
