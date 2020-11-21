@@ -173,20 +173,20 @@ namespace StoreCommon
                 {
                     //Parent DetailsButtonPanel
                     EditProductButton = CreateButton("Edit Product");
-                        SaveChangesButton = CreateButton("Save Changes");
-                        CancelButton = CreateButton("Cancel");
+                        SaveEditButton = CreateButton("Save");
+                        CancelEditButton = CreateButton("Cancel Edit");
 
                     ChangeImageButton = CreateButton("Change Image");
                         SaveImageButton = CreateButton("Save Image");
-                        CancelImageButton = CreateButton("Cancel");
+                        CancelImageButton = CreateButton("Cancel Image");
                     
                     NewProductButton = CreateButton("New Product");
-                        NewProductSaveButton = CreateButton("Save Image");
-                        NewProductAbortButton = CreateButton("Abort Product");
+                        NewProductSaveButton = CreateButton("Save New");
+                        NewProductAbortButton = CreateButton("Abort New");
 
                     RemoveButton = CreateButton("Remove Product");
                     
-                    AdminButtons = new List<Button> { NewProductButton, EditProductButton, ChangeImageButton, RemoveButton, SaveImageButton, CancelImageButton, SaveChangesButton, CancelButton, NewProductAbortButton, NewProductSaveButton };
+                    AdminButtons = new List<Button> { NewProductButton, EditProductButton, ChangeImageButton, RemoveButton, SaveImageButton, CancelImageButton, SaveEditButton, CancelEditButton, NewProductAbortButton, NewProductSaveButton };
                 }
                     private Button CreateButton(string content)
                     {
@@ -220,7 +220,6 @@ namespace StoreCommon
                     foreach (var product in Store.Products)
                     {
                         var productGrid = CreateProductGridWithContent(product);
-                        ProductGrids.Add(productGrid);
                         productGrid.Background = background;
                     }
                 }
@@ -230,6 +229,7 @@ namespace StoreCommon
                         CreateProductThumbnail(productGrid, product);
                         CreateGridNameLabel(productGrid, product, column: 0, row: 1);
                         CreateGridPriceLabel(productGrid, product, column: 1, row: 1);
+                        ProductGrids.Add(productGrid);
                         return productGrid;
                     }
                         private Grid CreateProductGrid(Product product)

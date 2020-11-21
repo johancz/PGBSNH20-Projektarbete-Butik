@@ -37,8 +37,8 @@ namespace StoreCommon
 
                                     public static StackPanel DetailsButtonPanel;
                                         public static Button EditProductButton;
-                                            public static Button CancelButton;
-                                            public static Button SaveChangesButton;
+                                            public static Button CancelEditButton;
+                                            public static Button SaveEditButton;
                                         public static Button ChangeImageButton;
                                             public static Button SaveImageButton;
                                             public static Button CancelImageButton;
