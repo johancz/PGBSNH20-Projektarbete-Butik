@@ -12,14 +12,15 @@ using System.Windows.Media.Imaging;
 
 namespace StoreAdmin
 {
-    public class AdminAppEvents : AdminFramework
+    public class AdminAppEvents : HybridFramework
     {
         public static Product SelectedProduct = null;
         private bool ProductGridsIsSelectable;
         private bool NewProductMode = false;
         public void Init()
         {
-            MainWindow.Loaded += MainWindow_Loaded;
+            ActualWindow.Loaded += MainWindow_Loaded;
+            ActualWindow.SizeChanged += MainWindow_SizeChanged;
 
             ProductGrids.ForEach(productGrid => productGrid.MouseUp += ProductGrid_MouseUp);
             ImageGrids.ForEach(imageGrid => imageGrid.MouseUp += ImageGrid_MouseUp);
@@ -39,16 +40,25 @@ namespace StoreAdmin
             DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             LoadDefaultButtonPanel();
         }
+
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             AdminButtons.ForEach(button => button.Width = DetailsButtonPanel.ActualWidth);
             DisableEditBoxes();
             AddAllProductGridsToProductBrowser();
-
+            DetailsPanelDescription.Width = DetailsDescriptionScrollViewer.ActualWidth;
             SelectedProduct = null;
             DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             ProductGridsIsSelectable = true;
-            MainWindow.KeyUp += MainWindow_KeyUp;
+            ActualWindow.KeyUp += MainWindow_KeyUp;
+        }
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if((DetailsPanelImage.ActualWidth-100)>=100) DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth-100;
+            WindowTabControl.Width = ActualWindow.ActualWidth;
+            WindowTabControl.Height = ActualWindow.ActualHeight;
+            ProductGrids.ForEach(x => x.Width = (ActualWindow.ActualWidth - 50) / 7.0);
+            ImageGrids.ForEach(x => x.Width = (ActualWindow.ActualWidth - 50) / 7.0);
         }
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
@@ -59,6 +69,7 @@ namespace StoreAdmin
         {
             if (ProductGridsIsSelectable)
             {
+                if ((DetailsPanelImage.ActualWidth - 100) >= 100) DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth - 100;
                 DetailsPanelRootGrid.Visibility = Visibility.Visible;
                 SelectedProduct = (Product)((Grid)sender).Tag;
                 UpdateDetailsPanel(SelectedProduct);
@@ -120,9 +131,7 @@ namespace StoreAdmin
             {
                 var productGrid = ProductGrids.Find(x => x.Tag == product);
                 var nameLabel = (Label)(productGrid.Children[1]);
-                var priceLabel = (Label)(productGrid.Children[2]);
-                nameLabel.Content = product.Name;
-                priceLabel.Content = product.Price.ToString();
+                nameLabel.Content = $"{product.Name} {product.Price.ToString()}kr";
             }
             private bool IsPriceInCorrectFormat(out decimal result)
             {

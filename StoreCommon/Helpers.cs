@@ -16,11 +16,20 @@ namespace StoreCommon
             ImageBrush imageBrush = new ImageBrush { ImageSource = source };
             return imageBrush;
         }
-        public static BitmapImage CreateBitmapImageFromUriString(string uriString)
+        public static BitmapImage CreateBitmapImageFromUriString(string uriString, bool StylingFolder = false)
         {
+            string parentFolder;
+            if (StylingFolder)
+            {
+                parentFolder = DataManager.ImageStylingFolderPath;
+            }
+            else
+            {
+                parentFolder = DataManager.ImageFolderPath;
+            }
             try
             {
-                var uri = new Uri(Path.Combine(DataManager.ImageFolderPath, uriString), UriKind.Absolute);
+                var uri = new Uri(Path.Combine(parentFolder, uriString), UriKind.Absolute);
                 var bitMapImage = new BitmapImage(uri);
 
                 return bitMapImage;
