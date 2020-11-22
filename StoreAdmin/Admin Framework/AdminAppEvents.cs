@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreAdmin
 {
-    public class AdminAppEvents : HybridFramework
+    public class AdminAppEvents : AdminFramework
     {
         public static Product SelectedProduct = null;
         private bool ProductGridsIsSelectable;

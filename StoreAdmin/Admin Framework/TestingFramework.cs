@@ -9,7 +9,7 @@ using System.Windows.Media;
 
 namespace StoreAdmin
 {
-    class TestingFramework : HybridFramework
+    class TestingFramework : AdminFramework
     {
         private bool GridLinesVisible = false;
         public TestingFramework()
