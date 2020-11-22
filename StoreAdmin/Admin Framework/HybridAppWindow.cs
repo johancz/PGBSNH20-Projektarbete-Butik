@@ -49,6 +49,9 @@ namespace StoreCommon
             CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
                 EditDiscountCodePageGrid.Children.Add(ManageDiscountCodesView.Init());
             CreateDiscountCodeImage("TylerBeast.jpeg");
+
+            NewRootPanel.Children.Add(BrowserRootScrollViewer);
+            NewRootPanel.Children.Add(DetailsButtonPanel);
                    
         }
         private void CreateDiscountPage(string header, Brush brush)
@@ -85,19 +88,22 @@ namespace StoreCommon
                 editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                editPageTabItem.Content = editPageGrid;                    
+                //editPageTabItem.Content = editPageGrid;                    
+
+            var newRootPanel = new StackPanel { Orientation = Orientation.Horizontal };
+            editPageTabItem.Content = newRootPanel;
 
             EditPageTabItem = editPageTabItem;
-                EditPageGrid = editPageGrid;
-                    
+                NewRootPanel = newRootPanel;
+                //EditPageGrid = editPageGrid;                    
         }
             private void CreateDetailsPanel()
             {
                 var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite };
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                Grid.SetColumn(detailsPanelRootGrid, 1);
-                EditPageGrid.Children.Add(detailsPanelRootGrid);
+                //Grid.SetColumn(detailsPanelRootGrid, 1);
+                //EditPageGrid.Children.Add(detailsPanelRootGrid);
 
                     var detailsPanelImage = new Image {HorizontalAlignment = HorizontalAlignment.Left};
                     detailsPanelRootGrid.Children.Add(detailsPanelImage);
@@ -138,7 +144,7 @@ namespace StoreCommon
                             Margin = new Thickness(5)
                         };
                         Grid.SetColumn(detailsButtonPanel, 0);
-                        detailsTextAndButtonGrid.Children.Add(detailsButtonPanel);
+                        //detailsTextAndButtonGrid.Children.Add(detailsButtonPanel);
 
                 DetailsPanelRootGrid = detailsPanelRootGrid;
                     DetailsPanelImage = detailsPanelImage;
@@ -225,8 +231,8 @@ namespace StoreCommon
             private void CreateBrowser(Brush background)
             {
                 var browserRootScrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Hidden, Background = background };
-                Grid.SetColumn(browserRootScrollViewer, 0);
-                EditPageGrid.Children.Add(browserRootScrollViewer);
+                //Grid.SetColumn(browserRootScrollViewer, 0);
+                //EditPageGrid.Children.Add(browserRootScrollViewer);
 
                     var browserProductsPanel = new WrapPanel
                     {

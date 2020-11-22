@@ -58,7 +58,7 @@ namespace StoreAdmin
 
         private void ReloadTreeButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowWPFVisualTree(EditPageGrid);
+            //ShowWPFVisualTree(EditPageGrid);
         }
 
         private void Image_MouseEnter(object sender, MouseEventArgs e)
@@ -71,7 +71,7 @@ namespace StoreAdmin
         {
              
             GridLinesVisible = !GridLinesVisible;
-            var grids = new List<Grid> { EditPageGrid, DetailsPanelRootGrid, DetailsTextAndButtonGrid, DetailsTitleAndDescriptionGrid, Views.ManageDiscountCodesView._grid };
+            var grids = new List<Grid> { DetailsPanelRootGrid, DetailsTextAndButtonGrid, DetailsTitleAndDescriptionGrid, Views.ManageDiscountCodesView._grid }; //EditPageGrid
             grids.ForEach(x => x.ShowGridLines = GridLinesVisible);
             ProductGrids.ForEach(x => x.ShowGridLines = GridLinesVisible);
 

@@ -16,7 +16,9 @@ namespace StoreCommon
                 public static Canvas WindowCanvas;
                     public static TabControl WindowTabControl;
                         public static TabItem EditPageTabItem;                    
-                            public static Grid EditPageGrid;
+                            //public static Grid EditPageGrid;
+
+                            public static StackPanel NewRootPanel;
 
                                 public static ScrollViewer BrowserRootScrollViewer;
                                     public static WrapPanel ProductAndImageWrapPanel;
