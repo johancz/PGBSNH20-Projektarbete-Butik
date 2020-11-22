@@ -16,7 +16,7 @@ namespace StoreAdmin
             AdminApp.CreateAdminGUI();
             var appEvents = new AdminAppEvents();
             appEvents.Init();
-            if (MessageBox.Show("Do you want to start in developer mode?", "", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            if(false)
             {
                 var testingFrameWork = new TestingFramework();
             }
