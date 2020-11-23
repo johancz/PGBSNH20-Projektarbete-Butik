@@ -9,13 +9,14 @@ namespace StoreCommon
 {
     public static class Helpers
     {
-        public static ImageBrush BackgroundImage(string uriString)
+        public static void BackgroundImage(Control element, string uriRelative)
         {
-            string path = Path.Combine(DataManager.ImageStylingFolderPath, uriString);
-            ImageSource source = new BitmapImage(new Uri(path, UriKind.Absolute));
+            ImageSource source = new BitmapImage(new Uri(uriRelative, UriKind.Relative));
             ImageBrush imageBrush = new ImageBrush { ImageSource = source };
-            return imageBrush;
+            ImageBrush imageBrushTitle = new ImageBrush { ImageSource = source };
+            element.Background = imageBrush;
         }
+
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
             try

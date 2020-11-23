@@ -1,10 +1,8 @@
 ﻿using StoreAdmin.Views;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
@@ -44,8 +42,6 @@ namespace StoreCommon
                     CreateAdminButtonsToCollection();
             CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
                 EditDiscountCodePageGrid.Children.Add(ManageDiscountCodesView.Init());
-            CreateImageGrid("NewProductImage.jpeg");
-                   
         }
         private void CreateDiscountPage(string header, Brush brush)
         {
@@ -61,13 +57,6 @@ namespace StoreCommon
             EditDiscountCodeTabItem = editPageTabItem;
                 EditDiscountCodePageGrid = editPageGrid;
         }
-            private void CreateImageGrid(string uriRelative)
-            {
-                var grid = new Grid();
-                Grid.SetColumn(grid, 1);
-                EditDiscountCodePageGrid.Children.Add(grid);
-                grid.Background = Helpers.BackgroundImage("BeastTyler.jpeg");
-            }
         private void CreateEditPage(string header, Brush brush)
         {            
             var editPageTabItem = new TabItem { Header = header };
