@@ -17,7 +17,7 @@ namespace StoreCommon
         public HybridAppWindow(Window mainWindow)
         {
             AppWindow = this;
-            mainWindow.Title = "Aministrator View";
+            mainWindow.Title = DataManager.ProjectName + " (admin mode)";
             mainWindow.Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
             mainWindow.Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             mainWindow.MinWidth = 800;
