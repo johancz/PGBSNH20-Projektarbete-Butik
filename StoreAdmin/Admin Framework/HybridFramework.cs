@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public abstract class AdminFramework
+    public abstract class HybridFramework
     {
         public static HybridAppWindow AppWindow;  
             public static Window ActualWindow;

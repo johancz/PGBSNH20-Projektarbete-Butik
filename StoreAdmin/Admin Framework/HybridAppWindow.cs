@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public class HybridAppWindow : AdminFramework
+    public class HybridAppWindow : HybridFramework
     {
         internal struct ProductItem_LayoutSettings
         {
