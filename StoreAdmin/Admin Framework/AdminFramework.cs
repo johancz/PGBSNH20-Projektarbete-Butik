@@ -25,17 +25,19 @@ namespace StoreCommon
                                         public static List<Grid> ImageGrids = new List<Grid>();
                                         public static List<Grid> ProductGrids = new List<Grid>();
 
-                                public static Grid DetailsPanelRootGrid;
+                                public static StackPanel NewDetailsPanel;
+                                //public static Grid DetailsPanelRootGrid;
                                     public static Image DetailsPanelImage;
-                                    public static Grid DetailsTextAndButtonGrid;
-                                        public static Grid DetailsTitleAndDescriptionGrid;
-                                            public static ScrollViewer DetailsDescriptionScrollViewer;
-                                                public static TextBox DetailsPanelDescription;
-
+                                    
+                                    //public static Grid DetailsTextAndButtonGrid;
+                                        //public static Grid DetailsTitleAndDescriptionGrid;
+                                            //public static ScrollViewer DetailsDescriptionScrollViewer;
                                             public static StackPanel NameAndPricePanel;
                                                 public static TextBox DetailsPanelName;
                                                 public static TextBox DetailsPanelPrice;
                                                 public static TextBox DetailsPanelCurrency;
+
+                                            public static TextBox DetailsPanelDescription;
                                                     public static List<TextBox> EditDetailsTextBoxes = new List<TextBox>();
 
                                         public static StackPanel DetailsButtonPanel;

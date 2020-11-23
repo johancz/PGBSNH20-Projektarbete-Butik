@@ -70,10 +70,10 @@ namespace StoreAdmin
         private void ShowGridButton_Click(object sender, RoutedEventArgs e)
         {
              
-            GridLinesVisible = !GridLinesVisible;
-            var grids = new List<Grid> { DetailsPanelRootGrid, DetailsTextAndButtonGrid, DetailsTitleAndDescriptionGrid, Views.ManageDiscountCodesView._grid }; //EditPageGrid
-            grids.ForEach(x => x.ShowGridLines = GridLinesVisible);
-            ProductGrids.ForEach(x => x.ShowGridLines = GridLinesVisible);
+            //GridLinesVisible = !GridLinesVisible;
+            //var grids = new List<Grid> { DetailsPanelRootGrid, DetailsTextAndButtonGrid, DetailsTitleAndDescriptionGrid, Views.ManageDiscountCodesView._grid }; //EditPageGrid
+            //grids.ForEach(x => x.ShowGridLines = GridLinesVisible);
+            //ProductGrids.ForEach(x => x.ShowGridLines = GridLinesVisible);
 
         }
 

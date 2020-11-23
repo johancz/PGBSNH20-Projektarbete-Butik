@@ -37,7 +37,7 @@ namespace StoreAdmin
                 NewProductAbortButton.Click += NewProductAbortButton_Click;
             RemoveButton.Click += RemoveButton_Click;
 
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+            NewDetailsPanel.Visibility = Visibility.Hidden;
             LoadDefaultButtonPanel();
         }
 
@@ -46,17 +46,18 @@ namespace StoreAdmin
             AdminButtons.ForEach(button => button.Width = DetailsButtonPanel.ActualWidth);
             DisableEditBoxes();
             AddAllProductGridsToProductBrowser();
-            DetailsPanelDescription.Width = DetailsDescriptionScrollViewer.ActualWidth;
+            DetailsPanelDescription.Width = NewDetailsPanel.ActualWidth;
             SelectedProduct = null;
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+            NewDetailsPanel.Visibility = Visibility.Hidden;
             ProductGridsIsSelectable = true;
             ActualWindow.KeyUp += MainWindow_KeyUp;
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if((DetailsPanelImage.ActualWidth-100)>=100) DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth-100;
-            WindowTabControl.Width = ActualWindow.ActualWidth;
-            WindowTabControl.Height = ActualWindow.ActualHeight;
+            
+            NewRootPanel.Width = ActualWindow.ActualWidth;
+            NewRootPanel.Height = ActualWindow.ActualHeight-90;
+            BrowserRootScrollViewer.Width = ActualWindow.ActualWidth/2;
             ProductGrids.ForEach(x => x.Width = (ActualWindow.ActualWidth - 50) / 7.0);
             ImageGrids.ForEach(x => x.Width = (ActualWindow.ActualWidth - 50) / 7.0);
         }
@@ -69,8 +70,9 @@ namespace StoreAdmin
         {
             if (ProductGridsIsSelectable)
             {
-                if ((DetailsPanelImage.ActualWidth - 100) >= 100) DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth - 100;
-                DetailsPanelRootGrid.Visibility = Visibility.Visible;
+                DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth;
+                //if ((DetailsPanelImage.ActualWidth - 100) >= 100) DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth - 100;
+                NewDetailsPanel.Visibility = Visibility.Visible;
                 SelectedProduct = (Product)((Grid)sender).Tag;
                 UpdateDetailsPanel(SelectedProduct);
                 var image = DetailsPanelImage; 
@@ -163,7 +165,7 @@ namespace StoreAdmin
                 DetailsPanelImage.Source = product.Tag.Source;
                 DetailsPanelName.Text = product.Name; //gives the title from selected product
                 DetailsPanelPrice.Text = product.Price.ToString();
-                DetailsPanelDescription.MaxWidth = DetailsDescriptionScrollViewer.ActualWidth;
+                DetailsPanelDescription.MaxWidth = NewDetailsPanel.ActualWidth;
                 DetailsPanelDescription.Text = product.Description;
             }
             private void EnableProductGrids()
@@ -201,7 +203,7 @@ namespace StoreAdmin
                     private void NewProductAbortButton_Click(object sender, RoutedEventArgs e)
                     {                        
                         DetailsPanelTextVisiblilty(true);
-                        DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+                        NewDetailsPanel.Visibility = Visibility.Hidden;
                         SwitchGridsToDefaultModeInBrowser();
                         HideAllButtons();
                         LoadDefaultButtonPanel();
@@ -252,7 +254,7 @@ namespace StoreAdmin
                 Store.SaveCurrentProductsInStoreToCSV();
                 RemoveProductGridFromBrowser();                    
                 SelectedProduct = null;
-                DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+                NewDetailsPanel.Visibility = Visibility.Hidden;
             }
             //else stay in default mode
         }

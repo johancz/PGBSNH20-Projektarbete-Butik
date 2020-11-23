@@ -52,6 +52,7 @@ namespace StoreCommon
 
             NewRootPanel.Children.Add(BrowserRootScrollViewer);
             NewRootPanel.Children.Add(DetailsButtonPanel);
+            NewRootPanel.Children.Add(NewDetailsPanel);
                    
         }
         private void CreateDiscountPage(string header, Brush brush)
@@ -99,43 +100,47 @@ namespace StoreCommon
         }
             private void CreateDetailsPanel()
             {
-                var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite };
-                detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                //Grid.SetColumn(detailsPanelRootGrid, 1);
-                //EditPageGrid.Children.Add(detailsPanelRootGrid);
+
+            //var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite };
+            //detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            //detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            //Grid.SetColumn(detailsPanelRootGrid, 1);
+            //EditPageGrid.Children.Add(detailsPanelRootGrid);
+
+            var newDetailsPanel = new StackPanel { Orientation = Orientation.Vertical };
+
 
                     var detailsPanelImage = new Image {HorizontalAlignment = HorizontalAlignment.Left};
-                    detailsPanelRootGrid.Children.Add(detailsPanelImage);
+                    newDetailsPanel.Children.Add(detailsPanelImage);
 
-                    var detailsTextAndButtonGrid = new Grid { };
-                    detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-                    detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-                    Grid.SetRow(detailsTextAndButtonGrid, 1);
-                    detailsPanelRootGrid.Children.Add(detailsTextAndButtonGrid);
+                    //var detailsTextAndButtonGrid = new Grid { };
+                    //detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                    //detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    //Grid.SetRow(detailsTextAndButtonGrid, 1);
+                    //newDetailsPanel.Children.Add(detailsTextAndButtonGrid);
 
-                        var detailsTitleDescriptionGrid = new Grid { };
-                        detailsTitleDescriptionGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-                        detailsTitleDescriptionGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                        Grid.SetColumn(detailsTitleDescriptionGrid, 1);
+                        //var detailsTitleDescriptionGrid = new Grid { };
+                        //detailsTitleDescriptionGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                        //detailsTitleDescriptionGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                        //Grid.SetColumn(detailsTitleDescriptionGrid, 1);
                 
-                        detailsTextAndButtonGrid.Children.Add(detailsTitleDescriptionGrid);
+                        //detailsTextAndButtonGrid.Children.Add(detailsTitleDescriptionGrid);
 
-                            var productDescriptionScrollViewer = new ScrollViewer
-                            {
-                                Margin = new Thickness(5),
-                                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
-                            };
-                            Grid.SetRow(productDescriptionScrollViewer, 1);
-                            detailsTitleDescriptionGrid.Children.Add(productDescriptionScrollViewer);
+                            //var productDescriptionScrollViewer = new ScrollViewer
+                            //{
+                            //    Margin = new Thickness(5),
+                            //    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                            //    HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden,
+                            //};
+                            //Grid.SetRow(productDescriptionScrollViewer, 1);
+                            //detailsTitleDescriptionGrid.Children.Add(productDescriptionScrollViewer);
                             var nameAndPricePanel = new StackPanel
                             {
                                 Orientation = Orientation.Horizontal,
                                 Margin = new Thickness(5),
                             };
                             Grid.SetRow(nameAndPricePanel, 0);
-                            detailsTitleDescriptionGrid.Children.Add(nameAndPricePanel);
+                            newDetailsPanel.Children.Add(nameAndPricePanel);
 
 
                         var detailsButtonPanel = new StackPanel
@@ -145,13 +150,13 @@ namespace StoreCommon
                         };
                         Grid.SetColumn(detailsButtonPanel, 0);
                         //detailsTextAndButtonGrid.Children.Add(detailsButtonPanel);
-
-                DetailsPanelRootGrid = detailsPanelRootGrid;
+                NewDetailsPanel = newDetailsPanel;
+                //DetailsPanelRootGrid = detailsPanelRootGrid;
                     DetailsPanelImage = detailsPanelImage;
-                    DetailsTextAndButtonGrid = detailsTextAndButtonGrid;
-                        DetailsTitleAndDescriptionGrid = detailsTitleDescriptionGrid;
+                    //DetailsTextAndButtonGrid = detailsTextAndButtonGrid;
+                    //    DetailsTitleAndDescriptionGrid = detailsTitleDescriptionGrid;
                             NameAndPricePanel = nameAndPricePanel;
-                            DetailsDescriptionScrollViewer = productDescriptionScrollViewer;
+                            //DetailsDescriptionScrollViewer = productDescriptionScrollViewer;
                         DetailsButtonPanel = detailsButtonPanel;
             }
                 public void CreateEditableTextBoxes()
@@ -162,9 +167,10 @@ namespace StoreCommon
                         AcceptsReturn = true,
                         IsUndoEnabled = true,
                         HorizontalAlignment = HorizontalAlignment.Left,
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto
                     };
-                    DetailsDescriptionScrollViewer.Content = detailsPanelDescription;
+                    NewDetailsPanel.Children.Add(detailsPanelDescription);
 
                     var detailsPanelName = new TextBox
                     {
