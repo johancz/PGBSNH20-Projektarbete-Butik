@@ -1,8 +1,12 @@
 ﻿using StoreCommon;
 using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace StoreUser.Views
 {
@@ -126,7 +130,40 @@ namespace StoreUser.Views
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 ResizeMode = ResizeMode.NoResize,
             };
+            receiptWindow.Loaded += ReceiptWindow_Loaded;
             receiptWindow.Show();
+        }
+
+        private static void ReceiptWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = DetailsPanelView._rightColumn_DetailsImage;
+            _OrginalImageSource = image.Source;
+            var switchImageSource = Helpers.CreateBitmapImageFromUriString(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "NewProductImage.jpeg"));
+            _switchImageSource = switchImageSource;
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(10);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+            _timer = timer;
+        }
+        private static ImageSource _switchImageSource;
+        private static ImageSource _OrginalImageSource;
+        private static int counter = 0;
+        private static DispatcherTimer _timer;
+        private static void Timer_Tick(object sender, EventArgs e)
+        {
+            counter++;
+            if (counter == 20)
+            {
+                DetailsPanelView._rightColumn_DetailsImage.Source = _switchImageSource;
+            }
+            if (counter > 22)
+            {
+                DetailsPanelView._rightColumn_DetailsImage.Source = _OrginalImageSource;
+                _timer.Stop();
+                counter = 0;
+            }
         }
 
         internal static void UpdateShoppingCartTabHeader()

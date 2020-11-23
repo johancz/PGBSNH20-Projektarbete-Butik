@@ -205,7 +205,7 @@ namespace StoreAdmin
             MessageBox.Show("Choose Image");
 
         }
-                    private void NewProductAbortButton_Click(object sender, RoutedEventArgs e)
+            private void NewProductAbortButton_Click(object sender, RoutedEventArgs e)
                     {                        
                         DetailsPanelTextVisiblilty(true);
                         DetailsPanelRootGrid.Visibility = Visibility.Hidden;
@@ -214,7 +214,7 @@ namespace StoreAdmin
                         LoadDefaultButtonPanel();
                         NewProductMode = false;
                     }
-                    private void NewProductSaveButton_Click(object sender, RoutedEventArgs e)
+            private void NewProductSaveButton_Click(object sender, RoutedEventArgs e)
                     {
                         string productUri = DetailsPanelImage.Source.ToString().Split('/')[^1];
                         var newProduct = new Product("Title...", productUri, 0, "Enter your product description...");
@@ -236,7 +236,7 @@ namespace StoreAdmin
                         HideAllButtons();
                         LoadEditButtonPanel();                       
                     }
-                        private void DetailsPanelTextVisiblilty(bool Visible)
+            private void DetailsPanelTextVisiblilty(bool Visible)
                         {
                             if (Visible)
                             {
