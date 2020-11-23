@@ -9,8 +9,8 @@ namespace StoreAdmin.Views
 {
     public static class ManageDiscountCodesView
     {
-        public static ScrollViewer _rootScrollViewer;
-        public static Grid _grid = new Grid();
+        private static ScrollViewer _rootScrollViewer;
+        private static Grid _grid;
 
         private static List<DiscountCode> _newDiscountCodes = new List<DiscountCode>();
         private static DiscountCode _newDiscountCode = new DiscountCode();

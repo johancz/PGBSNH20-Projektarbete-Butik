@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public class HybridAppWindow : HybridFramework
+    public class HybridAppWindow : AdminFramework
     {
         internal struct ProductItem_LayoutSettings
         {
@@ -16,25 +16,21 @@ namespace StoreCommon
             internal const double gridItemHeight = 200;
             internal const int gridItemImageHeight = 175;
         }
-        public HybridAppWindow(Window actualWindow)
+        public HybridAppWindow(Window mainWindow)
         {
             AppWindow = this;
-            actualWindow.Title = "Aministrator View";
-            actualWindow.Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
-            actualWindow.Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
-            actualWindow.MinWidth = 800;
-            actualWindow.MinHeight = 600;
-            actualWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            var windowCanvas = new Canvas();
+            mainWindow.Title = "Aministrator View";
+            mainWindow.Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
+            mainWindow.Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
+            mainWindow.MinWidth = 800;
+            mainWindow.MinHeight = 600;
+            mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             var windowTabControl = new TabControl { Background = Brushes.LightBlue };
-                actualWindow.Content = windowCanvas;
-                    windowCanvas.Children.Add(windowTabControl);
-            Canvas.SetLeft(windowTabControl, 0);
-            Canvas.SetRight(windowTabControl, 0);
-            ActualWindow = actualWindow;
-                WindowCanvas = windowCanvas;
-                    WindowTabControl = windowTabControl;
+                mainWindow.Content = windowTabControl;
+            
+            MainWindow = mainWindow;
+                WindowTabControl = windowTabControl;
         }
 
         public void CreateAdminGUI()
@@ -48,7 +44,7 @@ namespace StoreCommon
                     CreateAdminButtonsToCollection();
             CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
                 EditDiscountCodePageGrid.Children.Add(ManageDiscountCodesView.Init());
-            CreateDiscountCodeImage("TylerBeast.jpeg");
+            CreateImageGrid("NewProductImage.jpeg");
                    
         }
         private void CreateDiscountPage(string header, Brush brush)
@@ -65,16 +61,12 @@ namespace StoreCommon
             EditDiscountCodeTabItem = editPageTabItem;
                 EditDiscountCodePageGrid = editPageGrid;
         }
-            private void CreateDiscountCodeImage(string uriRelative)
+            private void CreateImageGrid(string uriRelative)
             {
-                var discountCodeImage = new Image();
-                discountCodeImage.Source = Helpers.CreateBitmapImageFromUriString(uriRelative, true);
-                discountCodeImage.Stretch = Stretch.UniformToFill;
-                discountCodeImage.VerticalAlignment = VerticalAlignment.Center;
-                discountCodeImage.HorizontalAlignment = HorizontalAlignment.Center;
-            
-                Grid.SetColumn(discountCodeImage, 1);
-                EditDiscountCodePageGrid.Children.Add(discountCodeImage);
+                var grid = new Grid();
+                Grid.SetColumn(grid, 1);
+                EditDiscountCodePageGrid.Children.Add(grid);
+                grid.Background = Helpers.BackgroundImage("BeastTyler.jpeg");
             }
         private void CreateEditPage(string header, Brush brush)
         {            
@@ -99,7 +91,7 @@ namespace StoreCommon
                 Grid.SetColumn(detailsPanelRootGrid, 1);
                 EditPageGrid.Children.Add(detailsPanelRootGrid);
 
-                    var detailsPanelImage = new Image {HorizontalAlignment = HorizontalAlignment.Left};
+                    var detailsPanelImage = new Image();
                     detailsPanelRootGrid.Children.Add(detailsPanelImage);
 
                     var detailsTextAndButtonGrid = new Grid { };
@@ -154,9 +146,8 @@ namespace StoreCommon
                     {
                         TextWrapping = TextWrapping.Wrap,
                         AcceptsReturn = true,
-                        IsUndoEnabled = true,
-                        HorizontalAlignment = HorizontalAlignment.Left,
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
+                        IsUndoEnabled = true,                        
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
                     };
                     DetailsDescriptionScrollViewer.Content = detailsPanelDescription;
 
@@ -211,14 +202,14 @@ namespace StoreCommon
                     
                     AdminButtons = new List<Button> { NewProductButton, EditProductButton, ChangeImageButton, RemoveButton, SaveImageButton, CancelImageButton, SaveEditButton, CancelEditButton, NewProductAbortButton, NewProductSaveButton };
                 }
-                    public Button CreateButton(string content)
+                    private Button CreateButton(string content)
                     {
                         var newButton = new Button
                         {
                             Padding = new Thickness(5),
                             Content = new Label { Content = content, HorizontalAlignment = HorizontalAlignment.Center },
                             HorizontalAlignment = HorizontalAlignment.Stretch,
-                            HorizontalContentAlignment = HorizontalAlignment.Center,
+                            HorizontalContentAlignment = HorizontalAlignment.Left,
                         };
                         return newButton;
                     }
@@ -251,7 +242,7 @@ namespace StoreCommon
                         var productGrid = CreateProductGrid(product); //2 rows //2 columns
                         CreateProductThumbnail(productGrid, product);
                         CreateGridNameLabel(productGrid, product, column: 0, row: 1);
-                        //CreateGridPriceLabel(productGrid, product, column: 1, row: 1);
+                        CreateGridPriceLabel(productGrid, product, column: 1, row: 1);
                         ProductGrids.Add(productGrid);
                         return productGrid;
                     }
@@ -261,7 +252,7 @@ namespace StoreCommon
                             {
                                 VerticalAlignment = VerticalAlignment.Top,
                                 Width = ProductItem_LayoutSettings.gridItemWidth,
-                                //Height = ProductItem_LayoutSettings.gridItemHeight,
+                                Height = ProductItem_LayoutSettings.gridItemHeight,
                                 Margin = new Thickness(5),
                                 Tag = product
                             };
@@ -287,13 +278,23 @@ namespace StoreCommon
                             {
                                 var nameLabel = new Label
                                 {
-                                    Content = $"{product.Name} {product.Price} {Store.Currency.Symbol}",
-                                    FontStretch = FontStretches.UltraExpanded
-                                    //FontSize = 14,
+                                    Content = $"{product.Name}",
+                                    FontSize = 14,
                                 };
                                 Grid.SetColumn(nameLabel, column);
                                 Grid.SetRow(nameLabel, row);
                                 parent.Children.Add(nameLabel);
+                            }
+                            public void CreateGridPriceLabel(Grid parent, Product product, int column, int row)
+                            {
+                                var priceLabel = new Label
+                                {
+                                    Content = $"{product.Price} {Store.Currency}",
+                                    FontSize = 14
+                                };
+                                Grid.SetColumn(priceLabel, column);
+                                Grid.SetRow(priceLabel, row);
+                                parent.Children.Add(priceLabel);
                             }
                     private void CreateImageGridsToCollection(Brush background)
                     {
