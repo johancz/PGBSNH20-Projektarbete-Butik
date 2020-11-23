@@ -18,7 +18,7 @@ namespace StoreUser
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
             // Window options
-            Title = ".... Store (user mode)"; // TODO(johancz): Change before RELEASE
+            Title = DataManager.ProjectName + " (user mode)";
             Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
             Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             MinWidth = 800;

@@ -1,4 +1,5 @@
 ﻿using StoreCommon;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,7 +19,7 @@ namespace StoreUser.Views
         public static void CreateGUI()
         {
             var shoppingCartRootGrid = new Grid();
-            var shoppingCartScrollViewer = new ScrollViewer();
+            var shoppingCartScrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, };
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
@@ -32,7 +33,7 @@ namespace StoreUser.Views
             Grid.SetRow(shoppingCartScrollViewer, 1);
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
-            var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Store.ShoppingCart.TotalSum} kr)";
+            var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.TotalSum, 2)} kr)";
             _root = new TabItem
             {
                 Name = "UserView_root",
@@ -90,7 +91,7 @@ namespace StoreUser.Views
                 {
                     productTotalCost *= (decimal)(1 - Store.ShoppingCart.ActiveDiscountCode.Percentage);
                 }
-                var rowTotalCost = new Label { Content = productTotalCost + " " + Store.Currency.Symbol };
+                var rowTotalCost = new Label { Content = Math.Round(productTotalCost, 2) + " " + Store.Currency.Symbol };
                 Grid.SetColumn(rowCount, 1);
                 Grid.SetColumn(rowTotalCost, 2);
                 Grid.SetRow(rowProduct, i);
@@ -102,10 +103,10 @@ namespace StoreUser.Views
             }
 
             receiptGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-            string finalCost = $"Total: {Store.ShoppingCart.FinalSum} {Store.Currency.Symbol}";
+            string finalCost = $"Total: {Math.Round(Store.ShoppingCart.FinalSum, 2)} {Store.Currency.Symbol}";
             if (Store.ShoppingCart.ActiveDiscountCode != null)
             {
-                finalCost += $" (you saved {Store.ShoppingCart.FinalSum - Store.ShoppingCart.TotalSum} {Store.Currency.Symbol}!)";
+                finalCost += $" (you saved {Math.Round(Store.ShoppingCart.FinalSum - Store.ShoppingCart.TotalSum, 2)} {Store.Currency.Symbol}!)";
             }
             var totalsLabel = new Label
             {
@@ -131,7 +132,7 @@ namespace StoreUser.Views
         internal static void UpdateShoppingCartTabHeader()
         {
             int itemCount = Store.ShoppingCart.Products.Sum(p => p.Value);
-            ((Label)_root.Header).Content = $"My Shopping Cart ({itemCount} items. {Store.ShoppingCart.FinalSum} kr)";
+            ((Label)_root.Header).Content = $"My Shopping Cart ({itemCount} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
         }
 
         private static void PlaceOrderButton_Click(object sender, RoutedEventArgs e)

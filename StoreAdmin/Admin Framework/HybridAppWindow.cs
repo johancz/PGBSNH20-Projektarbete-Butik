@@ -18,7 +18,7 @@ namespace StoreCommon
         public HybridAppWindow(Window mainWindow)
         {
             AppWindow = this;
-            mainWindow.Title = "Aministrator View";
+            mainWindow.Title = DataManager.ProjectName + " (admin mode)";
             mainWindow.Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
             mainWindow.Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             mainWindow.MinWidth = 800;
@@ -41,22 +41,15 @@ namespace StoreCommon
                 CreateDetailsPanel();
                     CreateEditableTextBoxes();
                     CreateAdminButtonsToCollection();
+
             CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
-                EditDiscountCodePageGrid.Children.Add(ManageDiscountCodesView.Init());
         }
         private void CreateDiscountPage(string header, Brush brush)
         {
             var editPageTabItem = new TabItem { Header = header };
+            editPageTabItem.Content = ManageDiscountCodesView.Init();
             WindowTabControl.Items.Add(editPageTabItem);
-
-            var editPageGrid = new Grid { Background = brush };
-            editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Auto) });
-            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            editPageTabItem.Content = editPageGrid;
-
             EditDiscountCodeTabItem = editPageTabItem;
-                EditDiscountCodePageGrid = editPageGrid;
         }
         private void CreateEditPage(string header, Brush brush)
         {            
