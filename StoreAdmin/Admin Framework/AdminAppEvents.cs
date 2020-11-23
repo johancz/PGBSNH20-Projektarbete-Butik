@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 
 namespace StoreAdmin
 {
+    //This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks
+    //Exception is DiscountCode Events these are found in ManageDiscountCodesView.cs
     public class AdminAppEvents : AdminFramework
     {
         public static Product SelectedProduct = null;
@@ -103,11 +105,9 @@ namespace StoreAdmin
                 HideAllButtons();
                 ShowButtons(new List<Button> { CancelEditButton, SaveEditButton });
             }
-            private void SaveEditButton_Click(object sender, RoutedEventArgs e)
+        private void SaveEditButton_Click(object sender, RoutedEventArgs e)
             {
-                string price = DetailsPanelPrice.Text;
-
-                if (IsPriceInCorrectFormat(out decimal decPrice))
+                if (IsPriceInCorrectFormat(out decimal decPrice) && !IsDelimiterInDescription())
                 {
                     var product = SelectedProduct;
                     product.Description = DetailsPanelDescription.Text;
@@ -121,16 +121,12 @@ namespace StoreAdmin
                     EnableProductGrids();
                     LoadDefaultButtonPanel();
                 }
-                else
-                {
-                    MessageBox.Show("Try entering a digit as price!");
-                }
             }
             private void UpdateTextInProductBrowser(Product product)
             {
                 var productGrid = ProductGrids.Find(x => x.Tag == product);
                 var nameLabel = (Label)(productGrid.Children[1]);
-                nameLabel.Content = $"{product.Name} {product.Price.ToString()} kr";
+                nameLabel.Content = $"{product.Name} {product.Price} kr";
             }
             private bool IsPriceInCorrectFormat(out decimal result)
             {
@@ -138,8 +134,20 @@ namespace StoreAdmin
                 string price = DetailsPanelPrice.Text;
                 price = price.Replace(',', '.');
                 price = price.Trim();
+                if (!decimal.TryParse(price, out result))
+                {
+                    MessageBox.Show("Try entering a digit as price!");
+                }
                 return decimal.TryParse(price, out result);
-            }       
+            }
+            private bool IsDelimiterInDescription()
+            {
+                if (DetailsPanelDescription.Text.Contains('#'))
+                {
+                    MessageBox.Show("The description can not contain \"#\"");
+                }
+                return DetailsPanelDescription.Text.Contains('#');
+        }
 
         private void CancelEditButton_Click(object sender, RoutedEventArgs e)
         {
