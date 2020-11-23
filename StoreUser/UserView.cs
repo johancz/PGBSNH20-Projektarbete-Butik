@@ -24,7 +24,6 @@ namespace StoreUser
         public static ListView ShoppingCartList;
         public static Grid DetailsPanel;
 
-        // TODO(johancz): Move to Settings-class?
         private struct ProductItem_LayoutSettings
         {
             internal static double gridItemWidth = 200;
@@ -44,7 +43,7 @@ namespace StoreUser
             ;
             // NEW ////////////////////////////////
 
-            _root = new Canvas(); // TODO(johancz): use a different control if we don't implement animations?
+            _root = new Canvas();
             _root.SizeChanged += RootElement_SizeChanged;
 
             // Grid with two columns;
@@ -105,8 +104,11 @@ namespace StoreUser
         {
             ShoppingCartTabView.UpdateShoppingCartTabHeader();
             ShoppingCartToolbarView.UpdateGUI();
-            ShoppingCartListView.UpdateShoppingCartView();
-            DetailsPanelView.UpdateDetailsColumn(_selectedProduct);
+            ShoppingCartListView.UpdateData();
+            if (_selectedProduct != null)
+            {
+                DetailsPanelView.UpdateGUI(_selectedProduct);
+            }
         }
 
         /******************************************************/
@@ -188,7 +190,7 @@ namespace StoreUser
             _rootGrid.Height = _root.ActualHeight;
             _rootGrid.Width = _root.ActualWidth;
 
-            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond it's bounds.
+            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
             //__View_DetailsPanel._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
             DetailsPanelView.EventHandler.External_RootElement_SizeChanged(sender, e);
         }
@@ -198,7 +200,7 @@ namespace StoreUser
             // TODO(johancz): Error/Exception-handling
             var product = (Product)((Grid)sender).Tag;
             _selectedProduct = product;
-            DetailsPanelView.UpdateDetailsColumn(product);
+            DetailsPanelView.UpdateGUI(product);
         }
     }
 }

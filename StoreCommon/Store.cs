@@ -12,7 +12,7 @@ namespace StoreCommon
         public static (string Code, string Symbol) Currency { get; set; }
 
         public static List<Product> Products { get; set; } = new List<Product>();
-        public static ProductList ShoppingCart { get; set; } = new ProductList();
+        public static ShoppingCart ShoppingCart { get; set; } = new ShoppingCart();
         public static List<string> ImageItemFilePaths { get; set; } = new List<string>();
         public static List<DiscountCode> DiscountCodes { get; set; } = new List<DiscountCode>();
 
@@ -76,7 +76,7 @@ namespace StoreCommon
 
         public static void LoadShoppingCart(string path)
         {
-            ShoppingCart = ProductList.LoadFromFile(path);
+            ShoppingCart = ShoppingCart.LoadFromFile(path);
         }
 
         public static void SaveShoppingCart()

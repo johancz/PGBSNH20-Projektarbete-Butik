@@ -45,7 +45,7 @@ namespace StoreUser.Views
 
             _root = new ListView(); // _root
             _root.SelectionChanged += EventHandler._root_SelectionChanged;
-            UpdateShoppingCartView();
+            UpdateData();
 
             _gridView = new GridView { AllowsColumnReorder = false };
             var style = new Style { TargetType = typeof(GridViewColumnHeader) };
@@ -108,12 +108,7 @@ namespace StoreUser.Views
         {
         }
 
-        private static void UpdateData()
-        {
-
-        }
-
-        internal static void UpdateShoppingCartView()
+        internal static void UpdateData()
         {
             var combinedData = Store.ShoppingCart.Products.Select(product =>
             {
@@ -139,6 +134,7 @@ namespace StoreUser.Views
                 // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
                 Store.ShoppingCart.RemoveProduct(product);
+                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
                 UserView._selectedProduct = product;
                 UserView.UpdateGUI();
             }
@@ -149,6 +145,7 @@ namespace StoreUser.Views
                 var product = (Product)((Button)sender).Tag;
                 UserView._selectedProduct = product;
                 Store.ShoppingCart.AddProduct(product, 1);
+                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
                 UserView.UpdateGUI();
             }
 

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace StoreCommon
 {
-    public class ProductList
+    public class ShoppingCart
     {
         public Dictionary<Product, int> Products { get; private set; } = new Dictionary<Product, int>();
         public decimal TotalSum { get; private set; } = 0;
@@ -78,21 +79,22 @@ namespace StoreCommon
         {
             if (Products.Count == 0)
             {
-                // TODO(johancz): visa ett meddelande om kunden försöker spara en tom lista? eller det kanske är bättre att disabla/gömma knappen
-                // The ProductList is empty, do nothing.
-                return false;
+                try
+                {
+                    File.WriteAllText(path, string.Empty);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
             }
 
             string[] fileContents = Products.Select(productItem => productItem.Key.Name + ";" + productItem.Value).ToArray();
 
-            try
+            if (!Directory.Exists(Path.GetDirectoryName(path)))
             {
                 Directory.CreateDirectory(path);
-            }
-            catch (Exception)
-            {
-                // TODO(johancz): exception handling
-                System.Diagnostics.Debug.WriteLine("Could not create the Directory, it already exists");
             }
 
             try
@@ -107,7 +109,7 @@ namespace StoreCommon
             }
         }
 
-        public static ProductList LoadFromFile(string pathAndFileName)
+        public static ShoppingCart LoadFromFile(string pathAndFileName)
         {
             string[] fileLines;
 
@@ -122,7 +124,7 @@ namespace StoreCommon
                 throw;
             }
 
-            var shoppingList = new ProductList();
+            var shoppingList = new ShoppingCart();
             decimal totalSum = 0;
 
             foreach (string line in fileLines)
