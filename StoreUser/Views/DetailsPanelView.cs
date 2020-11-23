@@ -25,7 +25,7 @@ namespace StoreUser.Views
         public static Grid Init()
         {
             CreateGUI();
-            UpdateGUI();
+            UpdateGUI(); //no code end
             return _root;
         }
 
@@ -34,7 +34,6 @@ namespace StoreUser.Views
             //  Right Column Content Root: Grid
             _root = new Grid
             {
-                ShowGridLines = true,
                 Visibility = Visibility.Hidden,
             };
 
@@ -47,14 +46,14 @@ namespace StoreUser.Views
 
             // Details Column: name, price, description and shopping cart buttons.
             {
-                var detailsColumn_detailsGrid = new Grid { ShowGridLines = true };
+                var detailsColumn_detailsGrid = new Grid();
                 detailsColumn_detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                 detailsColumn_detailsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
                 Grid.SetRow(detailsColumn_detailsGrid, 1);
                 _root.Children.Add(detailsColumn_detailsGrid);
 
-                var detailsColumn_namePriceDescription = new Grid { ShowGridLines = true };
+                var detailsColumn_namePriceDescription = new Grid();
                 detailsColumn_namePriceDescription.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
                 detailsColumn_namePriceDescription.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 // Create the product "Name" and "Price" labels and a StackPanel-parent for them. Add the parent to the detailsPanel.

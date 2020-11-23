@@ -65,7 +65,7 @@ namespace StoreCommon
                 var editPageGrid = new Grid { Background = brush };
                 editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                editPageGrid.ColumnDefinitions.Add(new ColumnDefinition {Width = new GridLength(1, GridUnitType.Auto) });
                 editPageTabItem.Content = editPageGrid;                    
 
             EditPageTabItem = editPageTabItem;
@@ -74,7 +74,7 @@ namespace StoreCommon
         }
             private void CreateDetailsPanel()
             {
-                var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite };
+                var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite, HorizontalAlignment = HorizontalAlignment.Left };
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 Grid.SetColumn(detailsPanelRootGrid, 1);
@@ -84,6 +84,7 @@ namespace StoreCommon
                     detailsPanelRootGrid.Children.Add(detailsPanelImage);
 
                     var detailsTextAndButtonGrid = new Grid { };
+                    detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                     detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                     detailsTextAndButtonGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
                     Grid.SetRow(detailsTextAndButtonGrid, 1);
@@ -136,7 +137,8 @@ namespace StoreCommon
                         TextWrapping = TextWrapping.Wrap,
                         AcceptsReturn = true,
                         IsUndoEnabled = true,                        
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        Width = 270
                     };
                     DetailsDescriptionScrollViewer.Content = detailsPanelDescription;
 
@@ -230,8 +232,7 @@ namespace StoreCommon
                     {
                         var productGrid = CreateProductGrid(product); //2 rows //2 columns
                         CreateProductThumbnail(productGrid, product);
-                        CreateGridNameLabel(productGrid, product, column: 0, row: 1);
-                        CreateGridPriceLabel(productGrid, product, column: 1, row: 1);
+                        CreateGridNameLabel(productGrid, product, column: 0, row: 1);                      
                         ProductGrids.Add(productGrid);
                         return productGrid;
                     }
@@ -267,24 +268,13 @@ namespace StoreCommon
                             {
                                 var nameLabel = new Label
                                 {
-                                    Content = $"{product.Name}",
+                                    Content = $"{product.Name} {product.Price.ToString()} kr",
                                     FontSize = 14,
                                 };
                                 Grid.SetColumn(nameLabel, column);
                                 Grid.SetRow(nameLabel, row);
                                 parent.Children.Add(nameLabel);
-                            }
-                            public void CreateGridPriceLabel(Grid parent, Product product, int column, int row)
-                            {
-                                var priceLabel = new Label
-                                {
-                                    Content = $"{product.Price} {Store.Currency}",
-                                    FontSize = 14
-                                };
-                                Grid.SetColumn(priceLabel, column);
-                                Grid.SetRow(priceLabel, row);
-                                parent.Children.Add(priceLabel);
-                            }
+                            }                            
                     private void CreateImageGridsToCollection(Brush background)
                     {
                         foreach (var imageFilePath in Store.ImageItemFilePaths)

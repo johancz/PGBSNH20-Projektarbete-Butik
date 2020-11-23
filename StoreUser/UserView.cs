@@ -50,7 +50,7 @@ namespace StoreUser
             // Grid with two columns;
             // the first column (left) contains a tabcontrol with "Browse Store" and "ShoppingCart" tabs,
             // the Second column (right) contains details about the selected product.
-            _rootGrid = new Grid { ShowGridLines = true };
+            _rootGrid = new Grid ();
             _rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
             _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
