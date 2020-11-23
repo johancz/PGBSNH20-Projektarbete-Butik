@@ -43,7 +43,7 @@ namespace StoreUser.Views
             var bottomToolbarGrid = new Grid();
             bottomToolbarGrid.ColumnDefinitions.Add(new ColumnDefinition());
             bottomToolbarGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            // children of stackPanelBottomToolbar:
+            // children of bottomToolbarGrid:
             {
                 var clearShoppingCartButton = new Button
                 {
