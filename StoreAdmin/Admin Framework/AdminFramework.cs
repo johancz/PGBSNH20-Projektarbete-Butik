@@ -49,7 +49,6 @@ namespace StoreCommon
                                             public static List<Button> AdminButtons = new List<Button>();
 
                             public static TabItem EditDiscountCodeTabItem;
-                                public static Grid EditDiscountCodePageGrid;
 
     }
 }   

@@ -1,4 +1,5 @@
 ﻿using StoreCommon;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -65,7 +66,7 @@ namespace StoreUser.Views
                     _summary_totalPrice = new TextBlock
                     {
                         TextDecorations = TextDecorations.Strikethrough,
-                        Text = $"Total: {Store.ShoppingCart.TotalSum} {Store.Currency.Symbol}",
+                        Text = $"Total: {Math.Round(Store.ShoppingCart.TotalSum, 2)} {Store.Currency.Symbol}",
                         Margin = new Thickness(2.5),
                         VerticalAlignment = VerticalAlignment.Center,
                     };
@@ -77,7 +78,7 @@ namespace StoreUser.Views
                     _summary_finalPrice = new TextBlock
                     {
                         Visibility = Visibility.Collapsed,
-                        Text = $"Total: {Store.ShoppingCart.FinalSum} {Store.Currency.Symbol}",
+                        Text = $"Total: {Math.Round(Store.ShoppingCart.FinalSum, 2)} {Store.Currency.Symbol}",
                         Margin = new Thickness(2.5),
                         VerticalAlignment = VerticalAlignment.Center,
                     };
@@ -188,8 +189,8 @@ namespace StoreUser.Views
         {
             // Update Shooping Cart Toolbar values (item count, total price & total price with discount if activated):
             _summary_count.Content = $"Items: {Store.ShoppingCart.Products.Sum(p => p.Value)}";
-            _summary_totalPrice.Text = $"Total: {Store.ShoppingCart.TotalSum} {Store.Currency.Symbol}";
-            _summary_finalPrice.Text = $"Total: {Store.ShoppingCart.FinalSum} {Store.Currency.Symbol}";
+            _summary_totalPrice.Text = $"Total: {Math.Round(Store.ShoppingCart.TotalSum, 2)} {Store.Currency.Symbol}";
+            _summary_finalPrice.Text = $"Total: {Math.Round(Store.ShoppingCart.FinalSum, 2)} {Store.Currency.Symbol}";
 
             if (Store.ShoppingCart.ActiveDiscountCode != null)
             {

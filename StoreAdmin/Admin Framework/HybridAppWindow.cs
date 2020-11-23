@@ -40,22 +40,15 @@ namespace StoreCommon
                 CreateDetailsPanel();
                     CreateEditableTextBoxes();
                     CreateAdminButtonsToCollection();
+
             CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
-                EditDiscountCodePageGrid.Children.Add(ManageDiscountCodesView.Init());
         }
         private void CreateDiscountPage(string header, Brush brush)
         {
             var editPageTabItem = new TabItem { Header = header };
+            editPageTabItem.Content = ManageDiscountCodesView.Init();
             WindowTabControl.Items.Add(editPageTabItem);
-
-            var editPageGrid = new Grid { Background = brush };
-            editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            editPageTabItem.Content = editPageGrid;
-
             EditDiscountCodeTabItem = editPageTabItem;
-                EditDiscountCodePageGrid = editPageGrid;
         }
         private void CreateEditPage(string header, Brush brush)
         {            
@@ -278,7 +271,7 @@ namespace StoreCommon
                             {
                                 var priceLabel = new Label
                                 {
-                                    Content = $"{product.Price} {Store.Currency}",
+                                    Content = $"{product.Price} {Store.Currency.Symbol}",
                                     FontSize = 14
                                 };
                                 Grid.SetColumn(priceLabel, column);
