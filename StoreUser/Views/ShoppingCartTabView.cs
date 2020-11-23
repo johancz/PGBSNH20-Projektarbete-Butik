@@ -12,6 +12,10 @@ namespace StoreUser.Views
     public static class ShoppingCartTabView
     {
         private static TabItem _root;
+        private static DispatcherTimer _timer; // For easter egg.
+        private static int _timerCounter = 0; // For easter egg.
+        private static ImageSource _switchImageSource; // For easter egg.
+        private static ImageSource _originalImageSource; // For easter egg.
 
         public static TabItem Init()
         {
@@ -36,6 +40,37 @@ namespace StoreUser.Views
             Grid.SetRow(shoppingCartScrollViewer, 1);
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
+            var bottomToolbarGrid = new Grid();
+            bottomToolbarGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            bottomToolbarGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            // children of stackPanelBottomToolbar:
+            {
+                var clearShoppingCartButton = new Button
+                {
+                    Content = "Clear Shopping Cart",
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalContentAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(5),
+                    Padding = new Thickness(10),
+                };
+                clearShoppingCartButton.Click += ShoppingCart_clearButton_Click;
+                bottomToolbarGrid.Children.Add(clearShoppingCartButton);
+
+                var placeOrderButton = new Button
+                {
+                    Content = "Place Order",
+                    Margin = new Thickness(5),
+                    Padding = new Thickness(10),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                };
+                placeOrderButton.Click += PlaceOrderButton_Click;
+                Grid.SetColumn(placeOrderButton, 1);
+                bottomToolbarGrid.Children.Add(placeOrderButton);
+            }
+            Grid.SetRow(bottomToolbarGrid, 2);
+            shoppingCartRootGrid.Children.Add(bottomToolbarGrid);
+
             var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
             _root = new TabItem
             {
@@ -47,17 +82,6 @@ namespace StoreUser.Views
                 },
                 Content = shoppingCartRootGrid
             };
-
-            var placeOrderButton = new Button
-            {
-                Margin = new Thickness(10),
-                Content = "Place Order",
-                Padding = new Thickness(10),
-                HorizontalAlignment = HorizontalAlignment.Right,
-            };
-            placeOrderButton.Click += PlaceOrderButton_Click;
-            Grid.SetRow(placeOrderButton, 2);
-            shoppingCartRootGrid.Children.Add(placeOrderButton);
         }
 
         private static void ShowReceipt()
@@ -133,42 +157,24 @@ namespace StoreUser.Views
             receiptWindow.Show();
         }
 
-        private static void ReceiptWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            var image = DetailsPanelView._rightColumn_DetailsImage;
-            _originalImageSource = image.Source;
-            var switchImageSource = Helpers.CreateBitmapImageFromUriString(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "NewProductImage.jpeg"));
-            _switchImageSource = switchImageSource;
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(10);
-            timer.Tick += Timer_Tick;
-            timer.Start();
-            _timer = timer;
-        }
-        private static ImageSource _switchImageSource;
-        private static ImageSource _originalImageSource;
-        private static int counter = 0;
-        private static DispatcherTimer _timer;
-        private static void Timer_Tick(object sender, EventArgs e)
-        {
-            counter++;
-            if (counter == 20)
-            {
-                DetailsPanelView._rightColumn_DetailsImage.Source = _switchImageSource;
-            }
-            if (counter > 22)
-            {
-                DetailsPanelView._rightColumn_DetailsImage.Source = _originalImageSource;
-                _timer.Stop();
-                counter = 0;
-            }
-        }
-
         internal static void UpdateShoppingCartTabHeader()
         {
             int itemCount = Store.ShoppingCart.Products.Sum(p => p.Value);
             ((Label)_root.Header).Content = $"My Shopping Cart ({itemCount} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
+        }
+
+        internal static void ShoppingCart_clearButton_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Are you sure you want to empty your shopping cart?",
+                                         "Clear Shopping Cart?",
+                                         MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Store.ShoppingCart = new ShoppingCart();
+                Store.SaveShoppingCart();
+                UserView.UpdateGUI();
+            }
         }
 
         private static void PlaceOrderButton_Click(object sender, RoutedEventArgs e)
@@ -184,6 +190,35 @@ namespace StoreUser.Views
             if (resultConfirm == MessageBoxResult.OK)
             {
                 ShowReceipt();
+            }
+        }
+
+        // You found an easter egg, congrats!
+        private static void ReceiptWindow_Loaded(object sender, RoutedEventArgs e) // For easter egg.
+        {
+            var image = DetailsPanelView.DetailsImage;
+            _originalImageSource = image.Source;
+            var switchImageSource = Helpers.CreateBitmapImageFromUriString(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "NewProductImage.jpeg"));
+            _switchImageSource = switchImageSource;
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(50);
+            timer.Tick += ReceiptWindow_TimerTick;
+            timer.Start();
+            _timer = timer;
+        }
+        private static void ReceiptWindow_TimerTick(object sender, EventArgs e) // For easter egg.
+        {
+            _timerCounter++;
+            if (_timerCounter == 20)
+            {
+                DetailsPanelView.DetailsImage.Source = _switchImageSource;
+            }
+            if (_timerCounter > 22)
+            {
+                DetailsPanelView.DetailsImage.Source = _originalImageSource;
+                _timer.Stop();
+                _timerCounter = 0;
             }
         }
     }

@@ -35,8 +35,6 @@ namespace StoreUser.Views
             _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
             // Children of _root:
             {
@@ -136,36 +134,6 @@ namespace StoreUser.Views
                     Grid.SetColumn(discountForm, 2);
                     _root.Children.Add(discountForm);
                 }
-
-                /*-------------------*/
-                /*----- Child 3 -----*/
-                /*-------------------*/
-                var gridSplitter = new GridSplitter
-                {
-                    Width = 1,
-                    Background = Brushes.Gray,
-                    IsEnabled = false,
-                    Margin = new Thickness(5),
-                };
-                Grid.SetColumn(gridSplitter, 4);
-                _root.Children.Add(gridSplitter);
-
-                /*-------------------*/
-                /*----- Child 4 -----*/
-                /*-------------------*/
-
-                var shoppingCart_clearButton = new Button
-                {
-                    Content = "Clear Shopping Cart",
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalContentAlignment = HorizontalAlignment.Center,
-                    Padding = new Thickness(5),
-                    Margin = new Thickness(2.5),
-                };
-                shoppingCart_clearButton.Click += EventHandler.ShoppingCart_clearButton_Click;
-                Grid.SetColumn(shoppingCart_clearButton, 6);
-                _root.Children.Add(shoppingCart_clearButton);
             }
         }
 
@@ -270,20 +238,6 @@ namespace StoreUser.Views
                 if (e.Key == Key.Enter)
                 {
                     discountSubmitEventHandler(sender, e);
-                }
-            }
-
-            internal static void ShoppingCart_clearButton_Click(object sender, RoutedEventArgs e)
-            {
-                var result = MessageBox.Show("Are you sure you want to empty your shopping cart?",
-                                             "Clear Shopping Cart?",
-                                             MessageBoxButton.YesNo);
-
-                if (result == MessageBoxResult.Yes)
-                {
-                    Store.ShoppingCart = new ShoppingCart();
-                    Store.SaveShoppingCart();
-                    UserView.UpdateGUI();
                 }
             }
         }

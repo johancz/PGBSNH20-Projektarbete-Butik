@@ -104,7 +104,7 @@ namespace StoreUser
         {
             ShoppingCartTabView.UpdateShoppingCartTabHeader();
             ShoppingCartToolbarView.UpdateGUI();
-            ShoppingCartListView.UpdateData();
+            ShoppingCartListView.Update();
             if (_selectedProduct != null)
             {
                 DetailsPanelView.UpdateGUI(_selectedProduct);
@@ -187,20 +187,23 @@ namespace StoreUser
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+
             _rootGrid.Height = _root.ActualHeight;
             _rootGrid.Width = _root.ActualWidth;
 
             // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
-            //__View_DetailsPanel._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
             DetailsPanelView.EventHandler.External_RootElement_SizeChanged(sender, e);
+            UpdateGUI();
         }
 
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // TODO(johancz): Error/Exception-handling
             var product = (Product)((Grid)sender).Tag;
-            _selectedProduct = product;
-            DetailsPanelView.UpdateGUI(product);
+            if (product != null)
+            {
+                _selectedProduct = product;
+                DetailsPanelView.UpdateGUI(product);
+            }
         }
     }
 }
