@@ -9,7 +9,6 @@ namespace StoreCommon
         public static string RootFolderPath;
         public static DirectoryInfo ImageFolder;
         public static string ImageFolderPath;
-        public static string ImageHelpersFolderPath;
 
         public static string StoreDataCsvPath { get; set; }
         private static string InputProductsCSV;
@@ -31,7 +30,6 @@ namespace StoreCommon
             StoreDataCsvPath = inputFolderPath ?? Path.Combine(Environment.CurrentDirectory, "StoreData", ".CSVs");
             RootFolderPath = outputFolderPath ?? Path.Combine(Path.GetTempPath(), ProjectName);
             ImageFolderPath = Path.Combine(RootFolderPath, "Images");
-            ImageHelpersFolderPath = Path.Combine(RootFolderPath, "AppImages");
 
             InputProductsCSV = Path.Combine(StoreDataCsvPath, "ExampleProducts.csv");
             InputDiscountCodesCSV = Path.Combine(StoreDataCsvPath, "ExampleDiscountCodes.csv");

@@ -10,6 +10,9 @@ using System.Windows.Media.Imaging;
 namespace StoreCommon
 {
     public abstract class AdminFramework
+        
+        //This class function is to give an clear overview of the used wpf elements and gives all classes possiblility to share those elements through inheritence. This removes the limitations of Main Window but has the drawback of limiting classes that could need inheritence from another class.
+        //It is also modular as it can be shared with other window-apps very easily.
     {
         public static HybridAppWindow AppWindow;  
             public static Window MainWindow;

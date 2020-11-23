@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media;
 using StoreCommon;
 
 namespace StoreUser.Views
@@ -15,7 +9,7 @@ namespace StoreUser.Views
     {
         private static Grid _root;
 
-        private static Image _rightColumn_DetailsImage;
+        public static Image _rightColumn_DetailsImage;
         private static Label _rightColumn_DetailsName;
         private static TextBlock _rightColumn_DetailsDescription;
         private static Button _rightColumn_detailsAddToCartButton;
@@ -123,7 +117,7 @@ namespace StoreUser.Views
                     detailsColumn_detailsGrid.Children.Add(rightColumn_detailsPanel_shoppingCartButtons);
                 }
             }
-        }
+        }        
 
         internal static void UpdateGUI(Product product)
         {

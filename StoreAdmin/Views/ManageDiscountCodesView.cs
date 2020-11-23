@@ -9,6 +9,8 @@ namespace StoreAdmin.Views
 {
     public static class ManageDiscountCodesView
     {
+        //This class contains the edit discount code tab, with framework elements and Events. It docks to the admin window at row 45 in HybridAppWindow.
+
         private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;
 
@@ -154,7 +156,6 @@ namespace StoreAdmin.Views
                 {
                     throw new Exception("Could not parse to Double");
                 }
-                //((DiscountCode)textBox.Tag).Percentage = percentage;
 
                 var discountCode = (DiscountCode)textBox.Tag;
                 discountCode.SetValues(discountCode.Code, percentage);
@@ -166,7 +167,6 @@ namespace StoreAdmin.Views
             }
             catch (Exception)
             {
-                //MessageBox.Show(error.Message, "Error!");
                 textBox.Background = Brushes.LightPink;
                 _errorsInNewData++;
             }

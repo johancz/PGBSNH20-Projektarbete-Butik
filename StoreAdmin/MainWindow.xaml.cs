@@ -6,6 +6,8 @@ namespace StoreAdmin
 {
     public partial class MainWindow : Window
     {
+        //Initiates the store and instanciates the classes that builds the app
+        //Abstract Class Admin Framework does per defintion not need to be instanciated but is essential for all code that builds the admin view.
         public MainWindow()
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;

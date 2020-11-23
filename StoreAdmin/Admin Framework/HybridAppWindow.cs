@@ -8,6 +8,7 @@ namespace StoreCommon
 {
     public class HybridAppWindow : AdminFramework
     {
+        //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class.
         internal struct ProductItem_LayoutSettings
         {
             internal const double gridItemWidth = 200;
@@ -17,7 +18,7 @@ namespace StoreCommon
         public HybridAppWindow(Window mainWindow)
         {
             AppWindow = this;
-            mainWindow.Title = "Aministrator View";
+            mainWindow.Title = DataManager.ProjectName + " (admin mode)";
             mainWindow.Width = SystemParameters.WorkArea.Width >= 1000 ? SystemParameters.WorkArea.Width - 200 : 800;
             mainWindow.Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             mainWindow.MinWidth = 800;
