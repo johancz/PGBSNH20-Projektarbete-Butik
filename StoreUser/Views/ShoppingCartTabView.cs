@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -29,10 +28,10 @@ namespace StoreUser.Views
             shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
             // Shopping cart toolbar (with load and save buttons, total sum label)
-            shoppingCartRootGrid.Children.Add(UserView.ShoppingCartToolbar);
+            shoppingCartRootGrid.Children.Add(UserView.ShoppingCartToolbarRoot);
 
             // Shopping cart items (StackPanel)
-            shoppingCartScrollViewer.Content = UserView.ShoppingCartList;
+            shoppingCartScrollViewer.Content = UserView.ShoppingCartListRoot;
 
             Grid.SetRow(shoppingCartScrollViewer, 1);
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
