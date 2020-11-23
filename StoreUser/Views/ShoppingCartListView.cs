@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using StoreCommon;
+using System;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using StoreCommon;
 
 namespace StoreUser.Views
 {
@@ -21,8 +18,7 @@ namespace StoreUser.Views
         public static ListView Init()
         {
             CreateGUI();
-            UpdateData();
-            UpdateGUI();
+            Update();
             return _root;
         }
 
@@ -43,9 +39,8 @@ namespace StoreUser.Views
             stackPanelFactory.AppendChild(buttonFactory_buttonRemove1);
             stackPanelFactory.AppendChild(add1_buttonFactory);
 
-            _root = new ListView(); // _root
-            _root.SelectionChanged += EventHandler._root_SelectionChanged;
-            UpdateData();
+            _root = new ListView { HorizontalContentAlignment = HorizontalAlignment.Stretch };
+            _root.SelectionChanged += EventHandler.ListSelectionChanged;
 
             _gridView = new GridView { AllowsColumnReorder = false };
             var style = new Style { TargetType = typeof(GridViewColumnHeader) };
@@ -57,27 +52,27 @@ namespace StoreUser.Views
             _gridView.Columns.Add(new GridViewColumn
             {
                 DisplayMemberBinding = new Binding("product.Name"),
-                Header = "Produkt"
+                Header = "Product",
             });
             _gridView.Columns.Add(new GridViewColumn
             {
                 DisplayMemberBinding = new Binding("productPrice"),
-                Header = "Price"
+                Header = "Price",
             });
             _gridView.Columns.Add(new GridViewColumn
             {
                 DisplayMemberBinding = new Binding("productCount"),
-                Header = "# of items"
+                Header = "# of items",
             });
             _gridView.Columns.Add(new GridViewColumn
             {
                 DisplayMemberBinding = new Binding("productTotalPrice"),
-                Header = "Total Price"
+                Header = "Total Price",
             });
             _gridView.Columns.Add(new GridViewColumn
             {
                 CellTemplate = new DataTemplate { VisualTree = stackPanelFactory },
-                Header = "+/- items"
+                Header = "+/- items",
             });
             _root.View = _gridView;
 
@@ -104,8 +99,10 @@ namespace StoreUser.Views
             ////////////////////
         }
 
-        public static void UpdateGUI()
+        public static void Update()
         {
+            UpdateData();
+            UpdateGUI();
         }
 
         internal static void UpdateData()
@@ -123,8 +120,24 @@ namespace StoreUser.Views
                 return productRow;
             });
 
+            // When Updating the data for the ListView, it takes take of updating the layout on it's own.
             _root.ItemsSource = combinedData;
+            // And to be sure the ListView layout updates, we also call UpdateLayout.
             _root.UpdateLayout();
+        }
+
+        public static void UpdateGUI()
+        {
+            // Resize each column to fit its content, double.NaN
+            foreach (GridViewColumn column in _gridView.Columns)
+            {
+                if (double.IsNaN(column.Width))
+                {
+                    column.Width = column.ActualWidth;
+                }
+
+                column.Width = double.NaN;
+            }
         }
 
         private static class EventHandler
@@ -149,7 +162,7 @@ namespace StoreUser.Views
                 UserView.UpdateGUI();
             }
 
-            internal static void _root_SelectionChanged(object sender, SelectionChangedEventArgs e)
+            internal static void ListSelectionChanged(object sender, SelectionChangedEventArgs e)
             {
                 ExpandoObject listViewItemData = ((ExpandoObject)_root.SelectedItem);
                 if (listViewItemData != null)

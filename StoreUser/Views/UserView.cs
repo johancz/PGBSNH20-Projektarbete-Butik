@@ -19,10 +19,10 @@ namespace StoreUser
         internal static Product _selectedProduct;
 
         /*** Views ***/
-        public static TabItem ShoppingCartTab;
-        public static Grid ShoppingCartToolbar;
-        public static ListView ShoppingCartList;
-        public static Grid DetailsPanel;
+        public static TabItem ShoppingCartTabRoot;
+        public static Grid ShoppingCartToolbarRoot;
+        public static ListView ShoppingCartListRoot;
+        public static Grid DetailsPanelRoot;
 
         private struct ProductItem_LayoutSettings
         {
@@ -35,10 +35,10 @@ namespace StoreUser
         {
             // NEW ////////////////////////////////
             /*** Views ***/
-            ShoppingCartToolbar = ShoppingCartToolbarView.Init();
-            ShoppingCartList = ShoppingCartListView.Init();
-            ShoppingCartTab = ShoppingCartTabView.Init();
-            DetailsPanel = DetailsPanelView.Init();
+            ShoppingCartToolbarRoot = ShoppingCartToolbarView.Init();
+            ShoppingCartListRoot = ShoppingCartListView.Init();
+            ShoppingCartTabRoot = ShoppingCartTabView.Init();
+            DetailsPanelRoot = DetailsPanelView.Init();
 
             ;
             // NEW ////////////////////////////////
@@ -86,13 +86,13 @@ namespace StoreUser
             }
 
             // "My Shopping Cart" Tab
-            leftColumnTabControl.Items.Add(ShoppingCartTab);
+            leftColumnTabControl.Items.Add(ShoppingCartTabRoot);
 
             Grid.SetColumn(leftColumnTabControl, 0);
             _rootGrid.Children.Add(leftColumnTabControl);
 
-            Grid.SetColumn(DetailsPanel, 1);
-            _rootGrid.Children.Add(DetailsPanel);
+            Grid.SetColumn(DetailsPanelRoot, 1);
+            _rootGrid.Children.Add(DetailsPanelRoot);
 
             // Add "root" Grid to "root" Canvas
             _root.Children.Add(_rootGrid);
@@ -104,7 +104,7 @@ namespace StoreUser
         {
             ShoppingCartTabView.UpdateShoppingCartTabHeader();
             ShoppingCartToolbarView.UpdateGUI();
-            ShoppingCartListView.UpdateData();
+            ShoppingCartListView.Update();
             if (_selectedProduct != null)
             {
                 DetailsPanelView.UpdateGUI(_selectedProduct);
@@ -187,20 +187,23 @@ namespace StoreUser
 
         private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+
             _rootGrid.Height = _root.ActualHeight;
             _rootGrid.Width = _root.ActualWidth;
 
             // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
-            //__View_DetailsPanel._rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
             DetailsPanelView.EventHandler.External_RootElement_SizeChanged(sender, e);
+            UpdateGUI();
         }
 
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // TODO(johancz): Error/Exception-handling
             var product = (Product)((Grid)sender).Tag;
-            _selectedProduct = product;
-            DetailsPanelView.UpdateGUI(product);
+            if (product != null)
+            {
+                _selectedProduct = product;
+                DetailsPanelView.UpdateGUI(product);
+            }
         }
     }
 }
