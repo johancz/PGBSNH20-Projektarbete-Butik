@@ -49,8 +49,8 @@ namespace StoreCommon
             WindowTabControl.Items.Add(editPageTabItem);
 
             var editPageGrid = new Grid { Background = brush };
-            editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            editPageGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            editPageGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Auto) });
             editPageGrid.ColumnDefinitions.Add(new ColumnDefinition());
             editPageTabItem.Content = editPageGrid;
 

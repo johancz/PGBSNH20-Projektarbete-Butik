@@ -26,9 +26,9 @@ namespace StoreAdmin.Views
 
         public static void CreateGUI()
         {
-            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center, Margin = new Thickness(0, 30, 0, 0), VerticalScrollBarVisibility = ScrollBarVisibility.Hidden };
+            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center, HorizontalContentAlignment = HorizontalAlignment.Center, Margin = new Thickness(40, 30, 0, 0), VerticalScrollBarVisibility = ScrollBarVisibility.Hidden };
             _grid = new Grid { Margin = new Thickness(0, 0, 0, 20)};
-            _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
+            _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _rootScrollViewer.Content = _grid;
