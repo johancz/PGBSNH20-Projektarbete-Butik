@@ -137,7 +137,7 @@ namespace StoreUser.Views
         private static void ReceiptWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var image = DetailsPanelView._rightColumn_DetailsImage;
-            _OrginalImageSource = image.Source;
+            _originalImageSource = image.Source;
             var switchImageSource = Helpers.CreateBitmapImageFromUriString(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "NewProductImage.jpeg"));
             _switchImageSource = switchImageSource;
 
@@ -148,7 +148,7 @@ namespace StoreUser.Views
             _timer = timer;
         }
         private static ImageSource _switchImageSource;
-        private static ImageSource _OrginalImageSource;
+        private static ImageSource _originalImageSource;
         private static int counter = 0;
         private static DispatcherTimer _timer;
         private static void Timer_Tick(object sender, EventArgs e)
@@ -160,7 +160,7 @@ namespace StoreUser.Views
             }
             if (counter > 22)
             {
-                DetailsPanelView._rightColumn_DetailsImage.Source = _OrginalImageSource;
+                DetailsPanelView._rightColumn_DetailsImage.Source = _originalImageSource;
                 _timer.Stop();
                 counter = 0;
             }
