@@ -12,8 +12,7 @@ namespace StoreAdmin.Views
         private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;
 
-        private static List<DiscountCode> _newDiscountCodes = new List<DiscountCode>();
-        private static DiscountCode _newDiscountCode = new DiscountCode();
+        private static List<DiscountCode> _newDiscountCodes;
         private static int _errorsInNewData;
 
         public static ScrollViewer Init()
@@ -26,7 +25,11 @@ namespace StoreAdmin.Views
 
         public static void CreateGUI()
         {
-            _rootScrollViewer = new ScrollViewer { HorizontalAlignment = HorizontalAlignment.Center, HorizontalContentAlignment = HorizontalAlignment.Center, Margin = new Thickness(40, 30, 0, 0), VerticalScrollBarVisibility = ScrollBarVisibility.Hidden };
+            _rootScrollViewer = new ScrollViewer {
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(20),
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            };
             _grid = new Grid { Margin = new Thickness(0, 0, 0, 20)};
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
@@ -44,8 +47,9 @@ namespace StoreAdmin.Views
             // Create a row for each DiscountCode
             _newDiscountCodes.ForEach(discountCode => AppendDiscountCodeRow(discountCode));
             
-            var gridSplitter = new GridSplitter //vad fylle denna för funktion?
+            var gridSplitter = new GridSplitter
             {
+                IsEnabled = false,
                 Background = Brushes.Gray,
                 Height = 2,
                 Margin = new Thickness(0, 5, 0, 5),
@@ -193,11 +197,10 @@ namespace StoreAdmin.Views
                     throw new Exception("The \"Percentage\" value is not valid, enter a number between 0-1 (inclusive).");
                 }
 
-                _newDiscountCode = new DiscountCode(newCode, newPercentage);
-                _newDiscountCodes.Add(_newDiscountCode);
+                _newDiscountCodes.Add(new DiscountCode(newCode, newPercentage));
 
                 _grid.Children.Clear();
-                _grid.RowDefinitions.Clear(); //ska alla verkligen försvinna?
+                _grid.RowDefinitions.Clear();
                 UpdateGUI();
             }
             catch (Exception error)
@@ -212,7 +215,7 @@ namespace StoreAdmin.Views
             {
                 Store.DiscountCodes = _newDiscountCodes;
                 Store.SaveDiscountCodesToFile();
-                MessageBox.Show("Your Discount Codes was successfully saved to file.");
+                MessageBox.Show("The Discount Codes were successfully saved to file.");
             }
             else
             {

@@ -119,7 +119,7 @@ namespace StoreUser.Views
             {
                 dynamic productRow = new ExpandoObject();
                 productRow.product = product.Key;
-                productRow.productPrice = product.Key.Price + Store.Currency.Symbol;
+                productRow.productPrice = Math.Round(product.Key.Price, 2) + Store.Currency.Symbol;
                 productRow.productCount = product.Value;
                 productRow.productTotalPrice = product.Key.Price * product.Value + Store.Currency.Symbol;
                 productRow.buttonRemove1 = " - ";
