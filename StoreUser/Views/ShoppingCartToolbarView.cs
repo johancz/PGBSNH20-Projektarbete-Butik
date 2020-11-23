@@ -153,35 +153,19 @@ namespace StoreUser.Views
                 /*-------------------*/
                 /*----- Child 4 -----*/
                 /*-------------------*/
-                var stackPanel_saveLoadButtons = new StackPanel
-                {
-                    Orientation = Orientation.Vertical,
-                };
-                var shoppingCart_saveButton = new Button
-                {
-                    Content = "Save Shopping Cart",
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalContentAlignment = HorizontalAlignment.Center,
-                    Padding = new Thickness(5),
-                    Margin = new Thickness(2.5),
-                };
-                shoppingCart_saveButton.Click += EventHandler.ShoppingCart_saveButton_Click;
 
-                var shoppingCart_loadButton = new Button
+                var shoppingCart_clearButton = new Button
                 {
-                    Content = "Load Shopping Cart",
+                    Content = "Clear Shopping Cart",
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalContentAlignment = HorizontalAlignment.Center,
                     Padding = new Thickness(5),
                     Margin = new Thickness(2.5),
                 };
-                shoppingCart_loadButton.Click += EventHandler.ShoppingCart_loadButton_Click;
-                stackPanel_saveLoadButtons.Children.Add(shoppingCart_saveButton);
-                stackPanel_saveLoadButtons.Children.Add(shoppingCart_loadButton);
-                Grid.SetColumn(stackPanel_saveLoadButtons, 6);
-                _root.Children.Add(stackPanel_saveLoadButtons);
+                shoppingCart_clearButton.Click += EventHandler.ShoppingCart_clearButton_Click;
+                Grid.SetColumn(shoppingCart_clearButton, 6);
+                _root.Children.Add(shoppingCart_clearButton);
             }
         }
 
@@ -216,7 +200,7 @@ namespace StoreUser.Views
 
         private static class EventHandler
         {
-            internal static void discountSubmitEventHandler(object s, RoutedEventArgs e) // TODO: move to namespace
+            internal static void discountSubmitEventHandler(object s, RoutedEventArgs e) // TODO: move to namespace?
             {
                 if ((string)_discountCodeSubmit.Content == "+ Add discount code")
                 {
@@ -285,25 +269,20 @@ namespace StoreUser.Views
             {
                 if (e.Key == Key.Enter)
                 {
-                    EventHandler.discountSubmitEventHandler(sender, e);
+                    discountSubmitEventHandler(sender, e);
                 }
             }
 
-            internal static void ShoppingCart_saveButton_Click(object sender, RoutedEventArgs e)
+            internal static void ShoppingCart_clearButton_Click(object sender, RoutedEventArgs e)
             {
-                Store.SaveShoppingCart();
-            }
-
-            internal static void ShoppingCart_loadButton_Click(object sender, RoutedEventArgs e)
-            {
-                var result = MessageBox.Show("You already have items in your shopping cart, do you want overwrite it?",
-                                             "Overwrite Shopping Cart?",
+                var result = MessageBox.Show("Are you sure you want to empty your shopping cart?",
+                                             "Clear Shopping Cart?",
                                              MessageBoxButton.YesNo);
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    Store.LoadShoppingCart(DataManager.ShoppingCartCSV);
-                    ResetDiscountCodeForm();
+                    Store.ShoppingCart = new ShoppingCart();
+                    Store.SaveShoppingCart();
                     UserView.UpdateGUI();
                 }
             }

@@ -37,7 +37,7 @@ namespace StoreUser.Views
             Grid.SetRow(shoppingCartScrollViewer, 1);
             shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
 
-            var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.TotalSum, 2)} kr)";
+            var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
             _root = new TabItem
             {
                 Name = "UserView_root",

@@ -19,7 +19,6 @@ namespace StoreUser.Views
         public static Grid Init()
         {
             CreateGUI();
-            UpdateGUI(); //no code end
             return _root;
         }
 
@@ -120,17 +119,13 @@ namespace StoreUser.Views
             }
         }        
 
-        public static void UpdateGUI()
-        {
-        }
-
-        internal static void UpdateDetailsColumn(Product product)
+        internal static void UpdateGUI(Product product)
         {
             _rightColumn_DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
 
             _rightColumn_DetailsName.Content = product.Name;
             _rightColumn_DetailsPrice.Content = $"{product.Price} kr";
-            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond it's bounds.
+            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
             _rightColumn_DetailsDescription.MaxWidth = ((ScrollViewer)_rightColumn_DetailsDescription.Parent).ActualWidth;
             _rightColumn_DetailsDescription.Text = product.Description;
             _rightColumn_DetailsRemoveFromCartButton.Tag = product;
@@ -148,6 +143,7 @@ namespace StoreUser.Views
                 // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
                 Store.ShoppingCart.RemoveProduct(product);
+                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
                 UserView.UpdateGUI();
             }
 
@@ -156,6 +152,7 @@ namespace StoreUser.Views
                 // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
                 Store.ShoppingCart.AddProduct(product, 1);
+                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
                 UserView.UpdateGUI();
             }
 

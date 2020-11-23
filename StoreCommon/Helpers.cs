@@ -25,7 +25,7 @@ namespace StoreCommon
             }
         }
 
-        public static Image CreateNewImage(string uriString = null, int? height = null, string tooltipText = null, bool imageInTooltip = false)
+        public static Image CreateNewImage(string uriString = null, int? height = null)
         {
             Image image = new Image();
 
@@ -43,33 +43,6 @@ namespace StoreCommon
                 if (height != null)
                 {
                     image.Height = height.Value;
-                }
-
-                if (tooltipText != null || imageInTooltip != false)
-                {
-                    var tooltipStackpanel = new StackPanel { Orientation = Orientation.Vertical };
-                    image.ToolTip = tooltipStackpanel;
-
-                    if (tooltipText != null)
-                    {
-                        tooltipStackpanel.Children.Add(new Label
-                        {
-                            Content = tooltipText
-                        });
-                    }
-
-                    if (imageInTooltip != false)
-                    {
-                        // TODO(johancz): Use the available Helper for creating images.
-                        tooltipStackpanel.Children.Add(new Image
-                        {
-                            Source = CreateBitmapImageFromUriString(uriString),
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Margin = new Thickness(5),
-                            Stretch = Stretch.Uniform,
-                        });
-                    }
                 }
             }
             catch (Exception)
