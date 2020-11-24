@@ -90,7 +90,6 @@ namespace StoreCommon
             {
                 var productGridItem = CreateProductGridItem(product);
                 productGridItem.Background = background;
-                ProductGridItems.Add(productGridItem);
             }
         }
         public Grid CreateProductGridItem(Product product)
@@ -109,8 +108,9 @@ namespace StoreCommon
             productGridItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
             CreateProductThumbnail(productGridItem, product);
-            CreateGridNameLabel(productGridItem, product);
+            CreateGridNameLabel(productGridItem, product, column: 0, row: 1);
 
+            ProductGridItems.Add(productGridItem);
             return productGridItem;
         }
 
@@ -125,7 +125,7 @@ namespace StoreCommon
             Grid.SetColumnSpan(productThumbnail, 2);
             parent.Children.Add(productThumbnail);
         }
-        public void CreateGridNameLabel(Grid parent, Product product)
+        public void CreateGridNameLabel(Grid parent, Product product, int column, int row)
         {
             var nameLabel = new Label
             {
@@ -171,7 +171,6 @@ namespace StoreCommon
             {
                 Background = Brushes.AntiqueWhite,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Visibility = Visibility.Hidden,
             };
             detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });

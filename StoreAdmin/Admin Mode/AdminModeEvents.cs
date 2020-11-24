@@ -35,6 +35,7 @@ namespace StoreAdmin
                 NewProductAbortButton.Click += NewProductAbortButton_Click;
             RemoveButton.Click += RemoveButton_Click;
 
+            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             LoadDefaultButtonPanel();
         }
 
