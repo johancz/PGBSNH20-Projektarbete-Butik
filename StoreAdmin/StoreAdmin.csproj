@@ -12,8 +12,4 @@
     <ProjectReference Include="..\StoreCommon\StoreCommon.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
-
 </Project>

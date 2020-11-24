@@ -17,7 +17,6 @@ namespace StoreCommon
         public static AdminHybridWindow AppWindow;  
             public static Window MainWindow;
                 public static TabControl WindowTabControl;
-                    public static TabItem EditDiscountCodeTabItem;
                     
                     public static TabItem EditPageTabItem;                    
                         public static Grid EditPageGrid;
@@ -51,6 +50,8 @@ namespace StoreCommon
                                                 public static Button NewProductAbortButton;
                                             public static Button RemoveButton;
                                             public static List<Button> AdminButtons = new List<Button>();
+                                            
+                    public static TabItem EditDiscountCodeTabItem;
 
 
     }

@@ -26,10 +26,10 @@ namespace StoreCommon
             mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             var windowTabControl = new TabControl { Background = Brushes.LightBlue };
-                mainWindow.Content = windowTabControl;
+            mainWindow.Content = windowTabControl;
             
             MainWindow = mainWindow;
-                WindowTabControl = windowTabControl;
+            WindowTabControl = windowTabControl;
         }
 
         public void CreateAdminGUI() //gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
@@ -44,13 +44,6 @@ namespace StoreCommon
 
             CreateManageDiscountCodesView("Manage Discount Codes", Brushes.Azure); //Is defined in ManageDiscountCodeView.cs
         }
-        private void CreateManageDiscountCodesView(string header, Brush brush)
-        {
-            var editPageTabItem = new TabItem { Header = header };
-            editPageTabItem.Content = ManageDiscountCodesView.Init();
-            WindowTabControl.Items.Add(editPageTabItem);
-            EditDiscountCodeTabItem = editPageTabItem;
-        }
         private void CreateEditPage(string header, Brush brush)
         {            
             var editPageTabItem = new TabItem { Header = header };
@@ -64,9 +57,117 @@ namespace StoreCommon
 
             EditPageTabItem = editPageTabItem;
                 EditPageGrid = editPageGrid;
-                    
+
         }
-            private void CreateDetailsPanel() //This is the panel in the column to the right.
+        private void CreateManageDiscountCodesView(string header, Brush brush)
+        {
+            var editPageTabItem = new TabItem { Header = header };
+            editPageTabItem.Content = ManageDiscountCodesView.Init();
+            WindowTabControl.Items.Add(editPageTabItem);
+            EditDiscountCodeTabItem = editPageTabItem;
+        }
+
+            private void CreateBrowser(Brush background)
+            {
+                var browserRootScrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Hidden, Background = background };
+                Grid.SetColumn(browserRootScrollViewer, 0);
+                EditPageGrid.Children.Add(browserRootScrollViewer);
+
+                    var browserProductsPanel = new WrapPanel
+                    {
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Top,
+                    };
+                    browserRootScrollViewer.Content = browserProductsPanel;
+
+                BrowserRootScrollViewer = browserRootScrollViewer;
+                    ProductAndImageWrapPanel = browserProductsPanel;
+            }
+                private void CreateProductGridsToCollection(Brush background)
+                {
+                    foreach (var product in Store.Products)
+                    {
+                        var productGrid = CreateProductGridWithContent(product);
+                        productGrid.Background = background;
+                    }
+                }
+                    public Grid CreateProductGridWithContent(Product product)
+                    {
+                        var productGrid = CreateProductGrid(product); //2 rows //2 columns
+                        CreateProductThumbnail(productGrid, product);
+                        CreateGridNameLabel(parent: productGrid, product: product, column: 0, row: 1);                      
+                        ProductGrids.Add(productGrid);
+                        return productGrid;
+                    }
+                        private Grid CreateProductGrid(Product product)
+                        {
+                            var productGrid = new Grid
+                            {
+                                VerticalAlignment = VerticalAlignment.Top,
+                                Width = ProductItem_LayoutSettings.gridItemWidth,
+                                Height = ProductItem_LayoutSettings.gridItemHeight,
+                                Margin = new Thickness(5),
+                                Tag = product
+                            };
+                            productGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                            
+                            return productGrid;
+                        }
+                            public void CreateProductThumbnail(Grid parent, Product product)
+                            {
+                                var productThumbnail = ImageCreation.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+                                productThumbnail.Stretch = Stretch.UniformToFill;
+                                productThumbnail.VerticalAlignment = VerticalAlignment.Center;
+                                productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
+                                productThumbnail.Tag = product;
+                                product.Tag = productThumbnail;
+                                Grid.SetColumnSpan(productThumbnail, 2);
+                                parent.Children.Add(productThumbnail);
+                            }
+                            public void CreateGridNameLabel(Grid parent, Product product, int column, int row)
+                            {
+                                var nameLabel = new Label
+                                {
+                                    Content = $"{product.Name} {product.Price.ToString()} kr",
+                                    FontSize = 14,
+                                };
+                                Grid.SetColumn(nameLabel, column);
+                                Grid.SetRow(nameLabel, row);
+                                parent.Children.Add(nameLabel);
+                            }                            
+                    private void CreateImageGridsToCollection(Brush background)
+                    {
+                        foreach (var imageFilePath in Store.ImageItemFilePaths)
+                        {
+                            var imageGrid = CreateImageGridWithContent(imageFilePath, background);
+                            ImageGrids.Add(imageGrid);
+                        }
+                    }
+                        public Grid CreateImageGridWithContent(string filePath, Brush background)
+                        {
+                            var selectableImage = ImageCreation.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
+                            selectableImage.Tag = filePath;
+                            selectableImage.Stretch = Stretch.UniformToFill;
+                            selectableImage.VerticalAlignment = VerticalAlignment.Center;
+                            selectableImage.HorizontalAlignment = HorizontalAlignment.Center;
+                            
+                            var imageGrid = new Grid
+                            {
+                                Tag = selectableImage.Source,
+                                VerticalAlignment = VerticalAlignment.Top,
+                                Width = ProductItem_LayoutSettings.gridItemWidth,
+                                Height = ProductItem_LayoutSettings.gridItemHeight,
+                                Margin = new Thickness(5),
+                                Background = background
+                            };            
+                            imageGrid.Children.Add(selectableImage);
+
+                            return imageGrid;
+                        }
+            private void CreateDetailsPanel()
             {
                 var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite, HorizontalAlignment = HorizontalAlignment.Left };
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -198,105 +299,5 @@ namespace StoreCommon
                         };
                         return newButton;
                     }
-            private void CreateBrowser(Brush background)
-            {
-                var browserRootScrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Hidden, Background = background };
-                Grid.SetColumn(browserRootScrollViewer, 0);
-                EditPageGrid.Children.Add(browserRootScrollViewer);
-
-                    var browserProductsPanel = new WrapPanel
-                    {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        VerticalAlignment = VerticalAlignment.Top,
-                    };
-                    browserRootScrollViewer.Content = browserProductsPanel;
-
-                BrowserRootScrollViewer = browserRootScrollViewer;
-                    ProductAndImageWrapPanel = browserProductsPanel;
-            }
-                private void CreateProductGridsToCollection(Brush background)
-                {
-                    foreach (var product in Store.Products)
-                    {
-                        var productGrid = CreateProductGridWithContent(product);
-                        productGrid.Background = background;
-                    }
-                }
-                    public Grid CreateProductGridWithContent(Product product)
-                    {
-                        var productGrid = CreateProductGrid(product); //2 rows //2 columns
-                        CreateProductThumbnail(productGrid, product);
-                        CreateGridNameLabel(productGrid, product, column: 0, row: 1);                      
-                        ProductGrids.Add(productGrid);
-                        return productGrid;
-                    }
-                        private Grid CreateProductGrid(Product product)
-                        {
-                            var productGrid = new Grid
-                            {
-                                VerticalAlignment = VerticalAlignment.Top,
-                                Width = ProductItem_LayoutSettings.gridItemWidth,
-                                Height = ProductItem_LayoutSettings.gridItemHeight,
-                                Margin = new Thickness(5),
-                                Tag = product
-                            };
-                            productGrid.ColumnDefinitions.Add(new ColumnDefinition());
-                            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-                            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-                            
-                            return productGrid;
-                        }
-                            public void CreateProductThumbnail(Grid parent, Product product)
-                            {
-                                var productThumbnail = ImageCreation.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
-                                productThumbnail.Stretch = Stretch.UniformToFill;
-                                productThumbnail.VerticalAlignment = VerticalAlignment.Center;
-                                productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
-                                productThumbnail.Tag = product;
-                                product.Tag = productThumbnail;
-                                Grid.SetColumnSpan(productThumbnail, 2);
-                                parent.Children.Add(productThumbnail);
-                            }
-                            public void CreateGridNameLabel(Grid parent, Product product, int column, int row)
-                            {
-                                var nameLabel = new Label
-                                {
-                                    Content = $"{product.Name} {product.Price.ToString()} kr",
-                                    FontSize = 14,
-                                };
-                                Grid.SetColumn(nameLabel, column);
-                                Grid.SetRow(nameLabel, row);
-                                parent.Children.Add(nameLabel);
-                            }                            
-                    private void CreateImageGridsToCollection(Brush background) //These elements are unique for Admin mode
-                    {
-                        foreach (var imageFilePath in Store.ImageItemFilePaths)
-                        {
-                            var imageGrid = CreateImageGridWithContent(imageFilePath, background);
-                            ImageGrids.Add(imageGrid);
-                        }
-                    }
-                        public Grid CreateImageGridWithContent(string filePath, Brush background)
-                        {
-                            var selectableImage = ImageCreation.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
-                            selectableImage.Tag = filePath;
-                            selectableImage.Stretch = Stretch.UniformToFill;
-                            selectableImage.VerticalAlignment = VerticalAlignment.Center;
-                            selectableImage.HorizontalAlignment = HorizontalAlignment.Center;
-                            
-                            var imageGrid = new Grid
-                            {
-                                Tag = selectableImage.Source,
-                                VerticalAlignment = VerticalAlignment.Top,
-                                Width = ProductItem_LayoutSettings.gridItemWidth,
-                                Height = ProductItem_LayoutSettings.gridItemHeight,
-                                Margin = new Thickness(5),
-                                Background = background
-                            };            
-                            imageGrid.Children.Add(selectableImage);
-
-                            return imageGrid;
-                        }        
     }
 }
