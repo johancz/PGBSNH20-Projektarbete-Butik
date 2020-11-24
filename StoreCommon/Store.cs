@@ -9,7 +9,7 @@ namespace StoreCommon
 {
     public static class Store
     {
-
+        //Creates all the objects that handles the data from csv-files and images.
         public static (string Code, string Symbol) Currency { get; set; }
 
         public static List<Product> Products { get; set; } = new List<Product>();

@@ -153,7 +153,7 @@ namespace StoreUser
 
             // productGrid children:
             {
-                var productThumbnail = ImageTools.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+                var productThumbnail = ImageCreation.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
                 productThumbnail.Stretch = Stretch.UniformToFill;
                 productThumbnail.VerticalAlignment = VerticalAlignment.Center;
                 productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;

@@ -14,7 +14,7 @@ namespace StoreAdmin
 {
     //This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks. Some are similar to User Mode but to get better control and a clear view over the events they are created in a class of its own.
     //Exception is DiscountCode Events these are found in ManageDiscountCodesView.cs
-    public class AdminAppEvents : AdminFramework
+    public class AdminModeEvents : SharedElementTree
     {
         public static Product SelectedProduct = null;
         private bool ProductGridsIsSelectable;

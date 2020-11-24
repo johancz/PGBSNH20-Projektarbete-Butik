@@ -6,7 +6,7 @@ using System.Windows.Media;
 
 namespace StoreCommon
 {
-    public class HybridAppWindow : AdminFramework
+    public class AdminHybridWindow : SharedElementTree
     {
         //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class. The elements and layout is mostly copyed from user view with some tweaks.
         internal struct ProductItem_LayoutSettings //This is gridsize for the smaller product-images in the left column, the width is overriden by the window size-changed event.
@@ -15,7 +15,7 @@ namespace StoreCommon
             internal const double gridItemHeight = 200;
             internal const int gridItemImageHeight = 175;
         }
-        public HybridAppWindow(Window mainWindow)
+        public AdminHybridWindow(Window mainWindow)
         {
             AppWindow = this;
             mainWindow.Title = DataManager.ProjectName + " (admin mode)";
@@ -42,9 +42,9 @@ namespace StoreCommon
                     CreateEditableTextBoxes();
                     CreateAdminButtonsToCollection();
 
-            CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
+            CreateManageDiscountCodesView("Manage Discount Codes", Brushes.Azure); //Is defined in ManageDiscountCodeView.cs
         }
-        private void CreateDiscountPage(string header, Brush brush)
+        private void CreateManageDiscountCodesView(string header, Brush brush)
         {
             var editPageTabItem = new TabItem { Header = header };
             editPageTabItem.Content = ManageDiscountCodesView.Init();
@@ -249,7 +249,7 @@ namespace StoreCommon
                         }
                             public void CreateProductThumbnail(Grid parent, Product product)
                             {
-                                var productThumbnail = ImageTools.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+                                var productThumbnail = ImageCreation.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
                                 productThumbnail.Stretch = Stretch.UniformToFill;
                                 productThumbnail.VerticalAlignment = VerticalAlignment.Center;
                                 productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
@@ -279,7 +279,7 @@ namespace StoreCommon
                     }
                         public Grid CreateImageGridWithContent(string filePath, Brush background)
                         {
-                            var selectableImage = ImageTools.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
+                            var selectableImage = ImageCreation.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
                             selectableImage.Tag = filePath;
                             selectableImage.Stretch = Stretch.UniformToFill;
                             selectableImage.VerticalAlignment = VerticalAlignment.Center;

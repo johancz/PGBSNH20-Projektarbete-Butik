@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public static class ImageTools
+    public static class ImageCreation
     {
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {

@@ -3,6 +3,7 @@ using System.IO;
 
 namespace StoreCommon
 {
+    //This class holds the filePaths and copies the app-folders to the tempfolder of the users computer.
     public static class DataManager
     {
         public static string ProjectName = "Fight Club & Veggies_JC.RA";
@@ -19,11 +20,6 @@ namespace StoreCommon
         public static string ProductCSV;
         public static string DiscountCSV;
         public static string ShoppingCartCSV;
-
-        //public static void Init()
-        //{
-        //    SetPaths();
-        //}
 
         public static void SetPaths(string inputFolderPath = null, string outputFolderPath = null, bool overwrite = false)
         {

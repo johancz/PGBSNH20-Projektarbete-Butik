@@ -9,12 +9,12 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public abstract class AdminFramework
+    public abstract class SharedElementTree
         
         //This class function is to give an clear overview of the used wpf elements and gives all classes possiblility to share those elements through inheritence. This removes the limitations of Main Window but has the drawback of limiting classes that could need inheritence from another class.
-        //It is also modular as it can be shared with other window-apps very easily.
+        //It is also modular as it can be shared with other window-apps/modes very easily.
     {
-        public static HybridAppWindow AppWindow;  
+        public static AdminHybridWindow AppWindow;  
             public static Window MainWindow;
                 public static TabControl WindowTabControl;
                     public static TabItem EditDiscountCodeTabItem;
