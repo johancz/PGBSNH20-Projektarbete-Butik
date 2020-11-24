@@ -215,7 +215,7 @@ namespace StoreAdmin
                         Store.SaveRuntimeAdminProductsToCSV(); //Save to drive
                         
                         SelectedProduct = newProduct;
-                        var productGrid = AppWindow.CreateProductGridWithContent(newProduct);
+                        var productGrid = AppWindow.CreateProductGridItem(newProduct);
                         productGrid.Background = ProductGrids[0].Background;
                         productGrid.MouseUp += ProductGrid_MouseUp; //Create a new clickable Grid to browser
                         

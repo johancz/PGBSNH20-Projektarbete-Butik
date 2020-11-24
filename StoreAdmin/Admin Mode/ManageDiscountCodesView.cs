@@ -15,7 +15,6 @@ namespace StoreAdmin.Views
         private static Grid _grid;
 
         private static List<DiscountCode> _newDiscountCodes;
-        private static int _errorsInNewData;
         private static List<TextBox> _textboxesWithInvalidData = new List<TextBox>();
 
         public static ScrollViewer Init()
