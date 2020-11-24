@@ -1,15 +1,10 @@
-﻿using StoreCommon;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public abstract class SharedElementTree
+    public class SharedElementTree
         
         //This class function is to give an clear overview of the used wpf elements and gives all classes possiblility to share those elements through inheritence. This removes the limitations of Main Window but has the drawback of limiting classes that could need inheritence from another class.
         //It is also modular as it can be shared with other window-apps/modes very easily.

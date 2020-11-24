@@ -16,6 +16,7 @@ namespace StoreAdmin.Views
 
         private static List<DiscountCode> _newDiscountCodes;
         private static int _errorsInNewData;
+        private static List<TextBox> _textboxesWithInvalidData = new List<TextBox>();
 
         public static ScrollViewer Init()
         {
@@ -134,14 +135,17 @@ namespace StoreAdmin.Views
 
                 if (textBox.Background == Brushes.LightPink)
                 {
-                    _errorsInNewData--;
                     textBox.ClearValue(TextBox.BackgroundProperty);
+                    _textboxesWithInvalidData.Remove(textBox);
                 }
             }
             catch (Exception)
             {
                 textBox.Background = Brushes.LightPink;
-                _errorsInNewData++;
+                if (!_textboxesWithInvalidData.Contains(textBox))
+                {
+                    _textboxesWithInvalidData.Add(textBox);
+                }
             }
         }
 
@@ -161,14 +165,17 @@ namespace StoreAdmin.Views
                 discountCode.SetValues(discountCode.Code, percentage);
                 if (textBox.Background == Brushes.LightPink)
                 {
-                    _errorsInNewData--;
                     textBox.ClearValue(TextBox.BackgroundProperty);
+                    _textboxesWithInvalidData.Remove(textBox);
                 }
             }
             catch (Exception)
             {
                 textBox.Background = Brushes.LightPink;
-                _errorsInNewData++;
+                if (!_textboxesWithInvalidData.Contains(textBox))
+                {
+                    _textboxesWithInvalidData.Add(textBox);
+                }
             }
         }
 
@@ -211,15 +218,15 @@ namespace StoreAdmin.Views
 
         private static void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_errorsInNewData == 0)
+            if (_textboxesWithInvalidData.Count > 0)
+            {
+                MessageBox.Show("Please correct any values marked with a light-red background.", "Invalid Data!");
+            }
+            else
             {
                 Store.DiscountCodes = _newDiscountCodes;
                 Store.SaveDiscountCodesToFile();
                 MessageBox.Show("The Discount Codes were successfully saved to file.");
-            }
-            else
-            {
-                MessageBox.Show("Please correct any values marked with a light-red background.", "Invalid Data!");
             }
         }
     }
