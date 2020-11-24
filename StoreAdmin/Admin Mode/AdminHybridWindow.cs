@@ -6,10 +6,11 @@ using System.Windows.Media;
 
 namespace StoreCommon
 {
+    // This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class. The elements and layout is mostly copyed from user view with some tweaks.
     public class AdminHybridWindow : SharedElementTree
     {
-        //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class. The elements and layout is mostly copyed from user view with some tweaks.
-        internal struct ProductItem_LayoutSettings //This is gridsize for the smaller product-images in the left column, the width is overriden by the window size-changed event.
+        // This is gridsize for the smaller product-images in the left column, the width is overriden by the window size-changed event.
+        internal struct ProductItem_LayoutSettings
         {
             internal const double gridItemWidth = 200;
             internal const double gridItemHeight = 200;
@@ -32,15 +33,16 @@ namespace StoreCommon
             WindowTabControl = windowTabControl;
         }
 
-        public void CreateAdminGUI() //gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
+        // Gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
+        public void CreateAdminGUI() 
         {
             CreateEditPage("Administrator mode", Brushes.AliceBlue);
             CreateBrowser(Brushes.WhiteSmoke);
             CreateProductGridItems(Brushes.LightGray);
-            CreateImageGridsToCollection(Brushes.Black);
+            CreateImageGridItems(Brushes.Black);
             CreateDetailsPanel();
             CreateEditableTextBoxes();
-            CreateAdminButtonsToCollection();
+            CreateAdminButtons();
 
             CreateManageDiscountCodesView("Manage Discount Codes", Brushes.Azure); //Is defined in ManageDiscountCodeView.cs
         }
@@ -88,6 +90,7 @@ namespace StoreCommon
             {
                 var productGrid = CreateProductGridItem(product);
                 productGrid.Background = background;
+                ProductGrids.Add(productGrid);
             }
         }
         public Grid CreateProductGridItem(Product product)
@@ -107,7 +110,7 @@ namespace StoreCommon
 
             CreateProductThumbnail(productGrid, product);
             CreateGridNameLabel(productGrid, product);
-            ProductGrids.Add(productGrid);
+
             return productGrid;
         }
 
@@ -133,15 +136,15 @@ namespace StoreCommon
             Grid.SetRow(nameLabel, 1);
             parent.Children.Add(nameLabel);
         }
-        private void CreateImageGridsToCollection(Brush background)
+        private void CreateImageGridItems(Brush background)
         {
             foreach (var imageFilePath in Store.ImageItemFilePaths)
             {
-                var imageGrid = CreateImageGridWithContent(imageFilePath, background);
+                var imageGrid = CreateImageGridItem(imageFilePath, background);
                 ImageGrids.Add(imageGrid);
             }
         }
-        public Grid CreateImageGridWithContent(string filePath, Brush background)
+        public Grid CreateImageGridItem(string filePath, Brush background)
         {
             var selectableImage = ImageCreation.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
             selectableImage.Tag = filePath;
@@ -264,7 +267,7 @@ namespace StoreCommon
 
             EditDetailsTextBoxes = new List<TextBox> { detailsPanelDescription, detailsPanelName, detailsPanelPrice };
         }
-        private void CreateAdminButtonsToCollection()
+        private void CreateAdminButtons()
         {
             //Parent DetailsButtonPanel
             EditProductButton = CreateButton("Edit Product");

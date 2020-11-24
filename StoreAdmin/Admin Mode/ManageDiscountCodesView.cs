@@ -9,7 +9,8 @@ namespace StoreAdmin.Views
 {
     public static class ManageDiscountCodesView
     {
-        //This class contains the edit discount code tab, with framework elements and Events. It docks to the admin window at row 45 in HybridAppWindow.
+        // This class contains the content of "Manage Discount Codes"-tab, selfcontained with both frameworkelements and events.
+        // It returns a "root"-element which is added to the main gui in "AdminHybridWindow.CreateAdminGUI()".
 
         private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;

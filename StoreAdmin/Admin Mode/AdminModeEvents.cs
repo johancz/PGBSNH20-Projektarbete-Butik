@@ -8,8 +8,8 @@ using System.Windows.Media;
 
 namespace StoreAdmin
 {
-    //This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks. Some are similar to User Mode but to get better control and a clear view over the events they are created in a class of its own.
-    //Exception is DiscountCode Events these are found in ManageDiscountCodesView.cs
+    // This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks. Some are similar to User Mode but to get better control and a clear view over the events they are created in a class of its own.
+    // An exception to the above are events for the content of the "Manage Discount Codes"-tab, these can be found in ManageDiscountCodesView.cs
     public class AdminModeEvents : SharedElementTree
     {
         public static Product SelectedProduct = null;
@@ -325,13 +325,7 @@ namespace StoreAdmin
         {
             foreach (var button in AdminButtons)
             {
-                try
-                {
-                    DetailsButtonPanel.Children.Remove(button);
-                }
-                catch (System.Exception)
-                {
-                }
+                DetailsButtonPanel.Children.Remove(button);
             }
         }
     }
