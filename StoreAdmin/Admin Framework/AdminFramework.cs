@@ -17,9 +17,10 @@ namespace StoreCommon
         public static HybridAppWindow AppWindow;  
             public static Window MainWindow;
                 public static TabControl WindowTabControl;
+                    public static TabItem EditDiscountCodeTabItem;
+                    
                     public static TabItem EditPageTabItem;                    
                         public static Grid EditPageGrid;
-
                             public static ScrollViewer BrowserRootScrollViewer;
                                 public static WrapPanel ProductAndImageWrapPanel;
                                     public static List<Grid> ImageGrids = new List<Grid>();
@@ -38,20 +39,19 @@ namespace StoreCommon
                                             public static TextBox DetailsPanelPrice;
                                             public static TextBox DetailsPanelCurrency;
 
-                                    public static StackPanel DetailsButtonPanel;
-                                        public static Button EditProductButton;
-                                            public static Button CancelEditButton;
-                                            public static Button SaveEditButton;
-                                        public static Button ChangeImageButton;
-                                            public static Button SaveImageButton;
-                                            public static Button CancelImageButton;
-                                        public static Button NewProductButton;
-                                            public static Button NewProductSaveButton;
-                                            public static Button NewProductAbortButton;
-                                        public static Button RemoveButton;
+                                        public static StackPanel DetailsButtonPanel;
+                                            public static Button EditProductButton;
+                                                public static Button CancelEditButton;
+                                                public static Button SaveEditButton;
+                                            public static Button ChangeImageButton;
+                                                public static Button SaveImageButton;
+                                                public static Button CancelImageButton;
+                                            public static Button NewProductButton;
+                                                public static Button NewProductSaveButton;
+                                                public static Button NewProductAbortButton;
+                                            public static Button RemoveButton;
                                             public static List<Button> AdminButtons = new List<Button>();
 
-                            public static TabItem EditDiscountCodeTabItem;
 
     }
 }   

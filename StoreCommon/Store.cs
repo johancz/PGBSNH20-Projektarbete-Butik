@@ -9,6 +9,7 @@ namespace StoreCommon
 {
     public static class Store
     {
+
         public static (string Code, string Symbol) Currency { get; set; }
 
         public static List<Product> Products { get; set; } = new List<Product>();
@@ -59,7 +60,7 @@ namespace StoreCommon
                 ImageItemFilePaths.Add(file.FullName);
             }
         }
-        public static void SaveCurrentProductsInStoreToCSV()
+        public static void SaveRuntimeAdminProductsToCSV()
         {
             string productText = "";
             foreach (var product in Products)

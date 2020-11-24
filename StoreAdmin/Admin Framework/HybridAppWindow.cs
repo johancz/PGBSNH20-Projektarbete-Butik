@@ -8,8 +8,8 @@ namespace StoreCommon
 {
     public class HybridAppWindow : AdminFramework
     {
-        //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class.
-        internal struct ProductItem_LayoutSettings
+        //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class. The elements and layout is mostly copyed from user view with some tweaks.
+        internal struct ProductItem_LayoutSettings //This is gridsize for the smaller product-images in the left column, the width is overriden by the window size-changed event.
         {
             internal const double gridItemWidth = 200;
             internal const double gridItemHeight = 200;
@@ -32,7 +32,7 @@ namespace StoreCommon
                 WindowTabControl = windowTabControl;
         }
 
-        public void CreateAdminGUI()
+        public void CreateAdminGUI() //gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
         {
             CreateEditPage("Administrator mode", Brushes.AliceBlue);
                 CreateBrowser(Brushes.WhiteSmoke);
@@ -66,7 +66,7 @@ namespace StoreCommon
                 EditPageGrid = editPageGrid;
                     
         }
-            private void CreateDetailsPanel()
+            private void CreateDetailsPanel() //This is the panel in the column to the right.
             {
                 var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite, HorizontalAlignment = HorizontalAlignment.Left };
                 detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -123,7 +123,7 @@ namespace StoreCommon
                             NameAndPricePanel = nameAndPricePanel;
                             DetailsDescriptionScrollViewer = productDescriptionScrollViewer;
                         DetailsButtonPanel = detailsButtonPanel;
-            }
+            } 
                 public void CreateEditableTextBoxes()
                 {
                     var detailsPanelDescription = new TextBox
@@ -249,7 +249,7 @@ namespace StoreCommon
                         }
                             public void CreateProductThumbnail(Grid parent, Product product)
                             {
-                                var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+                                var productThumbnail = ImageTools.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
                                 productThumbnail.Stretch = Stretch.UniformToFill;
                                 productThumbnail.VerticalAlignment = VerticalAlignment.Center;
                                 productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
@@ -269,7 +269,7 @@ namespace StoreCommon
                                 Grid.SetRow(nameLabel, row);
                                 parent.Children.Add(nameLabel);
                             }                            
-                    private void CreateImageGridsToCollection(Brush background)
+                    private void CreateImageGridsToCollection(Brush background) //These elements are unique for Admin mode
                     {
                         foreach (var imageFilePath in Store.ImageItemFilePaths)
                         {
@@ -279,7 +279,7 @@ namespace StoreCommon
                     }
                         public Grid CreateImageGridWithContent(string filePath, Brush background)
                         {
-                            var selectableImage = Helpers.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
+                            var selectableImage = ImageTools.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
                             selectableImage.Tag = filePath;
                             selectableImage.Stretch = Stretch.UniformToFill;
                             selectableImage.VerticalAlignment = VerticalAlignment.Center;
