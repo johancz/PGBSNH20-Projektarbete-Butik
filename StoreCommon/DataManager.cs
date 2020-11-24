@@ -7,19 +7,19 @@ namespace StoreCommon
     public static class DataManager
     {
         public static string ProjectName = "Fight Club & Veggies_JC.RA";
-        public static string RootFolderPath;
-        public static DirectoryInfo ImageFolder;
-        public static string ImageFolderPath;
+            public static string RootFolderPath;
+                public static DirectoryInfo ImageFolder;
+                public static string ImageFolderPath;
+                public static string ProductCSV;
+                public static string DiscountCSV;
+                public static string ShoppingCartCSV;
 
         public static string StoreDataCsvPath { get; set; }
-        private static string InputProductsCSV;
-        private static string InputDiscountCodesCSV;
-        private static string InputShoppingCartCSV;
+            private static string InputProductsCSV;
+            private static string InputDiscountCodesCSV;
+            private static string InputShoppingCartCSV;
         public static string InputImages;
 
-        public static string ProductCSV;
-        public static string DiscountCSV;
-        public static string ShoppingCartCSV;
 
         public static void SetPaths(string inputFolderPath = null, string outputFolderPath = null, bool overwrite = false)
         {
@@ -36,10 +36,10 @@ namespace StoreCommon
             DiscountCSV = Path.Combine(RootFolderPath, "DiscountCodes.csv");
             ShoppingCartCSV = Path.Combine(RootFolderPath, "ShoppingCart.csv");
 
-            CopyFiles(overwrite);
+            CopyInputDataToTemp(overwrite);
         }
 
-        private static void CopyFiles(bool overwrite = false)
+        private static void CopyInputDataToTemp(bool overwrite = false)
         {
             var storeFolder = new DirectoryInfo(RootFolderPath);
             ImageFolder = new DirectoryInfo(ImageFolderPath);
