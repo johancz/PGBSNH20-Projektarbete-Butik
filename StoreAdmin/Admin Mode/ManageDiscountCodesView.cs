@@ -9,13 +9,13 @@ namespace StoreAdmin.Views
 {
     public static class ManageDiscountCodesView
     {
-        //This class contains the edit discount code tab, with framework elements and Events. It docks to the admin window at row 45 in HybridAppWindow.
+        // This class contains the content of "Manage Discount Codes"-tab, selfcontained with both frameworkelements and events.
+        // It returns a "root"-element which is added to the main gui in "AdminHybridWindow.CreateAdminGUI()".
 
         private static ScrollViewer _rootScrollViewer;
         private static Grid _grid;
 
         private static List<DiscountCode> _newDiscountCodes;
-        private static int _errorsInNewData;
         private static List<TextBox> _textboxesWithInvalidData = new List<TextBox>();
 
         public static ScrollViewer Init()
@@ -61,7 +61,7 @@ namespace StoreAdmin.Views
             Grid.SetColumnSpan(gridSplitter, 3);
             AppendGridRow((gridSplitter, null));
 
-            // Create "header"-row for controls used to create a new DiscountCode.
+            // Create a 2nd "header"-row for the controls used to create a new DiscountCode.
             var codeHeader2 = new Label { FontSize = 14, Content = "Discount Code", Padding = new Thickness(5), };
             var percentageHeader2 = new Label { FontSize = 14, Content = "Percentage (0 - 1)", Padding = new Thickness(5), };
             AppendGridRow((codeHeader2, null), (percentageHeader2, null));

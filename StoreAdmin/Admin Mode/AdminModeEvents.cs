@@ -8,20 +8,20 @@ using System.Windows.Media;
 
 namespace StoreAdmin
 {
-    //This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks. Some are similar to User Mode but to get better control and a clear view over the events they are created in a class of its own.
-    //Exception is DiscountCode Events these are found in ManageDiscountCodesView.cs
+    // This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks. Some are similar to User Mode but to get better control and a clear view over the events they are created in a class of its own.
+    // An exception to the above are events for the content of the "Manage Discount Codes"-tab, these can be found in ManageDiscountCodesView.cs
     public class AdminModeEvents : SharedElementTree
     {
         public static Product SelectedProduct = null;
-        private bool ProductGridsIsSelectable;
+        private bool ProductGridItemsAreSelectable;
         private bool NewProductMode = false;
         public void Init()
         {
             MainWindow.Loaded += MainWindow_Loaded;
             MainWindow.SizeChanged += MainWindow_SizeChanged;
 
-            ProductGrids.ForEach(productGrid => productGrid.MouseUp += ProductGrid_MouseUp);
-            ImageGrids.ForEach(imageGrid => imageGrid.MouseUp += ImageGrid_MouseUp);
+            ProductGridItems.ForEach(productGridItem => productGridItem.MouseUp += ProductGridItem_MouseUp);
+            ImageGridItems.ForEach(imageGridItem => imageGridItem.MouseUp += ImageGridItem_MouseUp);
 
             EditProductButton.Click += EditButton_Click;
                 SaveEditButton.Click += SaveEditButton_Click;
@@ -43,16 +43,16 @@ namespace StoreAdmin
         {
             AdminButtons.ForEach(button => button.Width = DetailsButtonPanel.ActualWidth);
             DisableEditBoxes();
-            AddAllProductGridsToProductBrowser();
+            AddAllProductGridItemsToProductBrowser();
             SelectedProduct = null;
             DetailsPanelRootGrid.Visibility = Visibility.Hidden;
-            ProductGridsIsSelectable = true;
+            ProductGridItemsAreSelectable = true;
             MainWindow.KeyUp += MainWindow_KeyUp;
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ProductGrids.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
-            ImageGrids.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
+            ProductGridItems.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
+            ImageGridItems.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
         }
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
@@ -60,9 +60,9 @@ namespace StoreAdmin
             if (e.Key == Key.Escape) Application.Current.Shutdown();
         }
 
-        private void ProductGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ProductGridItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (ProductGridsIsSelectable)
+            if (ProductGridItemsAreSelectable)
             {
                 DetailsPanelRootGrid.Visibility = Visibility.Visible;
                 SelectedProduct = (Product)((Grid)sender).Tag;
@@ -73,14 +73,14 @@ namespace StoreAdmin
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            DisableProductGrids();
+            DisableProductGridItems();
             EnableEditBoxes();
             LoadEditButtonPanel();
         }
-            private void DisableProductGrids()
+            private void DisableProductGridItems()
             {
-                ProductGridsIsSelectable = false;
-                ProductGrids.ForEach(grid => grid.Opacity = 0.5);
+                ProductGridItemsAreSelectable = false;
+                ProductGridItems.ForEach(grid => grid.Opacity = 0.5);
                 BrowserRootScrollViewer.IsEnabled = false;
             }
             private void EnableEditBoxes()
@@ -111,14 +111,14 @@ namespace StoreAdmin
                     DisableEditBoxes();
                     UpdateDetailsPanel(product);
                     UpdateTextInProductBrowser(product);
-                    EnableProductGrids();
+                    EnableProductGridItems();
                     LoadDefaultButtonPanel();
                 }
             }
             private void UpdateTextInProductBrowser(Product product)
             {
-                var productGrid = ProductGrids.Find(x => x.Tag == product);
-                var nameLabel = (Label)(productGrid.Children[1]);
+                var productGridItem = ProductGridItems.Find(x => x.Tag == product);
+                var nameLabel = (Label)(productGridItem.Children[1]);
                 nameLabel.Content = $"{product.Name} {product.Price} kr";
             }
             private bool IsPriceInCorrectFormat(out decimal result)
@@ -146,7 +146,7 @@ namespace StoreAdmin
         {
             DisableEditBoxes();
             UpdateDetailsPanel(SelectedProduct);
-            EnableProductGrids();
+            EnableProductGridItems();
             LoadDefaultButtonPanel();
         }
             private void DisableEditBoxes()
@@ -166,10 +166,10 @@ namespace StoreAdmin
                 DetailsPanelDescription.MaxWidth = DetailsDescriptionScrollViewer.ActualWidth;
                 DetailsPanelDescription.Text = product.Description;
             }
-            private void EnableProductGrids()
+            private void EnableProductGridItems()
             {
-                ProductGridsIsSelectable = true;
-                ProductGrids.ForEach(grid => grid.Opacity = 1);
+                ProductGridItemsAreSelectable = true;
+                ProductGridItems.ForEach(grid => grid.Opacity = 1);
                 BrowserRootScrollViewer.IsEnabled = true;
             }
 
@@ -180,9 +180,9 @@ namespace StoreAdmin
         }
             public void SwitchGridsToImageModeInBrowser()
             {
-                ProductGrids.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
-                ImageGrids.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
-                ImageGrids.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Add(imageGrid));
+                ProductGridItems.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
+                ImageGridItems.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
+                ImageGridItems.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Add(imageGrid));
             }
             public void LoadChangeImageButtonPanel()
             {
@@ -215,12 +215,12 @@ namespace StoreAdmin
                         Store.SaveRuntimeAdminProductsToCSV(); //Save to drive
                         
                         SelectedProduct = newProduct;
-                        var productGrid = AppWindow.CreateProductGridWithContent(newProduct);
-                        productGrid.Background = ProductGrids[0].Background;
-                        productGrid.MouseUp += ProductGrid_MouseUp; //Create a new clickable Grid to browser
+                        var productGridItem = AppWindow.CreateProductGridItem(newProduct);
+                        productGridItem.Background = ProductGridItems[0].Background;
+                        productGridItem.MouseUp += ProductGridItem_MouseUp; //Create a new clickable Grid to browser
                         
                         SwitchGridsToDefaultModeInBrowser();
-                        DisableProductGrids(); //changes left column to Edit mode
+                        DisableProductGridItems(); //changes left column to Edit mode
 
                         DetailsPanelTextVisiblilty(true);
                         UpdateDetailsPanel(SelectedProduct);
@@ -250,7 +250,7 @@ namespace StoreAdmin
             {
                 Store.Products.Remove(SelectedProduct); //Remove from base class static list
                 Store.SaveRuntimeAdminProductsToCSV();
-                RemoveProductGridFromBrowser();                    
+                RemoveProductGridItemFromBrowser();                    
                 SelectedProduct = null;
                 DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             }
@@ -259,13 +259,13 @@ namespace StoreAdmin
             {
                 return MessageBoxResult.Yes == MessageBox.Show("Do you want to completly remove this product?", "", MessageBoxButton.YesNo);
             }
-            private void RemoveProductGridFromBrowser()
+            private void RemoveProductGridItemFromBrowser()
             {
-                var productsGridItem = ProductGrids.Find(x => x.Tag == SelectedProduct);
+                var productsGridItem = ProductGridItems.Find(x => x.Tag == SelectedProduct);
                 ProductAndImageWrapPanel.Children.Remove(productsGridItem);
             }
         
-        private void ImageGrid_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageGridItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
             DetailsPanelImage.Source = (ImageSource)((Grid)sender).Tag; //switch right columns imagecontent
             if (NewProductMode)
@@ -291,15 +291,15 @@ namespace StoreAdmin
         }
             public void SwitchGridsToDefaultModeInBrowser()
             {
-                ImageGrids.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
-                ProductGrids.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
-                ProductGrids.ForEach(productGrid => ProductAndImageWrapPanel.Children.Add(productGrid));
+                ImageGridItems.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
+                ProductGridItems.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
+                ProductGridItems.ForEach(productGrid => ProductAndImageWrapPanel.Children.Add(productGrid));
             }
-        private void AddAllProductGridsToProductBrowser()
+        private void AddAllProductGridItemsToProductBrowser()
         {
-            foreach (var productGrid in ProductGrids)
+            foreach (var productGridItem in ProductGridItems)
             {
-                ProductAndImageWrapPanel.Children.Add(productGrid);
+                ProductAndImageWrapPanel.Children.Add(productGridItem);
             }
         }
 
@@ -336,7 +336,3 @@ namespace StoreAdmin
         }
     }
 }
-    
-     
-
-

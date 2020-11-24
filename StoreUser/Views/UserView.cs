@@ -128,7 +128,7 @@ namespace StoreUser
                 }
 
             };
-            var productGrid = new Grid
+            var productItem = new Grid
             {
                 Tag = product,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -138,27 +138,27 @@ namespace StoreUser
                 ToolTip = tooltip,
                 Background = Brushes.LightGray,
             };
-            productGrid.MouseUp += UserView.ProductItem_MouseUp;
+            productItem.MouseUp += UserView.ProductItem_MouseUp;
             // This is required for the tooltip to appear at 'PlacementMode.Mouse' when hovering over another "productItem".
             // Otherwise the tooltip will "stick" to the old (this) "productItem" if the mouse is moved to the other "productItem" too quickly.
-            productGrid.MouseLeave += (sender, e) =>
+            productItem.MouseLeave += (sender, e) =>
             {
                 tooltip.IsOpen = false;
             };
 
-            productGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            productItem.ColumnDefinitions.Add(new ColumnDefinition());
+            productItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            productItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            productItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-            // productGrid children:
+            // productItem children:
             {
                 var productThumbnail = ImageCreation.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
                 productThumbnail.Stretch = Stretch.UniformToFill;
                 productThumbnail.VerticalAlignment = VerticalAlignment.Center;
                 productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
                 Grid.SetColumnSpan(productThumbnail, 2);
-                productGrid.Children.Add(productThumbnail);
+                productItem.Children.Add(productThumbnail);
 
                 var nameLabel = new Label
                 {
@@ -167,7 +167,7 @@ namespace StoreUser
                 };
                 Grid.SetColumn(nameLabel, 0);
                 Grid.SetRow(nameLabel, 1);
-                productGrid.Children.Add(nameLabel);
+                productItem.Children.Add(nameLabel);
 
                 var priceLabel = new Label
                 {
@@ -175,10 +175,10 @@ namespace StoreUser
                 };
                 Grid.SetColumn(priceLabel, 1);
                 Grid.SetRow(priceLabel, 1);
-                productGrid.Children.Add(priceLabel);
+                productItem.Children.Add(priceLabel);
             }
 
-            return productGrid;
+            return productItem;
         }
 
         /******************************************************/

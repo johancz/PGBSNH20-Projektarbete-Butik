@@ -14,14 +14,12 @@ namespace StoreAdmin
             
             InitializeComponent();
 
-            Store.Init(); //Creates dataobjects from app-files in temp
+            Store.Init(); // Copies files to the temp folder and creates dataobjects from said files.
 
             var AdminMode = new AdminHybridWindow(this); //Wraps around the MainWindow window.
-
             AdminMode.CreateAdminGUI();
 
             var adminModeEvents = new AdminModeEvents();
-
             adminModeEvents.Init();
         }       
     }

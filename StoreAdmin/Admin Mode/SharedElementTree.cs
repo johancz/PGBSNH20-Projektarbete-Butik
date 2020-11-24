@@ -17,8 +17,8 @@ namespace StoreCommon
                         public static Grid EditPageGrid;
                             public static ScrollViewer BrowserRootScrollViewer;
                                 public static WrapPanel ProductAndImageWrapPanel;
-                                    public static List<Grid> ImageGrids = new List<Grid>();
-                                    public static List<Grid> ProductGrids = new List<Grid>();
+                                    public static List<Grid> ImageGridItems = new List<Grid>();
+                                    public static List<Grid> ProductGridItems = new List<Grid>();
 
                             public static Grid DetailsPanelRootGrid;
                                 public static Image DetailsPanelImage;
