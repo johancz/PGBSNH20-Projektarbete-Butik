@@ -116,8 +116,8 @@ namespace StoreAdmin
             }
             private void UpdateTextInProductBrowser(Product product)
             {
-                var productGrid = ProductGridItems.Find(x => x.Tag == product);
-                var nameLabel = (Label)(productGrid.Children[1]);
+                var productGridItem = ProductGridItems.Find(x => x.Tag == product);
+                var nameLabel = (Label)(productGridItem.Children[1]);
                 nameLabel.Content = $"{product.Name} {product.Price} kr";
             }
             private bool IsPriceInCorrectFormat(out decimal result)
