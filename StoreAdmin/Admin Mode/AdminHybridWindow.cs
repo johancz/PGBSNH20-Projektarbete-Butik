@@ -140,8 +140,8 @@ namespace StoreCommon
         {
             foreach (var imageFilePath in Store.ImageItemFilePaths)
             {
-                var imageGrid = CreateImageGridItem(imageFilePath, background);
-                ImageGridItems.Add(imageGrid);
+                var imageGridItem = CreateImageGridItem(imageFilePath, background);
+                ImageGridItems.Add(imageGridItem);
             }
         }
         public Grid CreateImageGridItem(string filePath, Brush background)
@@ -152,7 +152,7 @@ namespace StoreCommon
             selectableImage.VerticalAlignment = VerticalAlignment.Center;
             selectableImage.HorizontalAlignment = HorizontalAlignment.Center;
 
-            var imageGrid = new Grid
+            var imageGridItem = new Grid
             {
                 Tag = selectableImage.Source,
                 VerticalAlignment = VerticalAlignment.Top,
@@ -161,9 +161,9 @@ namespace StoreCommon
                 Margin = new Thickness(5),
                 Background = background
             };
-            imageGrid.Children.Add(selectableImage);
+            imageGridItem.Children.Add(selectableImage);
 
-            return imageGrid;
+            return imageGridItem;
         }
         private void CreateDetailsPanel()
         {
