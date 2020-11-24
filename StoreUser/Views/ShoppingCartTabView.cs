@@ -11,11 +11,7 @@ namespace StoreUser.Views
 {
     public static class ShoppingCartTabView
     {
-        private static TabItem _root;
-        private static DispatcherTimer _timer; // For easter egg.
-        private static int _timerCounter = 0; // For easter egg.
-        private static ImageSource _switchImageSource; // For easter egg.
-        private static ImageSource _originalImageSource; // For easter egg.
+        private static TabItem _root;       
 
         public static TabItem Init()
         {
@@ -153,7 +149,7 @@ namespace StoreUser.Views
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 ResizeMode = ResizeMode.NoResize,
             };
-            receiptWindow.Loaded += ReceiptWindow_Loaded;
+            receiptWindow.Loaded += xaml.ReceiptWindow_Loaded;
             receiptWindow.Show();
         }
 
@@ -193,33 +189,6 @@ namespace StoreUser.Views
             }
         }
 
-        // You found an easter egg, congrats!
-        private static void ReceiptWindow_Loaded(object sender, RoutedEventArgs e) // For easter egg.
-        {
-            var image = DetailsPanelView.DetailsImage;
-            _originalImageSource = image.Source;
-            var switchImageSource = Helpers.CreateBitmapImageFromUriString(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "NewProductImage.jpeg"));
-            _switchImageSource = switchImageSource;
-
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(50);
-            timer.Tick += ReceiptWindow_TimerTick;
-            timer.Start();
-            _timer = timer;
-        }
-        private static void ReceiptWindow_TimerTick(object sender, EventArgs e) // For easter egg.
-        {
-            _timerCounter++;
-            if (_timerCounter == 20)
-            {
-                DetailsPanelView.DetailsImage.Source = _switchImageSource;
-            }
-            if (_timerCounter > 22)
-            {
-                DetailsPanelView.DetailsImage.Source = _originalImageSource;
-                _timer.Stop();
-                _timerCounter = 0;
-            }
-        }
+      
     }
 }

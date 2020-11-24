@@ -7,7 +7,7 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public static class Helpers
+    public static class ImageCreation
     {
         public static BitmapImage CreateBitmapImageFromUriString(string uriString)
         {
@@ -20,7 +20,6 @@ namespace StoreCommon
             }
             catch (Exception)
             {
-                // TODO(johancz): exception-handling
                 return null;
             }
         }
@@ -51,20 +50,6 @@ namespace StoreCommon
             }
 
             return image;
-        }
-        public static RowDefinition AddRow(Grid grid)
-        {
-            var rowDefinition = new RowDefinition();
-            rowDefinition.Height = new GridLength(1, GridUnitType.Star);
-            grid.RowDefinitions.Add(rowDefinition);
-            return rowDefinition;
-        }
-        public static ColumnDefinition AddColumn(Grid grid)
-        {
-            var columnDefinition = new ColumnDefinition();
-            columnDefinition.Width = new GridLength();
-            grid.ColumnDefinitions.Add(columnDefinition);
-            return columnDefinition;
         }
     }
 }

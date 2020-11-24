@@ -13,12 +13,16 @@ namespace StoreAdmin
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             
             InitializeComponent();
-            Store.Init();
-            var AdminApp = new HybridAppWindow(this);
-            AdminApp.CreateAdminGUI();
-            var appEvents = new AdminAppEvents();
-            appEvents.Init();
-        }
-       
+
+            Store.Init(); //Creates dataobjects from app-files in temp
+
+            var AdminMode = new AdminHybridWindow(this); //Wraps around the MainWindow window.
+
+            AdminMode.CreateAdminGUI();
+
+            var adminModeEvents = new AdminModeEvents();
+
+            adminModeEvents.Init();
+        }       
     }
 }

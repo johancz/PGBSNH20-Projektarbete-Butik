@@ -9,17 +9,17 @@ using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
-    public abstract class AdminFramework
+    public abstract class SharedElementTree
         
         //This class function is to give an clear overview of the used wpf elements and gives all classes possiblility to share those elements through inheritence. This removes the limitations of Main Window but has the drawback of limiting classes that could need inheritence from another class.
-        //It is also modular as it can be shared with other window-apps very easily.
+        //It is also modular as it can be shared with other window-apps/modes very easily.
     {
-        public static HybridAppWindow AppWindow;
+        public static AdminHybridWindow AppWindow;  
             public static Window MainWindow;
                 public static TabControl WindowTabControl;
-                    public static TabItem EditPageTabItem;
+                    
+                    public static TabItem EditPageTabItem;                    
                         public static Grid EditPageGrid;
-
                             public static ScrollViewer BrowserRootScrollViewer;
                                 public static WrapPanel ProductAndImageWrapPanel;
                                     public static List<Grid> ImageGrids = new List<Grid>();
@@ -38,20 +38,21 @@ namespace StoreCommon
                                             public static TextBox DetailsPanelPrice;
                                             public static TextBox DetailsPanelCurrency;
 
-                                    public static StackPanel DetailsButtonPanel;
-                                        public static Button EditProductButton;
-                                            public static Button CancelEditButton;
-                                            public static Button SaveEditButton;
-                                        public static Button ChangeImageButton;
-                                            public static Button SaveImageButton;
-                                            public static Button CancelImageButton;
-                                        public static Button NewProductButton;
-                                            public static Button NewProductSaveButton;
-                                            public static Button NewProductAbortButton;
-                                        public static Button RemoveButton;
+                                        public static StackPanel DetailsButtonPanel;
+                                            public static Button EditProductButton;
+                                                public static Button CancelEditButton;
+                                                public static Button SaveEditButton;
+                                            public static Button ChangeImageButton;
+                                                public static Button SaveImageButton;
+                                                public static Button CancelImageButton;
+                                            public static Button NewProductButton;
+                                                public static Button NewProductSaveButton;
+                                                public static Button NewProductAbortButton;
+                                            public static Button RemoveButton;
                                             public static List<Button> AdminButtons = new List<Button>();
+                                            
+                    public static TabItem EditDiscountCodeTabItem;
 
-                            public static TabItem EditDiscountCodeTabItem;
 
     }
 }   

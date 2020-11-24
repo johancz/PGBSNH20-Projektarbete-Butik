@@ -5,6 +5,7 @@ using System.Windows.Input;
 
 namespace StoreUser
 {
+    //There is an easter egg somewhere in user mode.
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -30,11 +31,6 @@ namespace StoreUser
             Store.Init();
             Content = UserView.Create();
         }
-
-        ////////////////////////////////////////////////////////
-        //////////////////// Event Handling ////////////////////
-        ////////////////////////////////////////////////////////
-
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
             // Close Window with ESC-key.

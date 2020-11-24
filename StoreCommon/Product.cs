@@ -8,7 +8,7 @@ namespace StoreCommon
         public string Description;
         public decimal Price { get; set; }
         public string Uri;
-        public Image Tag { get; set; }
+        public Image Tag { get; set; } //Simplifys the admin Events regarding image switching.
 
         public Product(string name, string uri, decimal price, string description)
         {

@@ -6,6 +6,7 @@ namespace StoreUser.Views
 {
     public static class DetailsPanelView
     {
+        //Creates the right column detailspanel in User Mode, same layout as admin.
         private static Grid _root;
 
         public static Image DetailsImage;
@@ -113,7 +114,7 @@ namespace StoreUser.Views
 
         internal static void UpdateGUI(Product product)
         {
-            DetailsImage.Source = Helpers.CreateBitmapImageFromUriString(product.Uri);
+            DetailsImage.Source = ImageCreation.CreateBitmapImageFromUriString(product.Uri);
             _detailsName.Content = product.Name;
             _detailsPrice.Content = $"{product.Price} kr";
             // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.

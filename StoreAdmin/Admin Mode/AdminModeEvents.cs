@@ -12,9 +12,9 @@ using System.Windows.Media.Imaging;
 
 namespace StoreAdmin
 {
-    //This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks
+    //This Class contains All admin-events: MainWindow-loaded, size changed, Buttonclicks, imageclicks. Some are similar to User Mode but to get better control and a clear view over the events they are created in a class of its own.
     //Exception is DiscountCode Events these are found in ManageDiscountCodesView.cs
-    public class AdminAppEvents : AdminFramework
+    public class AdminModeEvents : SharedElementTree
     {
         public static Product SelectedProduct = null;
         private bool ProductGridsIsSelectable;
@@ -48,7 +48,6 @@ namespace StoreAdmin
             AdminButtons.ForEach(button => button.Width = DetailsButtonPanel.ActualWidth);
             DisableEditBoxes();
             AddAllProductGridsToProductBrowser();
-            //DetailsPanelDescription.Width = DetailsDescriptionScrollViewer.ActualWidth;
             SelectedProduct = null;
             DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             ProductGridsIsSelectable = true;
@@ -56,7 +55,6 @@ namespace StoreAdmin
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth;
             ProductGrids.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
             ImageGrids.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
         }
@@ -70,7 +68,6 @@ namespace StoreAdmin
         {
             if (ProductGridsIsSelectable)
             {
-                //if ((DetailsPanelImage.ActualWidth - 100) >= 100) DetailsPanelDescription.Width = DetailsPanelImage.ActualWidth - 100;
                 DetailsPanelRootGrid.Visibility = Visibility.Visible;
                 SelectedProduct = (Product)((Grid)sender).Tag;
                 UpdateDetailsPanel(SelectedProduct);
@@ -113,7 +110,7 @@ namespace StoreAdmin
                     product.Description = DetailsPanelDescription.Text;
                     product.Name = DetailsPanelName.Text;
                     product.Price = decPrice;
-                    Store.SaveCurrentProductsInStoreToCSV();
+                    Store.SaveRuntimeAdminProductsToCSV();
                     
                     DisableEditBoxes();
                     UpdateDetailsPanel(product);
@@ -219,7 +216,7 @@ namespace StoreAdmin
                         string productUri = DetailsPanelImage.Source.ToString().Split('/')[^1];
                         var newProduct = new Product("Title...", productUri, 0, "Enter your product description...");
                         Store.Products.Add(newProduct); 
-                        Store.SaveCurrentProductsInStoreToCSV(); //Save to drive
+                        Store.SaveRuntimeAdminProductsToCSV(); //Save to drive
                         
                         SelectedProduct = newProduct;
                         var productGrid = AppWindow.CreateProductGridWithContent(newProduct);
@@ -256,12 +253,11 @@ namespace StoreAdmin
             if (IsRemoveTrue())
             {
                 Store.Products.Remove(SelectedProduct); //Remove from base class static list
-                Store.SaveCurrentProductsInStoreToCSV();
+                Store.SaveRuntimeAdminProductsToCSV();
                 RemoveProductGridFromBrowser();                    
                 SelectedProduct = null;
                 DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             }
-            //else stay in default mode
         }
             private bool IsRemoveTrue()
             {
@@ -285,7 +281,7 @@ namespace StoreAdmin
         private void SaveImageButton_Click(object sender, RoutedEventArgs e)
         {
            SelectedProduct.Uri = DetailsPanelImage.Source.ToString().Split('/')[^1];
-           Store.SaveCurrentProductsInStoreToCSV();
+           Store.SaveRuntimeAdminProductsToCSV();
            SelectedProduct.Tag.Source = DetailsPanelImage.Source;
            SwitchGridsToDefaultModeInBrowser();
            LoadDefaultButtonPanel();

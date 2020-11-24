@@ -6,16 +6,16 @@ using System.Windows.Media;
 
 namespace StoreCommon
 {
-    public class HybridAppWindow : AdminFramework
+    public class AdminHybridWindow : SharedElementTree
     {
-        //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class.
-        internal struct ProductItem_LayoutSettings
+        //This class creates all Framework Elements in the App Window - and wraps around the wpf Window object. It sepparates the creation of elements from events and links all elements through the abstract Admin Framework class. The elements and layout is mostly copyed from user view with some tweaks.
+        internal struct ProductItem_LayoutSettings //This is gridsize for the smaller product-images in the left column, the width is overriden by the window size-changed event.
         {
             internal const double gridItemWidth = 200;
             internal const double gridItemHeight = 200;
             internal const int gridItemImageHeight = 175;
         }
-        public HybridAppWindow(Window mainWindow)
+        public AdminHybridWindow(Window mainWindow)
         {
             AppWindow = this;
             mainWindow.Title = DataManager.ProjectName + " (admin mode)";
@@ -32,7 +32,7 @@ namespace StoreCommon
             WindowTabControl = windowTabControl;
         }
 
-        public void CreateAdminGUI()
+        public void CreateAdminGUI() //gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
         {
             CreateEditPage("Administrator mode", Brushes.AliceBlue);
                 CreateBrowser(Brushes.WhiteSmoke);
@@ -42,7 +42,7 @@ namespace StoreCommon
                     CreateEditableTextBoxes();
                     CreateAdminButtonsToCollection();
 
-            CreateDiscountPage("Manage Discount Codes", Brushes.Azure);
+            CreateManageDiscountCodesView("Manage Discount Codes", Brushes.Azure); //Is defined in ManageDiscountCodeView.cs
         }
         private void CreateEditPage(string header, Brush brush)
         {            
@@ -224,7 +224,7 @@ namespace StoreCommon
                             NameAndPricePanel = nameAndPricePanel;
                             DetailsDescriptionScrollViewer = productDescriptionScrollViewer;
                         DetailsButtonPanel = detailsButtonPanel;
-            }
+            } 
                 public void CreateEditableTextBoxes()
                 {
                     var detailsPanelDescription = new TextBox
