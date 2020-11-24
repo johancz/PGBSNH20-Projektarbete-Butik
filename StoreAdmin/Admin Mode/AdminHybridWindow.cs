@@ -34,7 +34,7 @@ namespace StoreCommon
         }
 
         // Gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
-        public void CreateAdminGUI() 
+        public void CreateAdminGUI()
         {
             CreateEditPage("Administrator mode", Brushes.AliceBlue);
             CreateBrowser(Brushes.WhiteSmoke);
@@ -88,14 +88,14 @@ namespace StoreCommon
         {
             foreach (var product in Store.Products)
             {
-                var productGrid = CreateProductGridItem(product);
-                productGrid.Background = background;
-                ProductGrids.Add(productGrid);
+                var productGridItem = CreateProductGridItem(product);
+                productGridItem.Background = background;
+                ProductGridItems.Add(productGridItem);
             }
         }
         public Grid CreateProductGridItem(Product product)
         {
-            var productGrid = new Grid
+            var productGridItem = new Grid
             {
                 VerticalAlignment = VerticalAlignment.Top,
                 Width = ProductItem_LayoutSettings.gridItemWidth,
@@ -103,15 +103,15 @@ namespace StoreCommon
                 Margin = new Thickness(5),
                 Tag = product
             };
-            productGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            productGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            productGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            productGridItem.ColumnDefinitions.Add(new ColumnDefinition());
+            productGridItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            productGridItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            productGridItem.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-            CreateProductThumbnail(productGrid, product);
-            CreateGridNameLabel(productGrid, product);
+            CreateProductThumbnail(productGridItem, product);
+            CreateGridNameLabel(productGridItem, product);
 
-            return productGrid;
+            return productGridItem;
         }
 
         public void CreateProductThumbnail(Grid parent, Product product)
@@ -141,7 +141,7 @@ namespace StoreCommon
             foreach (var imageFilePath in Store.ImageItemFilePaths)
             {
                 var imageGrid = CreateImageGridItem(imageFilePath, background);
-                ImageGrids.Add(imageGrid);
+                ImageGridItems.Add(imageGrid);
             }
         }
         public Grid CreateImageGridItem(string filePath, Brush background)
@@ -167,7 +167,12 @@ namespace StoreCommon
         }
         private void CreateDetailsPanel()
         {
-            var detailsPanelRootGrid = new Grid { Background = Brushes.AntiqueWhite, HorizontalAlignment = HorizontalAlignment.Left };
+            var detailsPanelRootGrid = new Grid
+            {
+                Background = Brushes.AntiqueWhite,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Visibility = Visibility.Hidden,
+            };
             detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             Grid.SetColumn(detailsPanelRootGrid, 1);
@@ -269,7 +274,7 @@ namespace StoreCommon
         }
         private void CreateAdminButtons()
         {
-            //Parent DetailsButtonPanel
+            // The parent of all of these buttons is: 'DetailsButtonPanel'
             EditProductButton = CreateButton("Edit Product");
             SaveEditButton = CreateButton("Save");
             CancelEditButton = CreateButton("Cancel Edit");

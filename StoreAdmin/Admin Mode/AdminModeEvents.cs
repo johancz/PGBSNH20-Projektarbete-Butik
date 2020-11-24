@@ -20,8 +20,8 @@ namespace StoreAdmin
             MainWindow.Loaded += MainWindow_Loaded;
             MainWindow.SizeChanged += MainWindow_SizeChanged;
 
-            ProductGrids.ForEach(productGrid => productGrid.MouseUp += ProductGrid_MouseUp);
-            ImageGrids.ForEach(imageGrid => imageGrid.MouseUp += ImageGrid_MouseUp);
+            ProductGridItems.ForEach(productGrid => productGrid.MouseUp += ProductGrid_MouseUp);
+            ImageGridItems.ForEach(imageGrid => imageGrid.MouseUp += ImageGrid_MouseUp);
 
             EditProductButton.Click += EditButton_Click;
                 SaveEditButton.Click += SaveEditButton_Click;
@@ -35,7 +35,6 @@ namespace StoreAdmin
                 NewProductAbortButton.Click += NewProductAbortButton_Click;
             RemoveButton.Click += RemoveButton_Click;
 
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             LoadDefaultButtonPanel();
         }
 
@@ -51,8 +50,8 @@ namespace StoreAdmin
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            ProductGrids.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
-            ImageGrids.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
+            ProductGridItems.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
+            ImageGridItems.ForEach(x => x.Width = (MainWindow.ActualWidth - 50) / 7.0);
         }
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
@@ -80,7 +79,7 @@ namespace StoreAdmin
             private void DisableProductGrids()
             {
                 ProductGridsIsSelectable = false;
-                ProductGrids.ForEach(grid => grid.Opacity = 0.5);
+                ProductGridItems.ForEach(grid => grid.Opacity = 0.5);
                 BrowserRootScrollViewer.IsEnabled = false;
             }
             private void EnableEditBoxes()
@@ -117,7 +116,7 @@ namespace StoreAdmin
             }
             private void UpdateTextInProductBrowser(Product product)
             {
-                var productGrid = ProductGrids.Find(x => x.Tag == product);
+                var productGrid = ProductGridItems.Find(x => x.Tag == product);
                 var nameLabel = (Label)(productGrid.Children[1]);
                 nameLabel.Content = $"{product.Name} {product.Price} kr";
             }
@@ -169,7 +168,7 @@ namespace StoreAdmin
             private void EnableProductGrids()
             {
                 ProductGridsIsSelectable = true;
-                ProductGrids.ForEach(grid => grid.Opacity = 1);
+                ProductGridItems.ForEach(grid => grid.Opacity = 1);
                 BrowserRootScrollViewer.IsEnabled = true;
             }
 
@@ -180,9 +179,9 @@ namespace StoreAdmin
         }
             public void SwitchGridsToImageModeInBrowser()
             {
-                ProductGrids.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
-                ImageGrids.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
-                ImageGrids.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Add(imageGrid));
+                ProductGridItems.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
+                ImageGridItems.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
+                ImageGridItems.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Add(imageGrid));
             }
             public void LoadChangeImageButtonPanel()
             {
@@ -216,7 +215,7 @@ namespace StoreAdmin
                         
                         SelectedProduct = newProduct;
                         var productGrid = AppWindow.CreateProductGridItem(newProduct);
-                        productGrid.Background = ProductGrids[0].Background;
+                        productGrid.Background = ProductGridItems[0].Background;
                         productGrid.MouseUp += ProductGrid_MouseUp; //Create a new clickable Grid to browser
                         
                         SwitchGridsToDefaultModeInBrowser();
@@ -261,7 +260,7 @@ namespace StoreAdmin
             }
             private void RemoveProductGridFromBrowser()
             {
-                var productsGridItem = ProductGrids.Find(x => x.Tag == SelectedProduct);
+                var productsGridItem = ProductGridItems.Find(x => x.Tag == SelectedProduct);
                 ProductAndImageWrapPanel.Children.Remove(productsGridItem);
             }
         
@@ -291,13 +290,13 @@ namespace StoreAdmin
         }
             public void SwitchGridsToDefaultModeInBrowser()
             {
-                ImageGrids.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
-                ProductGrids.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
-                ProductGrids.ForEach(productGrid => ProductAndImageWrapPanel.Children.Add(productGrid));
+                ImageGridItems.ForEach(imageGrid => ProductAndImageWrapPanel.Children.Remove(imageGrid));
+                ProductGridItems.ForEach(productGrid => ProductAndImageWrapPanel.Children.Remove(productGrid));
+                ProductGridItems.ForEach(productGrid => ProductAndImageWrapPanel.Children.Add(productGrid));
             }
         private void AddAllProductGridsToProductBrowser()
         {
-            foreach (var productGrid in ProductGrids)
+            foreach (var productGrid in ProductGridItems)
             {
                 ProductAndImageWrapPanel.Children.Add(productGrid);
             }
@@ -325,12 +324,14 @@ namespace StoreAdmin
         {
             foreach (var button in AdminButtons)
             {
-                DetailsButtonPanel.Children.Remove(button);
+                try
+                {
+                    DetailsButtonPanel.Children.Remove(button);
+                }
+                catch (System.Exception)
+                {
+                }
             }
         }
     }
 }
-    
-     
-
-
