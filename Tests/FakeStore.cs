@@ -19,6 +19,8 @@ namespace StoreCommon.Tests
         public static string TestOutputPath;
         public static void SetFakePaths()
         {
+            //Using static DataManager & Store
+
             ProjectName = "__TESTS";
             RootFolderPath = Path.Combine(Path.GetTempPath(), ProjectName);
                 ProductCSV = Path.Combine(RootFolderPath, "Products.csv");
