@@ -59,7 +59,7 @@ namespace StoreCommon
                 EditPageGrid = editPageGrid;
 
         }
-        private void CreateDiscountPage(string header, Brush brush)
+        private void CreateManageDiscountCodesView(string header, Brush brush)
         {
             var editPageTabItem = new TabItem { Header = header };
             editPageTabItem.Content = ManageDiscountCodesView.Init();
@@ -118,7 +118,7 @@ namespace StoreCommon
                         }
                             public void CreateProductThumbnail(Grid parent, Product product)
                             {
-                                var productThumbnail = Helpers.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
+                                var productThumbnail = ImageCreation.CreateNewImage(product.Uri, ProductItem_LayoutSettings.gridItemImageHeight);
                                 productThumbnail.Stretch = Stretch.UniformToFill;
                                 productThumbnail.VerticalAlignment = VerticalAlignment.Center;
                                 productThumbnail.HorizontalAlignment = HorizontalAlignment.Center;
@@ -148,7 +148,7 @@ namespace StoreCommon
                     }
                         public Grid CreateImageGridWithContent(string filePath, Brush background)
                         {
-                            var selectableImage = Helpers.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
+                            var selectableImage = ImageCreation.CreateNewImage(filePath, ProductItem_LayoutSettings.gridItemImageHeight);
                             selectableImage.Tag = filePath;
                             selectableImage.Stretch = Stretch.UniformToFill;
                             selectableImage.VerticalAlignment = VerticalAlignment.Center;
