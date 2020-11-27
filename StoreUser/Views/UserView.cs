@@ -1,5 +1,7 @@
 ﻿using StoreCommon;
 using StoreUser.Views;
+using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -10,19 +12,19 @@ namespace StoreUser
 {
     public static class UserView
     {
-        private static Canvas _root; // Needed for event-handling
-        private static Grid _rootGrid; // Needed for event-handling
+        private static Grid _root;
 
         // Left Column
         private static TabControl leftColumnTabControl;
 
-        internal static Product _selectedProduct;
+        internal static Product SelectedProduct;
 
         /*** Views ***/
-        public static TabItem ShoppingCartTabRoot;
+        public static Grid ShoppingCartTabRoot;
         public static Grid ShoppingCartToolbarRoot;
         public static ListView ShoppingCartListRoot;
         public static Grid DetailsPanelRoot;
+        private static readonly Label _shoppingCartTabLabel = new Label { FontSize = 16, };
 
         private struct ProductItem_LayoutSettings
         {
@@ -31,31 +33,27 @@ namespace StoreUser
             internal static int gridItemImageHeight = 175;
         }
 
-        public static Canvas Create()
+        public static Grid Create()
         {
-            // NEW ////////////////////////////////
             /*** Views ***/
+            // Initiate and "import" all of the subviews (a subview in this context is a smaller part of the GUI which can be kept in it's own class/file which means not having to deal with a massive file/class, this simplifies implementation/maintenance/debugging.
+            // A view is mostly self-contained, in that it keeps track of and handles it's own wpf-controls and events, but still relies on data stored in the "Store"-class, and on occasion is told to or tells other views to update their GUI. The last detail could be improved upon by instead using Events.
             ShoppingCartToolbarRoot = ShoppingCartToolbarView.Init();
             ShoppingCartListRoot = ShoppingCartListView.Init();
             ShoppingCartTabRoot = ShoppingCartTabView.Init();
             DetailsPanelRoot = DetailsPanelView.Init();
 
-            ;
-            // NEW ////////////////////////////////
-
-            _root = new Canvas();
-            _root.SizeChanged += RootElement_SizeChanged;
-
             // Grid with two columns;
             // the first column (left) contains a tabcontrol with "Browse Store" and "ShoppingCart" tabs,
             // the Second column (right) contains details about the selected product.
-            _rootGrid = new Grid ();
-            _rootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
-            _rootGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            _root = new Grid();
+            _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            _root.ColumnDefinitions.Add(new ColumnDefinition { MinWidth = 400, });
+            _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
+            _root.ColumnDefinitions.Add(new ColumnDefinition { MinWidth = 400, });
 
             // Left Column Content Root: TabControl
-            leftColumnTabControl = new TabControl();
+            leftColumnTabControl = new TabControl() { BorderThickness = new Thickness(0, 1, 0, 0), };
 
             // "Browse Store" Tab
             {
@@ -80,34 +78,59 @@ namespace StoreUser
                 {
                     Header = "Browse Store",
                     FontSize = 16,
-                    Content = tabContent_browseStore
+                    Content = tabContent_browseStore,
                 };
                 leftColumnTabControl.Items.Add(tabItem_BrowseStore);
             }
 
             // "My Shopping Cart" Tab
-            leftColumnTabControl.Items.Add(ShoppingCartTabRoot);
+            var tabItem_ShoppingCart = new TabItem
+            {
+                Header = new Label
+                {
+                    Content = _shoppingCartTabLabel,
+                    FontSize = 16
+                },
+                // Add the subview created in and "imported" from "ShoppingCartTabView.cs".
+                Content = ShoppingCartTabRoot
+            };
+            UpdateShoppingCartTabHeader();
+            leftColumnTabControl.Items.Add(tabItem_ShoppingCart);
 
             Grid.SetColumn(leftColumnTabControl, 0);
-            _rootGrid.Children.Add(leftColumnTabControl);
+            _root.Children.Add(leftColumnTabControl);
 
-            Grid.SetColumn(DetailsPanelRoot, 1);
-            _rootGrid.Children.Add(DetailsPanelRoot);
+            var gridSplitter = new GridSplitter
+            {
+                Width = 2,
+                IsEnabled = true,
+                Background = Brushes.Gray,
+                Margin = new Thickness(0),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+
+            };
+            Grid.SetColumn(gridSplitter, 1);
+            //_rootGrid.Children.Add(gridSplitter);
+            _root.Children.Add(gridSplitter);
+
+            Grid.SetColumn(DetailsPanelRoot, 2);
+            //_rootGrid.Children.Add(DetailsPanelRoot);
+            _root.Children.Add(DetailsPanelRoot);
 
             // Add "root" Grid to "root" Canvas
-            _root.Children.Add(_rootGrid);
+            //_root.Children.Add(_rootGrid);
 
             return _root;
         }
 
         internal static void UpdateGUI()
         {
-            ShoppingCartTabView.UpdateShoppingCartTabHeader();
+            UpdateShoppingCartTabHeader();
             ShoppingCartToolbarView.UpdateGUI();
             ShoppingCartListView.Update();
-            if (_selectedProduct != null)
+            if (SelectedProduct != null)
             {
-                DetailsPanelView.UpdateGUI(_selectedProduct);
+                DetailsPanelView.UpdateGUI(SelectedProduct);
             }
         }
 
@@ -185,25 +208,19 @@ namespace StoreUser
         /******************* Event Handling *******************/
         /******************************************************/
 
-        private static void RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
-            _rootGrid.Height = _root.ActualHeight;
-            _rootGrid.Width = _root.ActualWidth;
-
-            // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
-            DetailsPanelView.EventHandler.External_RootElement_SizeChanged(sender, e);
-            UpdateGUI();
-        }
-
         public static void ProductItem_MouseUp(object sender, MouseButtonEventArgs e)
         {
             var product = (Product)((Grid)sender).Tag;
             if (product != null)
             {
-                _selectedProduct = product;
+                SelectedProduct = product;
                 DetailsPanelView.UpdateGUI(product);
             }
+        }
+
+        internal static void UpdateShoppingCartTabHeader()
+        {
+            _shoppingCartTabLabel.Content = $"My Shopping Cart ({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
         }
     }
 }
