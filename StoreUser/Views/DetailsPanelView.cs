@@ -113,17 +113,22 @@ namespace StoreUser.Views
             }
         }
 
-        internal static void UpdateGUI(Product product)
+        internal static void UpdateGUI()
         {
-            DetailsImage.Source = ImageCreation.CreateBitmapImageFromUriString(product.Uri);
-            _detailsName.Content = product.Name;
-            _detailsPrice.Content = $"{product.Price} kr";
+            if (UserView.SelectedProduct == null)
+            {
+                return;
+            }
+
+            DetailsImage.Source = ImageCreation.CreateBitmapImageFromUriString(UserView.SelectedProduct.Uri);
+            _detailsName.Content = UserView.SelectedProduct.Name;
+            _detailsPrice.Content = $"{UserView.SelectedProduct.Price} kr";
             // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
             _detailsDescription.MaxWidth = ((ScrollViewer)_detailsDescription.Parent).ActualWidth;
-            _detailsDescription.Text = product.Description;
-            _detailsRemoveFromCartButton.Tag = product;
-            _detailsAddToCartButton.Tag = product;
-            _detailsRemoveFromCartButton.Visibility = Store.ShoppingCart.Products.ContainsKey(product)
+            _detailsDescription.Text = UserView.SelectedProduct.Description;
+            _detailsRemoveFromCartButton.Tag = UserView.SelectedProduct;
+            _detailsAddToCartButton.Tag = UserView.SelectedProduct;
+            _detailsRemoveFromCartButton.Visibility = Store.ShoppingCart.Products.ContainsKey(UserView.SelectedProduct)
                                                                   ? Visibility.Visible
                                                                   : Visibility.Hidden;
             _root.Visibility = Visibility.Visible;

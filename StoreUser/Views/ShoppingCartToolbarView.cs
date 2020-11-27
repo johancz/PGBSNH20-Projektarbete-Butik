@@ -39,7 +39,7 @@ namespace StoreUser.Views
             // Children of _root:
             {
                 /*-------------------*/
-                /*----- Child 1 -----*/
+                /*----- Child 0 -----*/
                 /*-------------------*/
                 _summaryCountPrice = new Grid { Margin = new Thickness(2.5), };
                 _summaryCountPrice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -83,7 +83,7 @@ namespace StoreUser.Views
                 _root.Children.Add(_summaryCountPrice);
 
                 /*-------------------*/
-                /*----- Child 2 -----*/
+                /*----- Child 1 -----*/
                 /*-------------------*/
                 var discountForm = new WrapPanel
                 {

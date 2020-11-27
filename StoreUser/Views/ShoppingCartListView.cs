@@ -57,14 +57,14 @@ namespace StoreUser.Views
             var combinedData = Store.ShoppingCart.Products.Select(productItem =>
             {
                 dynamic productRow = new ExpandoObject();
-                productRow.product = productItem;
+                productRow.productItem = productItem;
                 productRow.productPrice = Math.Round(productItem.Key.Price, 2) + Store.Currency.Symbol;
                 productRow.productFinalPrice = productItem.Key.Price * productItem.Value;
                 if (Store.ShoppingCart.ActiveDiscountCode != null)
                 {
                     productRow.productFinalPrice *= (decimal)(1 - Store.ShoppingCart.ActiveDiscountCode.Percentage);
                 }
-                productRow.productFinalPrice += " " + Store.Currency.Symbol;
+                productRow.productFinalPrice = Math.Round(productRow.productFinalPrice, 2) + " " + Store.Currency.Symbol;
                 productRow.buttonRemove1 = " - ";
                 productRow.buttonAdd1 = " + ";
 
@@ -73,12 +73,13 @@ namespace StoreUser.Views
 
             // When Updating the data for the ListView, it takes take of updating the layout on it's own.
             _root.ItemsSource = combinedData;
-            // And to be sure the ListView layout updates, we also call UpdateLayout.
-            _root.UpdateLayout();
         }
 
         public static void UpdateGUI()
         {
+            // And to be sure the ListView layout updates, we also call UpdateLayout.
+            _root.UpdateLayout();
+
             //Resize each column to fit its content, double.NaN
             foreach (GridViewColumn column in _gridView.Columns)
             {
