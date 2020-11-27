@@ -25,6 +25,7 @@ namespace StoreUser.Views
         public static void CreateGUI()
         {
             _root = new Grid { Visibility = Visibility.Hidden, };
+            _root.SizeChanged += EventHandler.Root_SizeChanged;
             _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
             // Needs to be GridUnitType.Star for MaxWidth to work on the TextBlock containing the product's description.
             _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -112,44 +113,54 @@ namespace StoreUser.Views
             }
         }
 
-        internal static void UpdateGUI(Product product)
+        internal static void UpdateGUI()
         {
-            DetailsImage.Source = ImageCreation.CreateBitmapImageFromUriString(product.Uri);
-            _detailsName.Content = product.Name;
-            _detailsPrice.Content = $"{product.Price} kr";
+            if (UserView.SelectedProduct == null)
+            {
+                return;
+            }
+
+            DetailsImage.Source = ImageCreation.CreateBitmapImageFromUriString(UserView.SelectedProduct.Uri);
+            _detailsName.Content = UserView.SelectedProduct.Name;
+            _detailsPrice.Content = $"{UserView.SelectedProduct.Price} kr";
             // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
             _detailsDescription.MaxWidth = ((ScrollViewer)_detailsDescription.Parent).ActualWidth;
-            _detailsDescription.Text = product.Description;
-            _detailsRemoveFromCartButton.Tag = product;
-            _detailsAddToCartButton.Tag = product;
-            _detailsRemoveFromCartButton.Visibility = Store.ShoppingCart.Products.ContainsKey(product)
+            _detailsDescription.Text = UserView.SelectedProduct.Description;
+            _detailsRemoveFromCartButton.Tag = UserView.SelectedProduct;
+            _detailsAddToCartButton.Tag = UserView.SelectedProduct;
+            _detailsRemoveFromCartButton.Visibility = Store.ShoppingCart.Products.ContainsKey(UserView.SelectedProduct)
                                                                   ? Visibility.Visible
                                                                   : Visibility.Hidden;
             _root.Visibility = Visibility.Visible;
         }
 
-        internal static class EventHandler
+        private static class EventHandler
         {
             internal static void DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)
             {
-                // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
-                Store.ShoppingCart.RemoveProduct(product);
-                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
-                UserView.UpdateGUI();
+                if (product != null)
+                {
+                    Store.ShoppingCart.RemoveProduct(product);
+                    Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
+                    UserView.UpdateGUI();
+                }
             }
 
             internal static void DetailsAddToCartButton_Click(object sender, RoutedEventArgs e)
             {
-                // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
-                Store.ShoppingCart.AddProduct(product, 1);
-                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
-                UserView.UpdateGUI();
+                if (product != null)
+                {
+                    Store.ShoppingCart.AddProduct(product, 1);
+                    Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
+                    UserView.UpdateGUI();
+                }
             }
 
-            internal static void External_RootElement_SizeChanged(object sender, SizeChangedEventArgs e)
+            internal static void Root_SizeChanged(object sender, SizeChangedEventArgs e)
             {
+                // Necessary for text-wrapping to work. Not setting the MaxWidth property will cause the TextBlock.Width to grow beyond its bounds.
                 _detailsDescription.MaxWidth = ((ScrollViewer)_detailsDescription.Parent).ActualWidth;
             }
         }

@@ -120,7 +120,7 @@ namespace StoreCommon
                         {
                             var nameLabel = new Label
                             {
-                                Content = $"{product.Name} {product.Price.ToString()} kr",
+                                Content = $"{product.Name} {product.Price} kr",
                                 FontSize = 14,
                             };
                             Grid.SetColumn(nameLabel, 0);

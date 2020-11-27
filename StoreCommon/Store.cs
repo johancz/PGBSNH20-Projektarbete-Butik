@@ -147,5 +147,11 @@ namespace StoreCommon
             string[] linesToSave = DiscountCodes.Select(discountCode => $"{discountCode.Code};{discountCode.Percentage}").ToArray();
             File.WriteAllLines(DataManager.DiscountCSV, linesToSave);
         }
+
+        public static void ClearShoppingCart()
+        {
+            Store.ShoppingCart = new ShoppingCart();
+            Store.SaveShoppingCart();
+        }
     }
 }

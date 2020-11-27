@@ -1,19 +1,16 @@
 ﻿using StoreCommon;
 using System;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace StoreUser.Views
 {
     public static class ShoppingCartTabView
-    {
-        private static TabItem _root;       
+    {     
+        private static Grid _root;       
 
-        public static TabItem Init()
+        public static Grid Init()
         {
             CreateGUI();
             return _root;
@@ -21,20 +18,17 @@ namespace StoreUser.Views
 
         public static void CreateGUI()
         {
-            var shoppingCartRootGrid = new Grid();
-            var shoppingCartScrollViewer = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, };
-            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-            shoppingCartRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            _root = new Grid();
+            _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+            _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            _root.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
 
-            // Shopping cart toolbar (with load and save buttons, total sum label)
-            shoppingCartRootGrid.Children.Add(UserView.ShoppingCartToolbarRoot);
+            // Shopping cart toolbar (# of items, total and final sum, discount input & button):
+            _root.Children.Add(UserView.ShoppingCartToolbarRoot);
 
-            // Shopping cart items (StackPanel)
-            shoppingCartScrollViewer.Content = UserView.ShoppingCartListRoot;
-
-            Grid.SetRow(shoppingCartScrollViewer, 1);
-            shoppingCartRootGrid.Children.Add(shoppingCartScrollViewer);
+            // List of items in shopping cart:
+            Grid.SetRow(UserView.ShoppingCartListRoot, 1);
+            _root.Children.Add(UserView.ShoppingCartListRoot);
 
             var bottomToolbarGrid = new Grid();
             bottomToolbarGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -65,19 +59,7 @@ namespace StoreUser.Views
                 bottomToolbarGrid.Children.Add(placeOrderButton);
             }
             Grid.SetRow(bottomToolbarGrid, 2);
-            shoppingCartRootGrid.Children.Add(bottomToolbarGrid);
-
-            var tabLabel = $"({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
-            _root = new TabItem
-            {
-                Name = "UserView_root",
-                Header = new Label
-                {
-                    Content = "My Shopping Cart " + tabLabel,
-                    FontSize = 16
-                },
-                Content = shoppingCartRootGrid
-            };
+            _root.Children.Add(bottomToolbarGrid);
         }
 
         private static void ShowReceipt()
@@ -153,12 +135,6 @@ namespace StoreUser.Views
             receiptWindow.Show();
         }
 
-        internal static void UpdateShoppingCartTabHeader()
-        {
-            int itemCount = Store.ShoppingCart.Products.Sum(p => p.Value);
-            ((Label)_root.Header).Content = $"My Shopping Cart ({itemCount} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
-        }
-
         internal static void ShoppingCart_clearButton_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to empty your shopping cart?",
@@ -167,8 +143,7 @@ namespace StoreUser.Views
 
             if (result == MessageBoxResult.Yes)
             {
-                Store.ShoppingCart = new ShoppingCart();
-                Store.SaveShoppingCart();
+                Store.ClearShoppingCart();
                 UserView.UpdateGUI();
             }
         }
@@ -186,9 +161,9 @@ namespace StoreUser.Views
             if (resultConfirm == MessageBoxResult.OK)
             {
                 ShowReceipt();
+                Store.ClearShoppingCart();
+                UserView.UpdateGUI();
             }
         }
-
-      
     }
 }

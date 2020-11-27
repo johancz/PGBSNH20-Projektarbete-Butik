@@ -39,9 +39,8 @@ namespace StoreUser.Views
             // Children of _root:
             {
                 /*-------------------*/
-                /*----- Child 1 -----*/
+                /*----- Child 0 -----*/
                 /*-------------------*/
-                //_summary_countPrice = new StackPanel { Orientation = Orientation.Vertical };
                 _summaryCountPrice = new Grid { Margin = new Thickness(2.5), };
                 _summaryCountPrice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 _summaryCountPrice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -57,9 +56,7 @@ namespace StoreUser.Views
                         HorizontalAlignment = HorizontalAlignment.Left,
                         VerticalAlignment = VerticalAlignment.Center,
                     };
-                    //Grid.SetColumnSpan(_summary_count, 2);
                     _summaryCountPrice.Children.Add(_summary_count);
-                    //_summary_count.Background = Brushes.LightSalmon;
 
                     _summary_totalPrice = new TextBlock
                     {
@@ -70,26 +67,23 @@ namespace StoreUser.Views
                     };
                     Grid.SetRow(_summary_totalPrice, 1);
                     _summaryCountPrice.Children.Add(_summary_totalPrice);
-                    //_summary_totalPrice.Background = Brushes.LightBlue;
 
                     // Active discount Label
                     _summary_finalPrice = new TextBlock
                     {
-                        Visibility = Visibility.Collapsed,
+                        Visibility = Visibility.Hidden,
                         Text = $"Total: {Math.Round(Store.ShoppingCart.FinalSum, 2)} {Store.Currency.Symbol}",
                         Margin = new Thickness(2.5),
                         VerticalAlignment = VerticalAlignment.Center,
                     };
                     Grid.SetRow(_summary_finalPrice, 2);
-                    //Grid.SetColumn(_summary_finalPrice, 1);
                     _summaryCountPrice.Children.Add(_summary_finalPrice);
-                    //_summary_finalPrice.Background = Brushes.LightSalmon;
                 }
                 Grid.SetColumn(_summaryCountPrice, 0);
                 _root.Children.Add(_summaryCountPrice);
 
                 /*-------------------*/
-                /*----- Child 2 -----*/
+                /*----- Child 1 -----*/
                 /*-------------------*/
                 var discountForm = new WrapPanel
                 {
@@ -108,7 +102,6 @@ namespace StoreUser.Views
                         // Placeholder text
                         Tag = "Enter your discount code here...",
                         TextWrapping = TextWrapping.WrapWithOverflow,
-                        //HorizontalAlignment = HorizontalAlignment.Center,
                         VerticalAlignment = VerticalAlignment.Center,
                         Padding = new Thickness(5),
                         Margin = new Thickness(2.5),
@@ -152,6 +145,7 @@ namespace StoreUser.Views
             else
             {
                 _summary_totalPrice.TextDecorations = null;
+                ResetDiscountCodeForm();
             }
         }
 
@@ -160,7 +154,7 @@ namespace StoreUser.Views
             _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
             _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
             _discountCodeInput.IsEnabled = true;
-            _summary_finalPrice.Visibility = Visibility.Collapsed;
+            _summary_finalPrice.Visibility = Visibility.Hidden;
             _discountCodeInput.IsEnabled = true;
             _discountCodeSubmit.Content = "+ Add discount code";
             _discountCodeSubmit.Background = Brushes.LightGreen;
@@ -183,6 +177,7 @@ namespace StoreUser.Views
                         _summary_finalPrice.Visibility = Visibility.Visible;
                         _discountCodeSubmit.Content = "- Remove discount code";
                         _discountCodeSubmit.Background = Brushes.LightPink;
+                        ShoppingCartListView.Update();
                         UpdateGUI();
                     }
                     else
@@ -197,6 +192,7 @@ namespace StoreUser.Views
                 {
                     Store.RemoveDiscountCode();
                     ResetDiscountCodeForm();
+                    ShoppingCartListView.Update();
                     UpdateGUI();
                 }
             }
