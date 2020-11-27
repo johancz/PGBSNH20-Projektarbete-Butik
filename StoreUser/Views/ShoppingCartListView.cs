@@ -1,5 +1,6 @@
 ﻿using StoreCommon;
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Windows;
@@ -96,22 +97,26 @@ namespace StoreUser.Views
         {
             internal static void ShoppingCartRemoveProduct_Click(object sender, RoutedEventArgs e)
             {
-                // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
-                Store.ShoppingCart.RemoveProduct(product);
-                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
-                UserView.SelectedProduct = product;
-                UserView.UpdateGUI();
+                if (product != null)
+                {
+                    Store.ShoppingCart.RemoveProduct(product);
+                    Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
+                    UserView.SelectedProduct = product;
+                    UserView.UpdateGUI();
+                }
             }
 
             internal static void ShoppingCartAddProduct_Click(object sender, RoutedEventArgs e)
             {
-                // TODO(johancz): Error/Exception-handling
                 var product = (Product)((Button)sender).Tag;
-                UserView.SelectedProduct = product;
-                Store.ShoppingCart.AddProduct(product, 1);
-                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
-                UserView.UpdateGUI();
+                if (product != null)
+                {
+                    UserView.SelectedProduct = product;
+                    Store.ShoppingCart.AddProduct(product, 1);
+                    Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
+                    UserView.UpdateGUI();
+                }
             }
 
             internal static void ListSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -119,7 +124,8 @@ namespace StoreUser.Views
                 ExpandoObject listViewItemData = ((ExpandoObject)_root.SelectedItem);
                 if (listViewItemData != null)
                 {
-                    var product = (Product)listViewItemData.ToList()[0].Value;
+                    // TODO: simplify
+                    var product = (Product)((KeyValuePair<Product, int>)((KeyValuePair<string, object>)listViewItemData.ToList()[0]).Value).Key;
                     UserView.SelectedProduct = product;
                     UserView.UpdateGUI();
                 }
