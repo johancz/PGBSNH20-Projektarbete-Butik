@@ -70,7 +70,7 @@ namespace StoreUser.Views
 
             // Add columns to the GridView and bind each column to a property/field in the data-object.
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("Product.Name"), Header = "Product", });
-            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductPrice"), Header = "Price (before discounts", });
+            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductPrice"), Header = "Price", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductCount"), Header = "# of items", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductFinalPrice"), Header = "Total Price", });
             _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = remove1Template, }, Header = "-", });
