@@ -134,6 +134,10 @@ namespace StoreUser.Views
             _root.Visibility = Visibility.Visible;
         }
 
+        /******************************************************/
+        /******************* Event Handling *******************/
+        /******************************************************/
+
         private static class EventHandler
         {
             internal static void DetailsRemoveFromCartButton_Click(object sender, RoutedEventArgs e)

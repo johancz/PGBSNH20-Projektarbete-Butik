@@ -135,6 +135,10 @@ namespace StoreUser.Views
             receiptWindow.Show();
         }
 
+        /******************************************************/
+        /******************* Event Handling *******************/
+        /******************************************************/
+
         internal static void ShoppingCart_clearButton_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to empty your shopping cart?",
