@@ -217,6 +217,7 @@ namespace StoreAdmin
                         SelectedProduct = newProduct;
                         var productGridItem = AppWindow.CreateProductGridItem(newProduct);
                         productGridItem.Background = ProductGridItems[0].Background;
+                        productGridItem.Width = ProductGridItems[0].Width;
                         productGridItem.MouseUp += ProductGridItem_MouseUp; //Create a new clickable Grid to browser
                         
                         SwitchGridsToDefaultModeInBrowser();
