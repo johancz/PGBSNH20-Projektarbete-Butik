@@ -4,70 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Include="TestData\**">
-      <BuildAction>Content</BuildAction>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="FakeStoreData\Fake.CSVs\FakeExampleDiscountCodes.csv" />
-    <None Remove="FakeStoreData\Fake.CSVs\FakeExampleProducts.csv" />
-    <None Remove="FakeStoreData\Fake.CSVs\FakeExampleShoppingCart.csv" />
-    <None Remove="FakeStoreData\FakeImages\banana.jpg" />
-    <None Remove="FakeStoreData\FakeImages\broccoli.jpg" />
-    <None Remove="FakeStoreData\FakeImages\Fight Club Brad Pitt Notebook.png" />
-    <None Remove="FakeStoreData\FakeImages\Fight Club Pin.png" />
-    <None Remove="FakeStoreData\FakeImages\Fight Club Poster.png" />
-    <None Remove="FakeStoreData\FakeImages\orange.jpg" />
-    <None Remove="FakeStoreData\FakeImages\Tyler Sticker.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="FakeStoreData\Fake.CSVs\FakeExampleDiscountCodes.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\Fake.CSVs\FakeExampleProducts.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\Fake.CSVs\FakeExampleShoppingCart.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\banana.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\broccoli.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\Fight Club Brad Pitt Notebook.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\Fight Club Pin.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\Fight Club Poster.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\orange.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-    <Content Include="FakeStoreData\FakeImages\Tyler Sticker.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <BuildAction>Content</BuildAction>
-    </Content>
-  </ItemGroup>
-
+    
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
@@ -77,6 +14,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StoreCommon\StoreCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="TestData\**">
+      <BuildAction>Content</BuildAction>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

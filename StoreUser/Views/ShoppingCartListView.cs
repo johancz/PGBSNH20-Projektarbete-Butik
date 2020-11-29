@@ -1,6 +1,8 @@
 ﻿using StoreCommon;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
 using System.Windows;
@@ -14,6 +16,29 @@ namespace StoreUser.Views
         private static ListView _root;
         internal static GridView _gridView;
 
+        // Defines data for each row/"item" in the ListView.
+        private class ShoppingCartItemData
+        {
+            public Product Product { get; }
+            public string ProductPrice { get; }
+            public int ProductCount { get; }
+            public string ProductFinalPrice { get; }
+
+            public ShoppingCartItemData(KeyValuePair<Product, int> item)
+            {
+                Product = item.Key;
+                // discounted price for single item cost?
+                ProductCount = item.Value;
+                decimal afterDiscount = 1;
+                if (Store.ShoppingCart.ActiveDiscountCode != null)
+                {
+                    afterDiscount -= (decimal)(1 - Store.ShoppingCart.ActiveDiscountCode.Percentage);
+                }
+                ProductPrice = Math.Round(item.Key.Price * afterDiscount, 2) + " " + Store.Currency.Symbol;
+                ProductFinalPrice = Math.Round(Product.Price * ProductCount * afterDiscount, 2) + " " + Store.Currency.Symbol;
+            }
+        };
+
         public static ListView Init()
         {
             CreateGUI();
@@ -23,27 +48,32 @@ namespace StoreUser.Views
 
         public static void CreateGUI()
         {
+            // Create a "Button"-template which the Cell
             var remove1Template = new FrameworkElementFactory(typeof(Button));
-            remove1Template.SetBinding(Button.ContentProperty, new Binding("buttonRemove1"));
-            remove1Template.SetBinding(Button.TagProperty, new Binding("productItem.Key"));
+            // No need of a binding since the button will have the same value on every ListView row/"item". 
+            remove1Template.SetValue(Button.ContentProperty, " - ");
+            // Bind Tag-property on Button to "Product"-property on each instance of "ShoppingCartItemData".
+            remove1Template.SetBinding(Button.TagProperty, new Binding("Product"));
             remove1Template.AddHandler(Button.ClickEvent, new RoutedEventHandler(EventHandler.ShoppingCartRemoveProduct_Click));
 
             var add1Template = new FrameworkElementFactory(typeof(Button));
-            add1Template.SetBinding(Button.ContentProperty, new Binding("buttonAdd1"));
-            add1Template.SetBinding(Button.TagProperty, new Binding("productItem.Key"));
+            // No need of a binding since the button will have the same value on every ListView row/"item". 
+            add1Template.SetValue(Button.ContentProperty, " + ");
+            // Bind Tag-property on Button to "Product"-property on each instance of "ShoppingCartItemData".
+            add1Template.SetBinding(Button.TagProperty, new Binding("Product"));
             add1Template.AddHandler(Button.ClickEvent, new RoutedEventHandler(EventHandler.ShoppingCartAddProduct_Click));
 
-            _root = new ListView { HorizontalContentAlignment = HorizontalAlignment.Stretch };
+            _root = new ListView();
             _root.SelectionChanged += EventHandler.ListSelectionChanged;
-            _gridView = new GridView { AllowsColumnReorder = false };
+            _gridView = new GridView { AllowsColumnReorder = false, };
             _root.View = _gridView;
 
             // Add columns to the GridView and bind each column to a property/field in the data-object.
-            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("productItem.Key.Name"), Header = "Product", });
-            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("productPrice"), Header = "Price", });
-            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("productItem.Value"),  Header = "# of items", });
-            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("productFinalPrice"), Header = "Total Price", });
-            _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = remove1Template,  }, Header = "-", });
+            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("Product.Name"), Header = "Product", });
+            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductPrice"), Header = "Price", });
+            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductCount"), Header = "# of items", });
+            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductFinalPrice"), Header = "Total Price", });
+            _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = remove1Template, }, Header = "-", });
             _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = add1Template }, Header = "+", });
         }
 
@@ -55,33 +85,15 @@ namespace StoreUser.Views
 
         internal static void UpdateData()
         {
-            var combinedData = Store.ShoppingCart.Products.Select(productItem =>
-            {
-                dynamic productRow = new ExpandoObject();
-                productRow.productItem = productItem;
-                productRow.productPrice = Math.Round(productItem.Key.Price, 2) + Store.Currency.Symbol;
-                productRow.productFinalPrice = productItem.Key.Price * productItem.Value;
-                if (Store.ShoppingCart.ActiveDiscountCode != null)
-                {
-                    productRow.productFinalPrice *= (decimal)(1 - Store.ShoppingCart.ActiveDiscountCode.Percentage);
-                }
-                productRow.productFinalPrice = Math.Round(productRow.productFinalPrice, 2) + " " + Store.Currency.Symbol;
-                productRow.buttonRemove1 = " - ";
-                productRow.buttonAdd1 = " + ";
-
-                return productRow;
-            });
-
-            // When Updating the data for the ListView, it takes take of updating the layout on it's own.
-            _root.ItemsSource = combinedData;
+            _root.ItemsSource = Store.ShoppingCart.Products.Select(productItem => new ShoppingCartItemData(productItem)).ToList();
         }
 
         public static void UpdateGUI()
         {
-            // And to be sure the ListView layout updates, we also call UpdateLayout.
+            // And to be sure the ListView layout updates, we also call UpdateLayout() on the ListView.
             _root.UpdateLayout();
 
-            //Resize each column to fit its content, double.NaN
+            //Resize each column to fit its content, double.NaN == auto
             foreach (GridViewColumn column in _gridView.Columns)
             {
                 if (double.IsNaN(column.Width))
@@ -92,6 +104,10 @@ namespace StoreUser.Views
                 column.Width = double.NaN;
             }
         }
+
+        /******************************************************/
+        /******************* Event Handling *******************/
+        /******************************************************/
 
         private static class EventHandler
         {
@@ -121,11 +137,10 @@ namespace StoreUser.Views
 
             internal static void ListSelectionChanged(object sender, SelectionChangedEventArgs e)
             {
-                ExpandoObject listViewItemData = ((ExpandoObject)_root.SelectedItem);
+                var listViewItemData = ((ShoppingCartItemData)_root.SelectedItem);
                 if (listViewItemData != null)
                 {
-                    // TODO: simplify
-                    var product = (Product)((KeyValuePair<Product, int>)((KeyValuePair<string, object>)listViewItemData.ToList()[0]).Value).Key;
+                    var product = (Product)listViewItemData.Product;
                     UserView.SelectedProduct = product;
                     UserView.UpdateGUI();
                 }
