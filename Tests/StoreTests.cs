@@ -92,7 +92,8 @@ namespace StoreCommon.Tests
         }
 
         [TestMethod]
-        public void SaveRuntimeAdminProductsToCSV_IsStoreProductsCorrectEditedAndSaved() //testing that edit and remove is saved correctly.
+        // Testing that edit and remove is saved correctly.
+        public void SaveRuntimeAdminProductsToCSV_IsStoreProductsCorrectEditedAndSaved()
         {
             string allProductPreInfo = String.Empty;
             Store.Products.RemoveAt(0);
@@ -115,7 +116,7 @@ namespace StoreCommon.Tests
         {
             var expectedDiscountCodes = new List<DiscountCode>
             {
-                new DiscountCode(code: "fightclubrule1", percentage: 0.01  ),
+                new DiscountCode(code: "fightclubrule1", percentage: 0.01),
                 new DiscountCode(code: "fightclubrule2", percentage: 0.02),
                 new DiscountCode(code: "broccolibroccoli", percentage: 0.3),
                 new DiscountCode(code: "donotboilthatveg", percentage: 0.2),
@@ -148,28 +149,6 @@ namespace StoreCommon.Tests
         }
 
         [TestMethod]
-        public void DiscountCode_AllParamsAreValid_ValidDiscountCode()
-        {
-            var discountCode = new DiscountCode("abc", 0.0001);
-            Assert.AreEqual("abc", discountCode.Code);
-            Assert.AreEqual(0.0001, discountCode.Percentage);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void DiscountCode_CodeParamIsNull_ArgumentNullException()
-        {
-            var discountCode = new DiscountCode(null, 0.0001);
-        }
-
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void DiscountCode_CodeParamNotValidEmptyString_ArgumentException()
-        {
-            var discountCode = new DiscountCode("", 0.0001);
-        }
-
-        [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_CodeParamNotValidTooLong_ArgumentException()
         {
@@ -181,59 +160,51 @@ namespace StoreCommon.Tests
         [ExpectedException(typeof(ArgumentException))]
         public void DiscountCode_PercentageParamValueTooSmall_ArgumentException()
         {
-            var discountCode = new DiscountCode("a", 0.0);
+            var discountCode = new DiscountCode("abc", 0.0);
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void DiscountCode_PercentageParamValueTooBig_ArgumentException()
+        public void ImageFiles_ExistAndCopiedSuccessfully()
         {
-            var discountCode = new DiscountCode("a", 1.0001);
-        }
-        [TestMethod]
-        public void HardcodedPathsAndFilesExist_ImageMissing()
-        {
-            // Make sure the images exist in the "source"-directory "\StoreData\Images\".
-            var inputImages = new List<string> { "banana.jpg", "broccoli.jpg", "Fight Club Brad Pitt NoteBook.png", "Fight Club Pin.png", "Fight Club Poster.png", "orange.jpg", "Tyler Sticker.png" };
-            bool isImageMissing = false;
-            foreach (var inputImage in inputImages)
+            var expectedInputImages = new List<string> { "banana.jpg", "broccoli.jpg", "Fight Club Brad Pitt Notebook.png", "Fight Club Pin.png", "Fight Club Poster.png", "orange.jpg", "Tyler Sticker.png" };
+
+            var actualInputImages = Directory.EnumerateFiles(DataManager.InputImages).Select(file =>
             {
-                if (!File.Exists(Path.Combine(DataManager.InputImages, inputImage)))
+                return file.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar })[^1];
+            }).ToList();
+
+            var actualOutputImages = Directory.EnumerateFiles(DataManager.ImageFolderPath).Select(file =>
+            {
+                return file.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar })[^1];
+            }).ToList();
+
+            CollectionAssert.AreEqual(expectedInputImages, actualInputImages);
+            CollectionAssert.AreEqual(actualInputImages, actualOutputImages);
+        }
+
+        [TestMethod]
+        public void CSVFiles_ExistAndCopiedSuccessfully()
+        {
+            List<string> actualContentOfInputCsvFiles = new List<string>();
+            foreach (string file in Directory.GetFiles(DataManager.StoreDataCsvPath))
+            {
+                if (file.EndsWith(".csv"))
                 {
-                    isImageMissing = true;
-                    break;
+                    actualContentOfInputCsvFiles.AddRange(File.ReadAllLines(file));
                 }
             }
-            Assert.IsFalse(isImageMissing, "Image missing.");
-        }
 
-
-        [TestMethod]
-        public void HardcodedPathsAndFilesExist()
-        {
-            // Sanity check:
-            Assert.IsFalse(
-                Directory.Exists(Path.Combine(DataManager.StoreDataCsvPath, "folderThatDoesNotExist")),
-                "\"StoreData\\folderThatDoesNotExist\\\"-folder does not exist");
-            // Check if the folders exist in the "output directory"\ and "output directory"\StoreData\
-            Assert.IsTrue(Directory.Exists(DataManager.StoreDataCsvPath), "\"StoreData\\\"-folder could not be found in the output directory.");
-            Assert.IsTrue(Directory.Exists(DataManager.InputImages), "\"StoreData\\Images\\\"-folder could not be found in the output directory.");
-            // Make sure the ".csv"-files exist in the "source"-directory "\StoreData\.CSVs\".
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.StoreDataCsvPath, "ExampleProducts.csv")), "Can't find .csv-file.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.StoreDataCsvPath, "ExampleShoppingCart.csv")), "Can't find .csv-file.");
-         
-            // Make sure the images and ".csv"-files were copied successfully to the "Temp"-folder.
-            Assert.IsTrue(Directory.Exists(DataManager.ImageFolderPath), "Directory doesn't exist.");
-            string[] exampleImagePaths = Directory.EnumerateFiles(DataManager.InputImages).Where(file =>
+            List<string> actualContentOfOutputCsvFiles = new List<string>();
+            foreach (string file in Directory.GetFiles(DataManager.RootFolderPath))
             {
-                return new[] { ".jpg", ".jpeg", ".png" }.Any(file.ToLower().EndsWith);
-            }).ToArray();
-            exampleImagePaths = exampleImagePaths.Select(file => file.Split('\\')[^1]).ToArray();
-            string[] actualImages = Directory.GetFiles(DataManager.ImageFolderPath).Select(file => file.Split('\\')[^1]).ToArray();
+                if (file.EndsWith(".csv"))
+                {
+                    actualContentOfOutputCsvFiles.AddRange(File.ReadAllLines(file));
+                }
+            }
 
-            Assert.IsTrue(exampleImagePaths.Length > 0);
-            Assert.IsTrue(actualImages.Length > 0);
-            CollectionAssert.AreEquivalent(exampleImagePaths, actualImages);
+            Assert.IsTrue(actualContentOfInputCsvFiles.Count > 0 && actualContentOfOutputCsvFiles.Count > 0);
+            CollectionAssert.AreEquivalent(actualContentOfInputCsvFiles, actualContentOfOutputCsvFiles);
         }
     }
 }

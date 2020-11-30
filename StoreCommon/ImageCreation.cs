@@ -28,25 +28,18 @@ namespace StoreCommon
         {
             Image image = new Image();
 
-            try
+            if (uriString != null)
             {
-                if (uriString != null)
-                {
-                    image.Source = CreateBitmapImageFromUriString(uriString);
-                }
-                image.HorizontalAlignment = HorizontalAlignment.Center;
-                image.VerticalAlignment = VerticalAlignment.Center;
-                image.Margin = new Thickness(5);
-                image.Stretch = Stretch.Uniform;
-
-                if (height != null)
-                {
-                    image.Height = height.Value;
-                }
+                image.Source = CreateBitmapImageFromUriString(uriString);
             }
-            catch (Exception)
+            image.HorizontalAlignment = HorizontalAlignment.Center;
+            image.VerticalAlignment = VerticalAlignment.Center;
+            image.Margin = new Thickness(5);
+            image.Stretch = Stretch.Uniform;
+
+            if (height != null)
             {
-                // TODO(johancz): exception-handling
+                image.Height = height.Value;
             }
 
             return image;
