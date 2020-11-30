@@ -1,7 +1,10 @@
 using StoreCommon;
+using System;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace StoreUser
 {
@@ -24,6 +27,8 @@ namespace StoreUser
             Height = SystemParameters.WorkArea.Height >= 800 ? SystemParameters.WorkArea.Height - 200 : 600;
             MinWidth = 800;
             MinHeight = 600;
+            Uri iconUri = new Uri(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "soap.ico"), UriKind.Absolute);
+            this.Icon = BitmapFrame.Create(iconUri);
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             KeyUp += MainWindow_KeyUp;
 

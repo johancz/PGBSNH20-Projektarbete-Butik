@@ -1,8 +1,11 @@
 ﻿using StoreAdmin.Views;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace StoreCommon
 {
@@ -25,6 +28,8 @@ namespace StoreCommon
             mainWindow.MinWidth = 800;
             mainWindow.MinHeight = 600;
             mainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            Uri iconUri = new Uri(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "soap.ico"), UriKind.Absolute);
+            mainWindow.Icon = BitmapFrame.Create(iconUri);
 
             var windowTabControl = new TabControl { Background = Brushes.LightBlue };
             mainWindow.Content = windowTabControl;
