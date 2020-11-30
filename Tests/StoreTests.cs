@@ -37,28 +37,8 @@ namespace StoreCommon.Tests
             }
         }
 
-        // This test makes no sense. Why are we testing the file extension of images when no code deals with file extensions?
-        //[TestMethod]
-        //public void ProductLoadAll_Only_JPG_PNG()
-        //{
-        //    var fileExtensions = new List<string>();
-        //    string extension = "";
-
-        //    foreach (var p in Store.Products)
-        //    {
-        //        for (int i = 4; i >= 1; i--)
-        //        {
-        //            extension += p.Uri[^i];
-        //        }
-        //        fileExtensions.Add(extension);
-        //        extension = "";
-        //    }
-        //    bool onlyJpgPng = fileExtensions.TrueForAll(e => e == ".jpg" || e == ".png");
-        //    Assert.IsTrue(onlyJpgPng);
-        //}
-
         [TestMethod]
-        public void ProductLoadAll_NameInstances()
+        public void ProductLoadAll_AllNamesExist() //testing if all products where created and with correct name.
         {
             var nameListActual = new List<string>();
 
@@ -74,31 +54,7 @@ namespace StoreCommon.Tests
         }
 
         [TestMethod]
-        public void ProductLoadAll_NoUnwantedHashtags()
-        {
-            var charList = new List<char>();
-
-            foreach (var p in Store.Products)
-            {
-                foreach (var c in p.Name)
-                {
-                    charList.Add(c);
-                }
-                foreach (var c in p.Uri)
-                {
-                    charList.Add(c);
-                }
-                foreach (var c in p.Description)
-                {
-                    charList.Add(c);
-                }
-            }
-            bool targetNotExists = !charList.Exists(c => c == '#');
-            Assert.IsTrue(targetNotExists);
-        }
-
-        [TestMethod]
-        public void ProductLoadAll_NoUnwantedWhite()
+        public void ProductLoadAll_NoUnwantedWhiteInProperties()
         {
             var charList = new List<char>();
 
@@ -113,13 +69,14 @@ namespace StoreCommon.Tests
                     charList.Add(c);
                 }
                 charList.Add(p.Description[0]);
+                charList.Add(p.Description[^1]);
             }
-            bool targetNotExists = !charList.Exists(c => c == '\n');
-            Assert.IsTrue(targetNotExists);
+            bool WhiteSpaceExists = charList.Exists(c => c == '\n');
+            Assert.IsFalse(WhiteSpaceExists);
         }
 
         [TestMethod]
-        public void ProductLoadAll_WantedNewLinesExist()
+        public void ProductLoadAll_WantedNewLinesExistInAnyDescription()
         {
             var charList = new List<char>();
 
@@ -133,6 +90,25 @@ namespace StoreCommon.Tests
             bool targetExists = charList.Exists(c => c == '\n');
             Assert.IsTrue(targetExists);
         }
+
+        [TestMethod]
+        public void SaveRuntimeAdminProductsToCSV_IsProductSavedCorrect()
+        {
+            string allProductPreInfo = String.Empty;
+            foreach ( var product in Store.Products)
+            {
+                allProductPreInfo += String.Join(product.Name, product.Price, product.Uri, product.Description);
+            }
+            Store.SaveRuntimeAdminProductsToCSV();
+
+            string allProductPostInfo = String.Empty;
+            foreach (var product in Store.Products)
+            {
+                allProductPostInfo += String.Join(product.Name, product.Price, product.Uri, product.Description);
+            }
+            Assert.AreEqual(allProductPreInfo, allProductPostInfo);
+        }
+
 
         [TestMethod]
         public void LoadDiscountCodes_LoadFromExampleFile_Success()
@@ -214,8 +190,24 @@ namespace StoreCommon.Tests
         {
             var discountCode = new DiscountCode("a", 1.0001);
         }
+        [TestMethod]
+        public void HardcodedPathsAndFilesExist_ImageMissing()
+        {
+            // Make sure the images exist in the "source"-directory "\StoreData\Images\".
+            var inputImages = new List<string> { "banana.jpg", "broccoli.jpg", "Fight Club Brad Pitt NoteBook.png", "Fight Club Pin.png", "Fight Club Poster.png", "orange.jpg", "Tyler Sticker.png" };
+            bool isImageMissing = false;
+            foreach (var inputImage in inputImages)
+            {
+                if (!File.Exists(Path.Combine(DataManager.InputImages, inputImage)))
+                {
+                    isImageMissing = true;
+                    break;
+                }
+            }
+            Assert.IsFalse(isImageMissing, "Image missing.");
+        }
 
-        // Is this one test or many tests hidden in one? There is no spoon.
+
         [TestMethod]
         public void HardcodedPathsAndFilesExist()
         {
@@ -229,15 +221,7 @@ namespace StoreCommon.Tests
             // Make sure the ".csv"-files exist in the "source"-directory "\StoreData\.CSVs\".
             Assert.IsTrue(File.Exists(Path.Combine(DataManager.StoreDataCsvPath, "ExampleProducts.csv")), "Can't find .csv-file.");
             Assert.IsTrue(File.Exists(Path.Combine(DataManager.StoreDataCsvPath, "ExampleShoppingCart.csv")), "Can't find .csv-file.");
-            // Make sure the images exist in the "source"-directory "\StoreData\Images\".
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "banana.jpg")), "Can't find image.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "broccoli.jpg")), "Can't find image.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "Fight Club Brad Pitt NoteBook.png")), "Can't find image.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "Fight Club Pin.png")), "Can't find image.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "Fight Club Poster.png")), "Can't find image.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "orange.jpg")), "Can't find image.");
-            Assert.IsTrue(File.Exists(Path.Combine(DataManager.InputImages, "Tyler Sticker.png")), "Can't find image.");
-
+         
             // Make sure the images and ".csv"-files were copied successfully to the "Temp"-folder.
             Assert.IsTrue(Directory.Exists(DataManager.ImageFolderPath), "Directory doesn't exist.");
             string[] exampleImagePaths = Directory.EnumerateFiles(DataManager.InputImages).Where(file =>

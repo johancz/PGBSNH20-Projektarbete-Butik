@@ -30,27 +30,24 @@ namespace StoreCommon
         public static void LoadProducts(string pathAndFileName)
         {
             var products = new List<Product>();
-            string input = File.ReadAllText(pathAndFileName);
+            string productTextInput = File.ReadAllText(pathAndFileName);
+            var productStrings = productTextInput.Split('}').ToList();
 
-            var infoArray = input.Trim().Split('#');
-
-            for (int i = 0; i < infoArray.Length; i++)
+            foreach (var productString in productStrings)
             {
-                if (infoArray[i] == "") { break; }
-                var name = infoArray[i].Trim();
-                i++;
-                var uri = infoArray[i].Trim();
-                i++;
-                var price = decimal.Parse(infoArray[i].Trim());
-                i++;
-                var description = infoArray[i].Trim();
+                var properties = productString.Split('#');
+                if (properties.Length != 4) continue;
 
+                decimal price;
+                var name = properties[0].Trim();
+                var uri = properties[1].Trim();
+                if (!decimal.TryParse(properties[2].Trim(), out price)) price = 0;
+                var description = properties[3].Trim();
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);
             }
             Products = products;
         }
-
         public static void LoadImagePaths(string imageFolderPath)
         {
             var imageFolder = new DirectoryInfo(imageFolderPath);
@@ -62,14 +59,14 @@ namespace StoreCommon
         }
         public static void SaveRuntimeAdminProductsToCSV()
         {
-            string productText = "";
+            string productText = String.Empty;
             foreach (var product in Products)
             {
                 productText += String.Join('#', new[] {
                     product.Name,
                     product.Uri,
                     product.Price.ToString(),
-                    product.Description + "#\n\n"
+                    product.Description + "\n}\n"
                 });
             }
             File.WriteAllText(DataManager.ProductCSV, productText);
