@@ -69,13 +69,13 @@ namespace StoreUser.Views
             var remove1Template = CreateButtonTemplate(" - ", EventHandler.ShoppingCartRemoveProduct_Click);
             var add1Template = CreateButtonTemplate(" + ", EventHandler.ShoppingCartAddProduct_Click);
 
-            // Add columns to the GridView and bind each column to a property/field in the data-object.
+            // Add columns to the GridView and bind each column to a property in the data-object ("ShoppingCartItemData").
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("Product.Name"), Header = "Product", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductPrice"), Header = "Price", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductCount"), Header = "# of items", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductFinalPrice"), Header = "Total Price", });
             _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = remove1Template, }, Header = "-", });
-            _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = add1Template }, Header = "+", });
+            _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = add1Template, }, Header = "+", });
         }
 
         public static void Update()
@@ -86,7 +86,7 @@ namespace StoreUser.Views
 
         internal static void UpdateData()
         {
-            _root.ItemsSource = Store.ShoppingCart.Products.Select(productItem => new ShoppingCartItemData(productItem)).ToList();
+            _root.ItemsSource = Store.ShoppingCart.Products.Select(productItem => new ShoppingCartItemData(productItem));
         }
 
         public static void UpdateGUI()
