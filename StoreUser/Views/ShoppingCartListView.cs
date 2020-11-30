@@ -48,25 +48,26 @@ namespace StoreUser.Views
 
         public static void CreateGUI()
         {
-            // Create a "Button"-template which the Cell
-            var remove1Template = new FrameworkElementFactory(typeof(Button));
-            // No need of a binding since the button will have the same value on every ListView row/"item". 
-            remove1Template.SetValue(Button.ContentProperty, " - ");
-            // Bind Tag-property on Button to "Product"-property on each instance of "ShoppingCartItemData".
-            remove1Template.SetBinding(Button.TagProperty, new Binding("Product"));
-            remove1Template.AddHandler(Button.ClickEvent, new RoutedEventHandler(EventHandler.ShoppingCartRemoveProduct_Click));
+            FrameworkElementFactory CreateButtonTemplate(string buttonText, RoutedEventHandler eventHandler)
+            {
+                // Create a "Button"-template which the Cell
+                var buttonTemplate = new FrameworkElementFactory(typeof(Button));
+                // No need for a binding since the button will have the same value on every ListView row/"item". 
+                buttonTemplate.SetValue(Button.ContentProperty, buttonText);
+                // Bind Tag-property on Button to the row's/item's "Product"-property in its "ShoppingCartItemData".
+                buttonTemplate.SetBinding(Button.TagProperty, new Binding("Product"));
+                buttonTemplate.AddHandler(Button.ClickEvent, new RoutedEventHandler(eventHandler));
 
-            var add1Template = new FrameworkElementFactory(typeof(Button));
-            // No need of a binding since the button will have the same value on every ListView row/"item". 
-            add1Template.SetValue(Button.ContentProperty, " + ");
-            // Bind Tag-property on Button to "Product"-property on each instance of "ShoppingCartItemData".
-            add1Template.SetBinding(Button.TagProperty, new Binding("Product"));
-            add1Template.AddHandler(Button.ClickEvent, new RoutedEventHandler(EventHandler.ShoppingCartAddProduct_Click));
+                return buttonTemplate;
+            }
 
             _root = new ListView();
             _root.SelectionChanged += EventHandler.ListSelectionChanged;
-            _gridView = new GridView { AllowsColumnReorder = false, };
+            _gridView = new GridView { AllowsColumnReorder = false };
             _root.View = _gridView;
+
+            var remove1Template = CreateButtonTemplate(" - ", EventHandler.ShoppingCartRemoveProduct_Click);
+            var add1Template = CreateButtonTemplate(" + ", EventHandler.ShoppingCartAddProduct_Click);
 
             // Add columns to the GridView and bind each column to a property/field in the data-object.
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("Product.Name"), Header = "Product", });
