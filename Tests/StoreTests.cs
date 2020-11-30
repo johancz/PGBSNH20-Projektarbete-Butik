@@ -97,9 +97,8 @@ namespace StoreCommon.Tests
             string allProductPreInfo = String.Empty;
             Store.Products.RemoveAt(0);
             Store.Products[^1].Description = "Testing description...";
-
             Store.Products.ForEach(product => allProductPreInfo += String.Join(product.Name, product.Price, product.Uri, product.Description));
-            Store.SaveRuntimeAdminProductsToCSV();
+            Store.SaveRuntimeAdminProductsToCSV(); 
             Store.Products.Clear();
             Store.LoadProducts(DataManager.ProductCSV);
             string allProductPostInfo = String.Empty;

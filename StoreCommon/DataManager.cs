@@ -60,15 +60,12 @@ namespace StoreCommon
             {
                 File.Copy(InputShoppingCartCSV, ShoppingCartCSV, overwrite);
             }
-
-            if (ImageFolder.GetFiles().Length == 0)
+            var images = Directory.GetFiles(InputImages);
+            foreach (var image in images)
             {
-                var images = Directory.GetFiles(InputImages);
-                foreach (var image in images)
-                {
-                    string name = image.Split('\\')[^1];
-                    File.Copy(image, Path.Combine(ImageFolderPath, name), overwrite);
-                }
+                string name = image.Split('\\')[^1];
+                string path = Path.Combine(ImageFolderPath, name);
+                if (!File.Exists(path) || overwrite) { File.Copy(image, path, overwrite); }
             }
         }
     }

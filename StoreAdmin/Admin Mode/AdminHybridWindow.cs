@@ -41,15 +41,15 @@ namespace StoreCommon
         // Gives an overview of the wpf parts created, the colorparameter gives a simple way to find the elements and to do some styling.
         public void CreateAdminGUI()
         {
-            CreateEditPage("Administrator mode", Brushes.AliceBlue);
+            CreateEditPage("Administrator mode", Brushes.WhiteSmoke);
             CreateBrowser(Brushes.WhiteSmoke);
-            CreateProductGridItems(Brushes.LightGray);
+            CreateProductGridItems(Brushes.WhiteSmoke);
             CreateImageGridItems(Brushes.Black);
-            CreateDetailsPanel();
+            CreateDetailsPanel(Brushes.WhiteSmoke);
             CreateEditableTextBoxes();
             CreateAdminButtons();
 
-            CreateManageDiscountCodesView("Manage Discount Codes", Brushes.Azure); //Is defined in ManageDiscountCodeView.cs
+            CreateManageDiscountCodesView("Manage Discount Codes", Brushes.WhiteSmoke); //Is defined in ManageDiscountCodeView.cs
         }
         private void CreateEditPage(string header, Brush brush)
         {
@@ -161,11 +161,11 @@ namespace StoreCommon
 
                         return imageGridItem;
                     }
-                private void CreateDetailsPanel()
+                private void CreateDetailsPanel(Brush background)
                 {
                     var detailsPanelRootGrid = new Grid
                     {
-                        Background = Brushes.AntiqueWhite,
+                        Background = background,
                         HorizontalAlignment = HorizontalAlignment.Left,
                     };
                     detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
