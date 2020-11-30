@@ -42,6 +42,7 @@ namespace StoreCommon
                 var name = properties[0].Trim();
                 var uri = properties[1].Trim();
                 if (!decimal.TryParse(properties[2].Trim(), out price)) price = 0;
+                price = Math.Round(price, 2);
                 var description = properties[3].Trim();
                 var newProduct = new Product(name, uri, price, description);
                 products.Add(newProduct);

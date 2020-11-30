@@ -1,4 +1,5 @@
 ﻿using StoreCommon;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -105,9 +106,8 @@ namespace StoreAdmin
                     var product = SelectedProduct;
                     product.Description = DetailsPanelDescription.Text;
                     product.Name = DetailsPanelName.Text;
-                    product.Price = decPrice;
-                    Store.SaveRuntimeAdminProductsToCSV();
-                    
+                    product.Price = Math.Round(decPrice, 2);
+                    Store.SaveRuntimeAdminProductsToCSV();                    
                     DisableEditBoxes();
                     UpdateDetailsPanel(product);
                     UpdateTextInProductBrowser(product);
