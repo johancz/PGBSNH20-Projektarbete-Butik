@@ -92,15 +92,16 @@ namespace StoreCommon.Tests
         }
 
         [TestMethod]
-        public void SaveRuntimeAdminProductsToCSV_IsProductSavedCorrect()
+        public void SaveRuntimeAdminProductsToCSV_IsStoreProductsCorrectEditedAndSaved() //testing that edit and remove is saved correctly.
         {
             string allProductPreInfo = String.Empty;
-            foreach ( var product in Store.Products)
-            {
-                allProductPreInfo += String.Join(product.Name, product.Price, product.Uri, product.Description);
-            }
-            Store.SaveRuntimeAdminProductsToCSV();
+            Store.Products.RemoveAt(0);
+            Store.Products[^1].Description = "Testing description...";
 
+            Store.Products.ForEach(product => allProductPreInfo += String.Join(product.Name, product.Price, product.Uri, product.Description));
+            Store.SaveRuntimeAdminProductsToCSV();
+            Store.Products.Clear();
+            Store.LoadProducts(DataManager.ProductCSV);
             string allProductPostInfo = String.Empty;
             foreach (var product in Store.Products)
             {
@@ -108,7 +109,6 @@ namespace StoreCommon.Tests
             }
             Assert.AreEqual(allProductPreInfo, allProductPostInfo);
         }
-
 
         [TestMethod]
         public void LoadDiscountCodes_LoadFromExampleFile_Success()
