@@ -29,6 +29,7 @@ namespace StoreUser
             MinHeight = 600;
             Uri iconUri = new Uri(Path.Combine(Environment.CurrentDirectory, "StoreData", "Image Helpers", "soap.ico"), UriKind.Absolute);
             this.Icon = BitmapFrame.Create(iconUri);
+            Background = System.Windows.Media.Brushes.WhiteSmoke;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             KeyUp += MainWindow_KeyUp;
 

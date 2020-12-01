@@ -29,11 +29,11 @@ namespace StoreAdmin.Views
         public static void CreateGUI()
         {
             _rootScrollViewer = new ScrollViewer {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(20),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(20),
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             };
-            _grid = new Grid { Margin = new Thickness(0, 0, 0, 20)};
+            _grid = new Grid { Margin = new Thickness(0, 0, 0, 20), HorizontalAlignment = HorizontalAlignment.Center, };
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
@@ -98,11 +98,11 @@ namespace StoreAdmin.Views
 
             for (int i = 0; i < elements.Length; i++)
             {
-                var rowData = elements[i];
-                Grid.SetRow(rowData.element, row);
+                var (element, column) = elements[i];
+                Grid.SetRow(element, row);
                 // Use rowData.column if it isn't null, if null use 'i'.
-                Grid.SetColumn(rowData.element, rowData.column ?? i);
-                _grid.Children.Add(rowData.element);
+                Grid.SetColumn(element, column ?? i);
+                _grid.Children.Add(element);
             }
         }
 
@@ -152,11 +152,10 @@ namespace StoreAdmin.Views
         private static void PercentageTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var textBox = (TextBox)sender;
-            double percentage;
 
             try
             {
-                if (!double.TryParse(textBox.Text, out percentage))
+                if (!double.TryParse(textBox.Text, out double percentage))
                 {
                     throw new Exception("Could not parse to Double");
                 }
@@ -197,9 +196,8 @@ namespace StoreAdmin.Views
             try
             {
                 string newCode = ((TextBox)_grid.Children[buttonIndex - 2]).Text;
-                double newPercentage;
 
-                if (!double.TryParse(((TextBox)_grid.Children[buttonIndex - 1]).Text, out newPercentage))
+                if (!double.TryParse(((TextBox)_grid.Children[buttonIndex - 1]).Text, out double newPercentage))
                 {
                     throw new Exception("The \"Percentage\" value is not valid, enter a number between 0-1 (inclusive).");
                 }

@@ -301,6 +301,7 @@ namespace StoreCommon
         {
             var editPageTabItem = new TabItem { Header = header };
             editPageTabItem.Content = ManageDiscountCodesView.Init();
+            ((ScrollViewer)editPageTabItem.Content).Background = brush;
             WindowTabControl.Items.Add(editPageTabItem);
             EditDiscountCodeTabItem = editPageTabItem;
         }

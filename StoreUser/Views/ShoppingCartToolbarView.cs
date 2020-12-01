@@ -90,7 +90,6 @@ namespace StoreUser.Views
                     Orientation = Orientation.Vertical,
                     VerticalAlignment = VerticalAlignment.Center,
                 };
-
                 // Children of 'discountForm'
                 {
                     _discountCodeInput = new TextBox
@@ -106,10 +105,10 @@ namespace StoreUser.Views
                         Padding = new Thickness(5),
                         Margin = new Thickness(2.5),
                     };
-                    _discountCodeInput.GotFocus += EventHandler._discountCodeInput_GotFocus;
-                    _discountCodeInput.LostFocus += EventHandler._discountCodeInput_LostFocus;
-                    _discountCodeInput.TextChanged += EventHandler._discountCodeInput_TextChanged;
-                    _discountCodeInput.KeyUp += EventHandler._discountCodeInput_KeyUp;
+                    _discountCodeInput.GotFocus += DiscountCodeInput_GotFocus;
+                    _discountCodeInput.LostFocus += DiscountCodeInput_LostFocus;
+                    _discountCodeInput.TextChanged += DiscountCodeInput_TextChanged;
+                    _discountCodeInput.KeyUp += DiscountCodeInput_KeyUp;
                     discountForm.Children.Add(_discountCodeInput);
 
                     _discountCodeSubmit = new Button
@@ -121,12 +120,12 @@ namespace StoreUser.Views
                         Padding = new Thickness(5),
                         Margin = new Thickness(2.5),
                     };
-                    _discountCodeSubmit.Click += EventHandler.discountSubmitEventHandler;
+                    _discountCodeSubmit.Click += DiscountSubmitEventHandler;
                     discountForm.Children.Add(_discountCodeSubmit);
 
-                    Grid.SetColumn(discountForm, 2);
-                    _root.Children.Add(discountForm);
                 }
+                Grid.SetColumn(discountForm, 2);
+                _root.Children.Add(discountForm);
             }
         }
 
@@ -160,81 +159,82 @@ namespace StoreUser.Views
             _discountCodeSubmit.Background = Brushes.LightGreen;
         }
 
-        private static class EventHandler
+        /******************************************************/
+        /******************* Event Handling *******************/
+        /******************************************************/
+
+        private static void DiscountSubmitEventHandler(object s, RoutedEventArgs e)
         {
-            internal static void discountSubmitEventHandler(object s, RoutedEventArgs e) // TODO: move to namespace?
+            if ((string)_discountCodeSubmit.Content == "+ Add discount code")
             {
-                if ((string)_discountCodeSubmit.Content == "+ Add discount code")
-                {
-                    _discountCodeSubmit.IsEnabled = false;
-                    bool success = Store.AddDiscountCode(_discountCodeInput.Text);
+                _discountCodeSubmit.IsEnabled = false;
+                bool success = Store.AddDiscountCode(_discountCodeInput.Text);
 
-                    if (success)
-                    {
-                        _discountCodeInput.IsEnabled = false;
-                        _discountCodeInput.BorderBrush = Brushes.Green;
-                        _discountCodeInput.Background = Brushes.LightGreen;
-                        _summary_finalPrice.Visibility = Visibility.Visible;
-                        _discountCodeSubmit.Content = "- Remove discount code";
-                        _discountCodeSubmit.Background = Brushes.LightPink;
-                        ShoppingCartListView.Update();
-                        UpdateGUI();
-                    }
-                    else
-                    {
-                        _discountCodeInput.BorderBrush = Brushes.Red;
-                        _discountCodeInput.Background = Brushes.LightPink;
-                    }
-
-                    _discountCodeSubmit.IsEnabled = true;
-                }
-                else if ((string)_discountCodeSubmit.Content == "- Remove discount code")
+                if (success)
                 {
-                    Store.RemoveDiscountCode();
-                    ResetDiscountCodeForm();
+                    _discountCodeInput.IsEnabled = false;
+                    _discountCodeInput.BorderBrush = Brushes.Green;
+                    _discountCodeInput.Background = Brushes.LightGreen;
+                    _summary_finalPrice.Visibility = Visibility.Visible;
+                    _discountCodeSubmit.Content = "- Remove discount code";
+                    _discountCodeSubmit.Background = Brushes.LightPink;
                     ShoppingCartListView.Update();
                     UpdateGUI();
                 }
-            }
-
-            internal static void _discountCodeInput_GotFocus(object sender, RoutedEventArgs e)
-            {
-                if (_discountCodeInput.Text == (string)_discountCodeInput.Tag)
-                {
-                    _discountCodeInput.Text = "";
-                }
-            }
-
-            internal static void _discountCodeInput_LostFocus(object sender, RoutedEventArgs e)
-            {
-                if (_discountCodeInput.Text == "")
-                {
-                    _discountCodeInput.Text = (string)_discountCodeInput.Tag;
-                    _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
-                    _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
-                }
-            }
-
-            internal static void _discountCodeInput_TextChanged(object sender, TextChangedEventArgs e)
-            {
-                if (_discountCodeInput.Text == "" || _discountCodeInput.Text == (string)_discountCodeInput.Tag)
-                {
-                    _discountCodeSubmit.IsEnabled = false;
-                    _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
-                    _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
-                }
                 else
                 {
-                    _discountCodeSubmit.IsEnabled = true;
+                    _discountCodeInput.BorderBrush = Brushes.Red;
+                    _discountCodeInput.Background = Brushes.LightPink;
                 }
-            }
 
-            internal static void _discountCodeInput_KeyUp(object sender, KeyEventArgs e)
+                _discountCodeSubmit.IsEnabled = true;
+            }
+            else if ((string)_discountCodeSubmit.Content == "- Remove discount code")
             {
-                if (e.Key == Key.Enter)
-                {
-                    discountSubmitEventHandler(sender, e);
-                }
+                Store.RemoveDiscountCode();
+                ResetDiscountCodeForm();
+                ShoppingCartListView.Update();
+                UpdateGUI();
+            }
+        }
+
+        private static void DiscountCodeInput_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (_discountCodeInput.Text == (string)_discountCodeInput.Tag)
+            {
+                _discountCodeInput.Text = "";
+            }
+        }
+
+        private static void DiscountCodeInput_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (_discountCodeInput.Text == "")
+            {
+                _discountCodeInput.Text = (string)_discountCodeInput.Tag;
+                _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+                _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+            }
+        }
+
+        private static void DiscountCodeInput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_discountCodeInput.Text == "" || _discountCodeInput.Text == (string)_discountCodeInput.Tag)
+            {
+                _discountCodeSubmit.IsEnabled = false;
+                _discountCodeInput.ClearValue(TextBox.BorderBrushProperty);
+                _discountCodeInput.ClearValue(TextBox.BackgroundProperty);
+            }
+            else
+            {
+                _discountCodeSubmit.IsEnabled = true;
+            }
+        }
+
+        private static void DiscountCodeInput_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                DiscountSubmitEventHandler(sender, e);
             }
         }
     }
