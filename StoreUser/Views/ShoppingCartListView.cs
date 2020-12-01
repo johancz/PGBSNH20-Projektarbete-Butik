@@ -47,7 +47,7 @@ namespace StoreUser.Views
         {
             static FrameworkElementFactory CreateButtonTemplate(string buttonText, RoutedEventHandler eventHandler)
             {
-                // Create a "Button"-template which the Cell
+                // Create a "Button"-template which represents a Button and (in our case) the only control inserted into cells.
                 var buttonTemplate = new FrameworkElementFactory(typeof(Button));
                 // No need for a binding since the button will have the same value on every ListView row/"item". 
                 buttonTemplate.SetValue(Button.ContentProperty, buttonText);
