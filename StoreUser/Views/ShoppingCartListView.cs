@@ -1,9 +1,6 @@
 ﻿using StoreCommon;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Dynamic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +11,7 @@ namespace StoreUser.Views
     public static class ShoppingCartListView
     {
         private static ListView _root;
-        internal static GridView _gridView;
+        private static GridView _gridView;
 
         // Defines data for each row/"item" in the ListView.
         private class ShoppingCartItemData
@@ -48,7 +45,7 @@ namespace StoreUser.Views
 
         public static void CreateGUI()
         {
-            FrameworkElementFactory CreateButtonTemplate(string buttonText, RoutedEventHandler eventHandler)
+            static FrameworkElementFactory CreateButtonTemplate(string buttonText, RoutedEventHandler eventHandler)
             {
                 // Create a "Button"-template which the Cell
                 var buttonTemplate = new FrameworkElementFactory(typeof(Button));
@@ -62,12 +59,12 @@ namespace StoreUser.Views
             }
 
             _root = new ListView();
-            _root.SelectionChanged += EventHandler.ListSelectionChanged;
+            _root.SelectionChanged += ListSelectionChanged;
             _gridView = new GridView { AllowsColumnReorder = false };
             _root.View = _gridView;
 
-            var remove1Template = CreateButtonTemplate(" - ", EventHandler.ShoppingCartRemoveProduct_Click);
-            var add1Template = CreateButtonTemplate(" + ", EventHandler.ShoppingCartAddProduct_Click);
+            var remove1Template = CreateButtonTemplate(" - ", ShoppingCartRemoveProduct_Click);
+            var add1Template = CreateButtonTemplate(" + ", ShoppingCartAddProduct_Click);
 
             // Add columns to the GridView and bind each column to a property in the data-object ("ShoppingCartItemData").
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("Product.Name"), Header = "Product", });
@@ -84,7 +81,7 @@ namespace StoreUser.Views
             UpdateGUI();
         }
 
-        internal static void UpdateData()
+        private static void UpdateData()
         {
             _root.ItemsSource = Store.ShoppingCart.Products.Select(productItem => new ShoppingCartItemData(productItem));
         }
@@ -110,41 +107,38 @@ namespace StoreUser.Views
         /******************* Event Handling *******************/
         /******************************************************/
 
-        private static class EventHandler
+        private static void ShoppingCartRemoveProduct_Click(object sender, RoutedEventArgs e)
         {
-            internal static void ShoppingCartRemoveProduct_Click(object sender, RoutedEventArgs e)
+            var product = (Product)((Button)sender).Tag;
+            if (product != null)
             {
-                var product = (Product)((Button)sender).Tag;
-                if (product != null)
-                {
-                    Store.ShoppingCart.RemoveProduct(product);
-                    Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
-                    UserView.SelectedProduct = product;
-                    UserView.UpdateGUI();
-                }
+                Store.ShoppingCart.RemoveProduct(product);
+                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
+                UserView.SelectedProduct = product;
+                UserView.UpdateGUI();
             }
+        }
 
-            internal static void ShoppingCartAddProduct_Click(object sender, RoutedEventArgs e)
+        private static void ShoppingCartAddProduct_Click(object sender, RoutedEventArgs e)
+        {
+            var product = (Product)((Button)sender).Tag;
+            if (product != null)
             {
-                var product = (Product)((Button)sender).Tag;
-                if (product != null)
-                {
-                    UserView.SelectedProduct = product;
-                    Store.ShoppingCart.AddProduct(product, 1);
-                    Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
-                    UserView.UpdateGUI();
-                }
+                UserView.SelectedProduct = product;
+                Store.ShoppingCart.AddProduct(product, 1);
+                Store.ShoppingCart.SaveToFile(DataManager.ShoppingCartCSV);
+                UserView.UpdateGUI();
             }
+        }
 
-            internal static void ListSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private static void ListSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listViewItemData = ((ShoppingCartItemData)_root.SelectedItem);
+            if (listViewItemData != null)
             {
-                var listViewItemData = ((ShoppingCartItemData)_root.SelectedItem);
-                if (listViewItemData != null)
-                {
-                    var product = (Product)listViewItemData.Product;
-                    UserView.SelectedProduct = product;
-                    UserView.UpdateGUI();
-                }
+                var product = (Product)listViewItemData.Product;
+                UserView.SelectedProduct = product;
+                UserView.UpdateGUI();
             }
         }
     }

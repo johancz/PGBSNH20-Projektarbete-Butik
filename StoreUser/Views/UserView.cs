@@ -4,8 +4,6 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace StoreUser
@@ -16,6 +14,7 @@ namespace StoreUser
         private static TabControl leftColumnTabControl;
         private static readonly Label _shoppingCartTabLabel = new Label { FontSize = 16, };
 
+        // Needs the 'internal'-modifier so that it is accessible outside the UserView-class (note: it could also be 'public').
         internal static Product SelectedProduct;
 
         /*** Views ***/
@@ -27,6 +26,7 @@ namespace StoreUser
 
         private struct ProductItem_LayoutSettings
         {
+            // These need to have the 'internal' modifier so that they can be accessed. The 'internal' modifier makes the member accessible from the entire assembly (e.g. '.exe', '.dll'). In this case however, because they live in a private struct, they are accessible from wherever the private struct is accessible from (i.e. the UserView-class).
             internal static double gridItemWidth = 200;
             internal static double gridItemHeight = 200;
             internal static int gridItemImageHeight = 175;
@@ -52,12 +52,12 @@ namespace StoreUser
             _root.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto), });
             _root.ColumnDefinitions.Add(new ColumnDefinition { MinWidth = 400, });
 
-            /*-------------------*/
-            /*----- Child 0 -----*/
-            /*-------------------*/
+            /*--------------------------------*/
+            /*----- Child 0 (of '_root') -----*/
+            /*--------------------------------*/
 
             // Left Column Content Root: TabControl
-            leftColumnTabControl = new TabControl() { BorderThickness = new Thickness(0, 1, 0, 0), };
+            leftColumnTabControl = new TabControl { BorderThickness = new Thickness(0, 1, 0, 0), Background = Brushes.WhiteSmoke, };
             // Children of "leftColumnTabControl":
             {
                 // "Browse Store" Tab
@@ -84,9 +84,9 @@ namespace StoreUser
                 leftColumnTabControl.Items.Add(tabItem_ShoppingCart);
             }
 
-            /*-------------------*/
-            /*----- Child 1 -----*/
-            /*-------------------*/
+            /*--------------------------------*/
+            /*----- Child 1 (of '_root') -----*/
+            /*--------------------------------*/
 
             Grid.SetColumn(leftColumnTabControl, 0);
             _root.Children.Add(leftColumnTabControl);
@@ -104,16 +104,19 @@ namespace StoreUser
             //_rootGrid.Children.Add(gridSplitter);
             _root.Children.Add(gridSplitter);
 
-            /*-------------------*/
-            /*----- Child 2 -----*/
-            /*-------------------*/
+            /*--------------------------------*/
+            /*----- Child 2 (of '_root') -----*/
+            /*--------------------------------*/
 
             Grid.SetColumn(DetailsPanelRoot, 2);
             _root.Children.Add(DetailsPanelRoot);
 
+            /*--------------------------------*/
+
             return _root;
         }
 
+        // Needs the 'internal'-modifier so that it is accessible outside the UserView-class (note: it could also be 'public').
         internal static void UpdateGUI()
         {
             UpdateShoppingCartTabHeader();
@@ -129,7 +132,7 @@ namespace StoreUser
         /******************* Event Handling *******************/
         /******************************************************/
 
-        internal static void UpdateShoppingCartTabHeader()
+        private static void UpdateShoppingCartTabHeader()
         {
             _shoppingCartTabLabel.Content = $"My Shopping Cart ({Store.ShoppingCart.Products.Sum(p => p.Value)} items. {Math.Round(Store.ShoppingCart.FinalSum, 2)} kr)";
         }

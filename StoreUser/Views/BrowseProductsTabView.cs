@@ -16,6 +16,7 @@ namespace StoreUser.Views
 
         private struct ProductItem_LayoutSettings
         {
+            // These need to have the 'internal' modifier so that they can be accessed. The 'internal' modifier makes the member accessible from the entire assembly (e.g. '.exe', '.dll'). In this case however, because they live in a private struct, they are accessible from wherever the private struct is accessible from (i.e. the UserView-class).
             internal static double gridItemWidth = 200;
             internal static double gridItemHeight = 200;
             internal static int gridItemImageHeight = 175;

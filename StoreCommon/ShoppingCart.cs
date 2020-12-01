@@ -17,7 +17,6 @@ namespace StoreCommon
         {
             if (product == null)
             {
-                // TODO(johancz): this silently handles cases where product is null, should it be handled otherwise?
                 return;
             }
 
@@ -31,7 +30,6 @@ namespace StoreCommon
         {
             if (product == null)
             {
-                // TODO(johancz): this silently handles cases where product is null, should it be handled otherwise?
                 return;
             }
 
@@ -102,29 +100,28 @@ namespace StoreCommon
                 File.WriteAllLines(path, fileContents);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                // TODO(johancz): exception handling
-                throw e;
+                MessageBox.Show("Sorry, your shopping cart could not be saved.");
+                return false;
             }
         }
 
         public static ShoppingCart LoadFromFile(string pathAndFileName)
         {
             string[] fileLines;
+            var shoppingList = new ShoppingCart();
 
             try
             {
-                // TODO (johancz): Copy files in .csproj instead? This would simplify the path to the ExampleShoppingCart.csv file.
                 fileLines = File.ReadAllLines(pathAndFileName);
             }
             catch (Exception)
             {
-                // TODO(johancz): exception handling
-                throw;
+                // Could not load the Shopping Cart from file, return an empty Shopping Cart.
+                return shoppingList;
             }
 
-            var shoppingList = new ShoppingCart();
             decimal totalSum = 0;
 
             foreach (string line in fileLines)
