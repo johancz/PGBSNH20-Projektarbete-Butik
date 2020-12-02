@@ -46,7 +46,7 @@ namespace StoreUser.Views
                 _summaryCountPrice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                 _summaryCountPrice.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
-                // _shopppingCart_summary children:
+                // _summaryCountPrice children:
                 {
                     _summary_count = new Label
                     {

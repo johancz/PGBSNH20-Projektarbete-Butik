@@ -15,7 +15,7 @@ namespace StoreUser
     {
        
     }
-    public static class xaml
+    public static class Egg
     {
         private static DispatcherTimer _timer;
         private static int _timerCounter = 0;

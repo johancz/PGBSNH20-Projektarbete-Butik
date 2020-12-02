@@ -8,7 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StoreUser\StoreUser.csproj" />
     <ProjectReference Include="..\StoreCommon\StoreCommon.csproj" />
   </ItemGroup>
 

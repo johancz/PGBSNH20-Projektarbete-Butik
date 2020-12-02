@@ -11,18 +11,18 @@ namespace StoreUser
     public static class UserView
     {
         private static Grid _root;
-        private static TabControl leftColumnTabControl;
+        private static TabControl _leftColumnTabControl;
         private static readonly Label _shoppingCartTabLabel = new Label { FontSize = 16, };
 
         // Needs the 'internal'-modifier so that it is accessible outside the UserView-class (note: it could also be 'public').
-        internal static Product SelectedProduct;
+        internal static Product SelectedProduct { get; set; }
 
         /*** Views ***/
-        public static ScrollViewer BrowseProductsTabViewRoot;
-        public static Grid ShoppingCartToolbarRoot;
-        public static ListView ShoppingCartListRoot;
-        public static Grid ShoppingCartTabRoot;
-        public static Grid DetailsPanelRoot;
+        public static ScrollViewer BrowseProductsTabViewRoot { get; private set; }
+        public static Grid ShoppingCartToolbarRoot { get; private set; }
+        public static ListView ShoppingCartListRoot { get; private set; }
+        public static Grid ShoppingCartTabRoot { get; private set; }
+        public static Grid DetailsPanelRoot { get; private set; }
 
         private struct ProductItem_LayoutSettings
         {
@@ -36,7 +36,7 @@ namespace StoreUser
         {
             /*** Views ***/
             // Initiate and "import" all of the subviews (a subview in this context is a smaller part of the GUI which can be kept in it's own class/file which means not having to deal with a massive file/class, this simplifies implementation/maintenance/debugging.
-            // A view is mostly self-contained, in that it keeps track of and handles it's own wpf-controls and events, but still relies on data stored in the "Store"-class, and on occasion is told to or tells other views to update their GUI. The last detail could be improved upon by instead using Events.
+            // A view is mostly self-contained, in that it keeps track of and handles its own wpf-controls and events, but still relies on data stored in the "Store"-class, and on occasion is told to or tells other views to update their GUI. The last detail could be improved upon by instead using Events.
             BrowseProductsTabViewRoot = BrowseProductsTabView.Init();
             ShoppingCartToolbarRoot = ShoppingCartToolbarView.Init();
             ShoppingCartListRoot = ShoppingCartListView.Init();
@@ -57,8 +57,8 @@ namespace StoreUser
             /*--------------------------------*/
 
             // Left Column Content Root: TabControl
-            leftColumnTabControl = new TabControl { BorderThickness = new Thickness(0, 1, 0, 0), Background = Brushes.WhiteSmoke, };
-            // Children of "leftColumnTabControl":
+            _leftColumnTabControl = new TabControl { BorderThickness = new Thickness(0, 1, 0, 0), Background = Brushes.WhiteSmoke, };
+            // Children of "_leftColumnTabControl":
             {
                 // "Browse Store" Tab
                 var tabItem_BrowseStore = new TabItem
@@ -67,7 +67,7 @@ namespace StoreUser
                     FontSize = 16,
                     Content = BrowseProductsTabViewRoot,
                 };
-                leftColumnTabControl.Items.Add(tabItem_BrowseStore);
+                _leftColumnTabControl.Items.Add(tabItem_BrowseStore);
 
                 // "My Shopping Cart" Tab
                 var tabItem_ShoppingCart = new TabItem
@@ -81,15 +81,15 @@ namespace StoreUser
                     Content = ShoppingCartTabRoot
                 };
                 UpdateShoppingCartTabHeader();
-                leftColumnTabControl.Items.Add(tabItem_ShoppingCart);
+                _leftColumnTabControl.Items.Add(tabItem_ShoppingCart);
             }
 
             /*--------------------------------*/
             /*----- Child 1 (of '_root') -----*/
             /*--------------------------------*/
 
-            Grid.SetColumn(leftColumnTabControl, 0);
-            _root.Children.Add(leftColumnTabControl);
+            Grid.SetColumn(_leftColumnTabControl, 0);
+            _root.Children.Add(_leftColumnTabControl);
 
             var gridSplitter = new GridSplitter
             {

@@ -13,12 +13,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="StoreData\Images\kiwi.jpg" />
-    <None Remove="StoreData\Images\Mug.png" />
-    <None Remove="StoreData\Images\pineapple.jpg" />
-    <None Remove="StoreData\Images\Strawberry.jpg" />
-    <None Remove="StoreData\Images\T-shirt by Ravensclaw3.png" />
-  </ItemGroup>
-
 </Project>
