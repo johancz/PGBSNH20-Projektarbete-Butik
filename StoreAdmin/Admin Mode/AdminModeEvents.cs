@@ -40,12 +40,12 @@ namespace StoreAdmin
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+            //DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             LoadDefaultButtonPanel();
             DisableEditBoxes();
             AddAllProductGridItemsToProductBrowser();
             SelectedProduct = null;
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+            //DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             ProductGridItemsAreSelectable = true;
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)

@@ -167,6 +167,7 @@ namespace StoreCommon
                     {
                         Background = background,
                         HorizontalAlignment = HorizontalAlignment.Left,
+                        Visibility = Visibility.Hidden,
                     };
                     detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                     detailsPanelRootGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
