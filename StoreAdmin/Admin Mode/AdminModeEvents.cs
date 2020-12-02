@@ -20,6 +20,7 @@ namespace StoreAdmin
         {
             MainWindow.Loaded += MainWindow_Loaded;
             MainWindow.SizeChanged += MainWindow_SizeChanged;
+            MainWindow.KeyUp += MainWindow_KeyUp;
 
             ProductGridItems.ForEach(productGridItem => productGridItem.MouseUp += ProductGridItem_MouseUp);
             ImageGridItems.ForEach(imageGridItem => imageGridItem.MouseUp += ImageGridItem_MouseUp);
@@ -35,20 +36,17 @@ namespace StoreAdmin
                 NewProductSaveButton.Click += NewProductSaveButton_Click;
                 NewProductAbortButton.Click += NewProductAbortButton_Click;
             RemoveButton.Click += RemoveButton_Click;
-
-            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
-            LoadDefaultButtonPanel();
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            AdminButtons.ForEach(button => button.Width = DetailsButtonPanel.ActualWidth);
+            DetailsPanelRootGrid.Visibility = Visibility.Hidden;
+            LoadDefaultButtonPanel();
             DisableEditBoxes();
             AddAllProductGridItemsToProductBrowser();
             SelectedProduct = null;
             DetailsPanelRootGrid.Visibility = Visibility.Hidden;
             ProductGridItemsAreSelectable = true;
-            MainWindow.KeyUp += MainWindow_KeyUp;
         }
         private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -313,26 +311,14 @@ namespace StoreAdmin
         {
             foreach (var button in buttonsToView)
             {
-                try
-                {
-                    DetailsButtonPanel.Children.Add(button);
-                }
-                catch (System.Exception)
-                {
-                }
+                button.Visibility = Visibility.Visible;
             }
         }
         private void HideAllButtons()
         {
             foreach (var button in AdminButtons)
             {
-                try
-                {
-                    DetailsButtonPanel.Children.Remove(button);
-                }
-                catch (System.Exception)
-                {
-                }
+                button.Visibility = Visibility.Collapsed;
             }
         }
     }

@@ -285,15 +285,27 @@ namespace StoreCommon
                         RemoveButton = CreateButton("Remove Product");
 
                         AdminButtons = new List<Button> { NewProductButton, EditProductButton, ChangeImageButton, RemoveButton, SaveImageButton, CancelImageButton, SaveEditButton, CancelEditButton, NewProductAbortButton, NewProductSaveButton };
+
+                        foreach (var button in AdminButtons)
+                        {
+                            try
+                            {
+                                DetailsButtonPanel.Children.Add(button);
+                            }
+                            catch (System.Exception)
+                            {
+                            }
+                        }
                     }
                         private Button CreateButton(string content)
                         {
                             var newButton = new Button
                             {
                                 Padding = new Thickness(5),
-                                Content = new Label { Content = content, HorizontalAlignment = HorizontalAlignment.Center },
+                                Content = new Label { Content = content, },
                                 HorizontalAlignment = HorizontalAlignment.Stretch,
                                 HorizontalContentAlignment = HorizontalAlignment.Left,
+                                Visibility = Visibility.Collapsed,
                             };
                             return newButton;
                         }
