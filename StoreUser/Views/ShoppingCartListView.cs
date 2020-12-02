@@ -19,12 +19,11 @@ namespace StoreUser.Views
             public Product Product { get; }
             public string ProductPrice { get; }
             public int ProductCount { get; }
-            public string ProductFinalPrice { get; }
+            public string ProductTotalPrice { get; }
 
             public ShoppingCartItemData(KeyValuePair<Product, int> item)
             {
                 Product = item.Key;
-                // discounted price for single item cost?
                 ProductCount = item.Value;
                 decimal afterDiscount = 1;
                 if (Store.ShoppingCart.ActiveDiscountCode != null)
@@ -32,7 +31,7 @@ namespace StoreUser.Views
                     afterDiscount -= (decimal)(1 - Store.ShoppingCart.ActiveDiscountCode.Percentage);
                 }
                 ProductPrice = Math.Round(item.Key.Price * afterDiscount, 2) + " " + Store.Currency.Symbol;
-                ProductFinalPrice = Math.Round(Product.Price * ProductCount * afterDiscount, 2) + " " + Store.Currency.Symbol;
+                ProductTotalPrice = Math.Round(Product.Price * ProductCount * afterDiscount, 2) + " " + Store.Currency.Symbol;
             }
         };
 
@@ -70,7 +69,7 @@ namespace StoreUser.Views
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("Product.Name"), Header = "Product", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductPrice"), Header = "Price", });
             _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductCount"), Header = "# of items", });
-            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductFinalPrice"), Header = "Total Price", });
+            _gridView.Columns.Add(new GridViewColumn { DisplayMemberBinding = new Binding("ProductTotalPrice"), Header = "Total Price", });
             _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = remove1Template, }, Header = "-", });
             _gridView.Columns.Add(new GridViewColumn { CellTemplate = new DataTemplate { VisualTree = add1Template, }, Header = "+", });
         }
@@ -88,7 +87,7 @@ namespace StoreUser.Views
 
         public static void UpdateGUI()
         {
-            // And to be sure the ListView layout updates, we also call UpdateLayout() on the ListView.
+            // And to make sure the ListView layout updates, we also call UpdateLayout() on the ListView.
             _root.UpdateLayout();
 
             //Resize each column to fit its content, double.NaN == auto

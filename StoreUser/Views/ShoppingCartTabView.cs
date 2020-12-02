@@ -131,7 +131,7 @@ namespace StoreUser.Views
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 ResizeMode = ResizeMode.NoResize,
             };
-            receiptWindow.Loaded += xaml.ReceiptWindow_Loaded;
+            receiptWindow.Loaded += Egg.ReceiptWindow_Loaded;
             receiptWindow.Show();
         }
 
