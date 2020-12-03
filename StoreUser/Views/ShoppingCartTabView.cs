@@ -111,7 +111,7 @@ namespace StoreUser.Views
             string finalCost = $"Total: {Math.Round(Store.ShoppingCart.FinalSum, 2)} {Store.Currency.Symbol}";
             if (Store.ShoppingCart.ActiveDiscountCode != null)
             {
-                finalCost += $" (you saved {Math.Round(Store.ShoppingCart.FinalSum - Store.ShoppingCart.TotalSum, 2)} {Store.Currency.Symbol}!)";
+                finalCost += $" (you saved {Math.Round(Store.ShoppingCart.TotalSum - Store.ShoppingCart.FinalSum, 2)} {Store.Currency.Symbol}!)";
             }
             var totalsLabel = new Label
             {
