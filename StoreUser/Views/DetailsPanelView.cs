@@ -45,13 +45,17 @@ namespace StoreUser.Views
                 // Children of 'detailsGrid':
                 {
                     /*** Child 0 ***/
-                    var shoppingCartButtons = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(5) };
-                    Grid.SetColumn(shoppingCartButtons, 0);
-                    detailsGrid.Children.Add(shoppingCartButtons);
+                    var priceAndButtons = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(5) };
+                    Grid.SetColumn(priceAndButtons, 0);
+                    detailsGrid.Children.Add(priceAndButtons);
 
-                    // Children of 'shoppingCartButtons':
+                    // Children of 'priceAndButtons':
                     {
                         /*** Child 0 ***/
+                        _priceLabel = new Label { FontSize = 16 };
+                        priceAndButtons.Children.Add(_priceLabel);
+
+                        /*** Child 1 ***/
                         _addToCartButton = new Button
                         {
                             Padding = new Thickness(5),
@@ -60,9 +64,9 @@ namespace StoreUser.Views
                             HorizontalContentAlignment = HorizontalAlignment.Left,
                         };
                         _addToCartButton.Click += DetailsAddToCartButton_Click;
-                        shoppingCartButtons.Children.Add(_addToCartButton);
+                        priceAndButtons.Children.Add(_addToCartButton);
 
-                        /*** Child 1 ***/
+                        /*** Child 2 ***/
                         _removeFromCartButton = new Button
                         {
                             Padding = new Thickness(5),
@@ -72,11 +76,7 @@ namespace StoreUser.Views
 
                         };
                         _removeFromCartButton.Click += DetailsRemoveFromCartButton_Click;
-                        shoppingCartButtons.Children.Add(_removeFromCartButton);
-
-                        /*** Child 2 ***/
-                        _priceLabel = new Label { FontSize = 16 };
-                        shoppingCartButtons.Children.Add(_priceLabel);
+                        priceAndButtons.Children.Add(_removeFromCartButton);
                     }
 
                     /*** Child 1 ***/
