@@ -91,6 +91,7 @@ namespace StoreAdmin.Views
             AppendGridRow((saveButton, 2));
         }
 
+        // Takes any number of tuples or an array of tuples, where each tuple is an element and the column the element should be inserted into.
         private static void AppendGridRow(params (FrameworkElement element, int? column)[] elements)
         {
             int row = _grid.RowDefinitions.Count;
@@ -101,6 +102,9 @@ namespace StoreAdmin.Views
                 var (element, column) = elements[i];
                 Grid.SetRow(element, row);
                 // Use rowData.column if it isn't null, if null use 'i'.
+                // This for example allows for a row to look like this:
+                // " | 'column[0]' contains element0 | 'column[1]' is empty | 'column[2]' contains element1 | "
+                // if the tuple[] 'elements' looks like "... { (element0, null), (element1, 2) }".
                 Grid.SetColumn(element, column ?? i);
                 _grid.Children.Add(element);
             }
