@@ -82,6 +82,7 @@ namespace StoreUser.Views
 
         private static void UpdateData()
         {
+            // Set the data which we want the ListView to present.
             _root.ItemsSource = Store.ShoppingCart.Products.Select(productItem => new ShoppingCartItemData(productItem));
         }
 
@@ -90,7 +91,7 @@ namespace StoreUser.Views
             // And to make sure the ListView layout updates, we also call UpdateLayout() on the ListView.
             _root.UpdateLayout();
 
-            //Resize each column to fit its content, double.NaN == auto
+            // Resize each column to fit its content, double.NaN == auto
             foreach (GridViewColumn column in _gridView.Columns)
             {
                 if (double.IsNaN(column.Width))
